@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.cc": "cpp",
         "cctype": "cpp",
         "clocale": "cpp",
         "cmath": "cpp",
@@ -74,6 +75,10 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "regex": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "hash_map": "cpp",
+        "charconv": "cpp",
+        "span": "cpp",
+        "format": "cpp"
     }
 }

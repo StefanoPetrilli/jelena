@@ -8,9 +8,34 @@
 			"targets": [
 				"all"
 			],
-			"group": "build",
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
 			"problemMatcher": [],
 			"detail": "CMake template build task"
+		},
+		{
+			"type": "shell",
+			"label": "Run tests",
+			"command": "./build/test/jelena_tests",
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Build and Test",
+			"dependsOn": [
+				"CMake: build",
+				"Run tests"
+			],
+			"dependsOrder": "sequence",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }
