@@ -7,9 +7,9 @@
 namespace linked_list_test {
 class LinkedListTest : public ::testing::Test {
  protected:
-  linked_list::LinkedList<int> _linked_list;
-  void SetUp() override { _linked_list = linked_list::LinkedList<int>(); }
+  linked_list::LinkedList<int> linked_list_;
+  void SetUp() override { linked_list_ = linked_list::LinkedList<int>(); }
 
-  void TearDown() override { _linked_list.Clear(); }
+  void TearDown() override { linked_list_.Clear(); }
 };
 }  // namespace linked_list_test
