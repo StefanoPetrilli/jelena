@@ -10,8 +10,8 @@ namespace linked_list {
 template <typename T>
 class LinkedList {
  private:
-  std::shared_ptr<Node<T>> head_;
-  std::shared_ptr<Node<T>> tail_;
+  std::shared_ptr<node::Node<T>> head_;
+  std::shared_ptr<node::Node<T>> tail_;
   size_t size_ = 0;
 
   std::string NodesToString() {
@@ -19,18 +19,18 @@ class LinkedList {
     auto current_node = head_;
     while (current_node) {
       result += current_node->ToString() + " ";
-      current_node = current_node->Next();
+      current_node = current_node->GetNextNode();
     }
     result.pop_back();
     return result;
   }
 
-  std::shared_ptr<Node<T>> GetNode(size_t index) {
+  std::shared_ptr<node::Node<T>> GetNode(size_t index) {
     size_t current = 0;
     auto current_node = head_;
 
     while (current != index) {
-      current_node = current_node->Next();
+      current_node = current_node->GetNextNode();
       current++;
     }
 
@@ -40,18 +40,18 @@ class LinkedList {
   T GetNodeValue(size_t index) { return GetNode(index)->GetValue(); }
 
   void InsertFirstNode(T value) {
-    tail_ = std::make_shared<Node<T>>(value);
+    tail_ = std::make_shared<node::Node<T>>(value);
     head_ = tail_;
   }
 
   void InsertNode(T value) {
-    auto new_node = std::make_shared<Node<T>>(value);
+    auto new_node = std::make_shared<node::Node<T>>(value);
     tail_->SetNext(new_node);
     new_node->SetPrevious(tail_);
     tail_ = new_node;
   }
 
-  void DeleteNode(std::shared_ptr<Node<T>> node) {
+  void DeleteNode(std::shared_ptr<node::Node<T>> node) {
     auto next_node = node->GetNextNode();
     auto previous_node = node->GetPreviousNode();
 
@@ -81,7 +81,10 @@ class LinkedList {
   }
 
  public:
-  void Clear() {}  //TODO actually clear
+  ~LinkedList() {
+    head_ = nullptr;
+    tail_ = nullptr;
+  }
 
   bool IsEmpty() { return head_ == nullptr; }
 
