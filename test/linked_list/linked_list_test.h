@@ -9,6 +9,6 @@ class LinkedListTest : public ::testing::Test {
  protected:
   linked_list::LinkedList<int> linked_list_;
   void SetUp() override { linked_list_ = linked_list::LinkedList<int>(); }
-  void TearDown() override { linked_list_; }
+  void TearDown() override {}
 };
 }  // namespace linked_list_test
