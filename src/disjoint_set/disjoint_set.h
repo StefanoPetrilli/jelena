@@ -5,12 +5,14 @@ namespace disjoint_set {
 template <typename T,
           typename = typename std::enable_if<std::is_unsigned<T>::value>::type>
 class DisjointSet {
- private:
+ protected:
+  std::vector<T> blocks_;
+
  public:
-  virtual T Find(T element) = 0;
-  // virtual void Merge(T element) = 0;
-  // virtual void Union(T first_element, T second_element) = 0;
-  // virtual T GetSize() = 0;
+  DisjointSet(T size) : blocks_(size) {}
+
+  virtual T FindBlock(T element) = 0;
+  virtual void MergeBlocks(T first_block, T second_block) = 0;
 };
 
 }  // namespace disjoint_set

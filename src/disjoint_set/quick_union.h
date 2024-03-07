@@ -8,18 +8,23 @@ namespace disjoint_set {
 template <typename T,
           typename = typename std::enable_if<std::is_unsigned<T>::value>::type>
 class QuickUnion : public DisjointSet<T> {
- private:
-  std::vector<T>
-      blocks;  // TODO: is there a way of moving this field to the base class?
-
  public:
-  QuickUnion(T size) : blocks(size) {
-    std::iota(blocks.begin(), blocks.end(), 0);
+  QuickUnion(T size) : DisjointSet<T>(size) {
+    std::iota(this->blocks_.begin(), this->blocks_.end(), 0);
   };
-  T Find(T element) override { return element; }
-  // void Merge(T element) override {}
-  // void Union(T first_element, T second_element) override{};
-  // T GetSize() override { return 0; };
+
+  T FindBlock(T element) override {
+    auto current_index = element;
+
+    while (this->blocks_.at(current_index) != current_index)
+      current_index = this->blocks_.at(current_index);
+
+    return current_index;
+  }
+
+  void MergeBlocks(T first_block, T second_block) override {
+    this->blocks_.at(second_block) = this->blocks_.at(first_block);
+  };
 };
 
 }  // namespace disjoint_set
