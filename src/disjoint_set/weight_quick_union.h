@@ -12,6 +12,11 @@ class WeightQuickUnion : public DisjointSet<T> {
   T GetFather(T element) { return this->blocks_.at(element); };
   T GetRootWeight(T root) { return this->blocks_.at(root) * -1; }
 
+  void MergeRoots(T larger_root, T smaller_root, T smaller_root_weight) {
+    this->blocks_.at(smaller_root) = larger_root;
+    this->blocks_.at(larger_root) -= smaller_root_weight;
+  }
+
  public:
   WeightQuickUnion(T size) : DisjointSet<T>(size){};
 
@@ -30,13 +35,10 @@ class WeightQuickUnion : public DisjointSet<T> {
          first_block_root_weight = GetRootWeight(first_block_root),
          second_block_root_weight = GetRootWeight(second_block_root);
 
-    if (first_block_root_weight >= second_block_root_weight) {
-      this->blocks_.at(second_block_root) = first_block_root;
-      this->blocks_.at(first_block_root) -= second_block_root_weight;
-    } else {
-      this->blocks_.at(first_block_root) = second_block_root;
-      this->blocks_.at(second_block_root) -= first_block_root_weight;
-    }
+    if (first_block_root_weight >= second_block_root_weight)
+      MergeRoots(first_block_root, second_block_root, second_block_root_weight);
+    else
+      MergeRoots(second_block_root, first_block_root, first_block_root_weight);
   };
 };
 

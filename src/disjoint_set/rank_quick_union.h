@@ -10,6 +10,13 @@ template <typename T>
 class RankQuickUnion : public WeightQuickUnion<T> {
  private:
   T GetRootRank(T root) { return this->blocks_.at(root) * -1; }
+  void MergeRoots(T larger_root, T larger_root_rank, T smaller_root,
+                  T smaller_root_rank) {
+    this->blocks_.at(larger_root) -= smaller_root_rank;
+    this->blocks_.at(larger_root) +=
+        std::min(smaller_root_rank, (T)(larger_root_rank - 1));
+    this->blocks_.at(smaller_root) = larger_root;
+  }
 
  public:
   RankQuickUnion(T size) : WeightQuickUnion<T>(size){};
@@ -20,17 +27,12 @@ class RankQuickUnion : public WeightQuickUnion<T> {
          first_block_root_rank = GetRootRank(first_block_root),
          second_block_root_rank = GetRootRank(second_block_root);
 
-    if (first_block_root_rank >= second_block_root_rank) {
-      this->blocks_.at(first_block_root) -= second_block_root_rank;
-      this->blocks_.at(first_block_root) +=
-          std::min(second_block_root_rank, (T)(first_block_root_rank - 1));
-      this->blocks_.at(second_block_root) = first_block_root;
-    } else {
-      this->blocks_.at(second_block_root) -= first_block_root_rank;
-      this->blocks_.at(second_block_root) +=
-          std::min(first_block_root_rank, (T)(second_block_root_rank - 1));
-      this->blocks_.at(first_block_root) = second_block_root;
-    }
+    if (first_block_root_rank >= second_block_root_rank)
+      MergeRoots(first_block_root, first_block_root_rank, second_block_root,
+                 second_block_root_rank);
+    else
+      MergeRoots(second_block_root, second_block_root_rank, first_block_root,
+                 first_block_root_rank);
   };
 };
 
