@@ -29,15 +29,15 @@ TEST_F(QuickUnionTest, AfterSeveralMerges_Expect_CorrectValue) {
             BlockIdentifier::kFirstBlock);
 }
 
-TEST_F(WeightedQuickUnion, AfterInstantiation_Expect_ValueEqualToIndex) {
+TEST_F(WeightQuickUnion, AfterInstantiation_Expect_ValueEqualToIndex) {
   EXPECT_EQ(weighted_disjoint_set_.FindBlock(10), 10);
 }
 
-TEST_F(WeightedQuickUnion, FindBiggerThanSize_Expect_OutOfRangeException) {
+TEST_F(WeightQuickUnion, FindBiggerThanSize_Expect_OutOfRangeException) {
   EXPECT_THROW(weighted_disjoint_set_.FindBlock(size_ + 1), std::out_of_range);
 }
 
-TEST_F(WeightedQuickUnion,
+TEST_F(WeightQuickUnion,
        AfterMergeOfEqualWeight_Expect_FirstBlockGoesIntoSecondBlock) {
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                      BlockIdentifier::kSecondBlock);
@@ -45,7 +45,7 @@ TEST_F(WeightedQuickUnion,
   EXPECT_EQ(result, BlockIdentifier::kFirstBlock);
 }
 
-TEST_F(WeightedQuickUnion,
+TEST_F(WeightQuickUnion,
        AfterMergeOfUnequalWeight_Expect_SmallerBecomesChildOfBigger) {
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                      BlockIdentifier::kThirdBlock);
@@ -56,7 +56,7 @@ TEST_F(WeightedQuickUnion,
             BlockIdentifier::kSecondBlock);
 }
 
-TEST_F(WeightedQuickUnion,
+TEST_F(WeightQuickUnion,
        AfterMergeOfUnequalWeight_Expect_SmallerBecomesChildOfBigger2) {
   //Create the first subtree
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
@@ -78,7 +78,7 @@ TEST_F(WeightedQuickUnion,
             BlockIdentifier::kSecondBlock);
 }
 
-TEST_F(WeightedQuickUnion,
+TEST_F(WeightQuickUnion,
        AfterMergeOfUnequalWeight_Expect_SmallerBecomesChildOfBigger3) {
   //Create the first subtree
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
@@ -100,7 +100,7 @@ TEST_F(WeightedQuickUnion,
             BlockIdentifier::kFourthBlock);
 }
 
-TEST_F(WeightedQuickUnion,
+TEST_F(WeightQuickUnion,
        AfterMultipleMergeOfUnequalWeight_Expect_SmallerBecomesChildOfBigger4) {
   //Create the first subtree
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
@@ -124,7 +124,7 @@ TEST_F(WeightedQuickUnion,
             BlockIdentifier::kFourthBlock);
 }
 
-TEST_F(WeightedQuickUnion,
+TEST_F(WeightQuickUnion,
        AfterMultipleMergeOfUnequalWeight_Expect_SmallerBecomesChildOfBigger5) {
   //Create the first subtree
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,

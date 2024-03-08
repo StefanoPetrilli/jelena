@@ -6,14 +6,14 @@
 namespace disjoint_set {
 
 template <typename T>
-class WeightedQuickUnion : public DisjointSet<T> {
+class WeightQuickUnion : public DisjointSet<T> {
  private:
   T IsNotRoot(T element) { return this->blocks_.at(element) >= 0; };
   T GetFather(T element) { return this->blocks_.at(element); };
   T GetRootWeight(T root) { return this->blocks_.at(root) * -1; }
 
  public:
-  WeightedQuickUnion(T size) : DisjointSet<T>(size){};
+  WeightQuickUnion(T size) : DisjointSet<T>(size){};
 
   T FindBlock(T element) override {
     auto element_root = element;
