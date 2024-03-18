@@ -29,6 +29,150 @@ TEST_F(QuickUnionTest, AfterSeveralMerges_Expect_CorrectValue) {
             BlockIdentifier::kFirstBlock);
 }
 
+TEST_F(QuickUnionTest,
+       UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(quick_union_set_.FindBlockFullCompression(10), 10);
+}
+
+TEST_F(QuickUnionTest, UsingFullCompressionAfterMerge_Expect_CorrectValue) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                               BlockIdentifier::kFourthBlock);
+
+  EXPECT_EQ(
+      quick_union_set_.FindBlockFullCompression(BlockIdentifier::kSecondBlock),
+      BlockIdentifier::kFirstBlock);
+}
+
+TEST_F(QuickUnionTest,
+       UsingFullCompressionAfterSeveralMerges_Expect_CorrectValue) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      quick_union_set_.FindBlockFullCompression(BlockIdentifier::kThirdBlock),
+      BlockIdentifier::kFirstBlock);
+}
+
+TEST_F(QuickUnionTest, UsingFullCompressionAfterFind_Expect_CorrectValue) {
+
+  quick_union_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                               BlockIdentifier::kFourthBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  quick_union_set_.FindBlockFullCompression(BlockIdentifier::kFourthBlock);
+
+  EXPECT_EQ(
+      quick_union_set_.FindBlockFullCompression(BlockIdentifier::kThirdBlock),
+      BlockIdentifier::kFirstBlock);
+}
+
+TEST_F(QuickUnionTest,
+       UsingPathSplittingAfterInstantiation_Expect_ValueEqualToIndex) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(quick_union_set_.FindBlockPathSplitting(10), 10);
+}
+
+TEST_F(QuickUnionTest, UsingPathSplittingAfterMerge_Expect_CorrectValue) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                               BlockIdentifier::kFourthBlock);
+
+  EXPECT_EQ(
+      quick_union_set_.FindBlockPathSplitting(BlockIdentifier::kSecondBlock),
+      BlockIdentifier::kFirstBlock);
+}
+
+TEST_F(QuickUnionTest,
+       UsingPathSplittingAfterSeveralMerges_Expect_CorrectValue) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      quick_union_set_.FindBlockPathSplitting(BlockIdentifier::kThirdBlock),
+      BlockIdentifier::kFirstBlock);
+}
+
+TEST_F(QuickUnionTest, UsingPathSplittingAfterFind_Expect_CorrectValue) {
+
+  quick_union_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                               BlockIdentifier::kFourthBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  quick_union_set_.FindBlockPathSplitting(BlockIdentifier::kFourthBlock);
+
+  EXPECT_EQ(
+      quick_union_set_.FindBlockPathSplitting(BlockIdentifier::kFourthBlock),
+      BlockIdentifier::kFirstBlock);
+}
+
+TEST_F(QuickUnionTest,
+       UsingPathHalvingAfterInstantiation_Expect_ValueEqualToIndex) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(quick_union_set_.FindBlockPathHalving(10), 10);
+}
+
+TEST_F(QuickUnionTest, UsingPathHalvingAfterMerge_Expect_CorrectValue) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                               BlockIdentifier::kFourthBlock);
+
+  EXPECT_EQ(
+      quick_union_set_.FindBlockPathHalving(BlockIdentifier::kSecondBlock),
+      BlockIdentifier::kFirstBlock);
+}
+
+TEST_F(QuickUnionTest,
+       UsingPathHalvingAfterSeveralMerges_Expect_CorrectValue) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      quick_union_set_.FindBlockPathHalving(BlockIdentifier::kThirdBlock),
+      BlockIdentifier::kFirstBlock);
+}
+
+TEST_F(QuickUnionTest, UsingPathHalvingAfterFind_Expect_CorrectValue) {
+
+  quick_union_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                               BlockIdentifier::kFourthBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  quick_union_set_.FindBlockPathHalving(BlockIdentifier::kFourthBlock);
+
+  EXPECT_EQ(
+      quick_union_set_.FindBlockPathHalving(BlockIdentifier::kFourthBlock),
+      BlockIdentifier::kFirstBlock);
+}
+
 TEST_F(WeightQuickUnion, AfterInstantiation_Expect_ValueEqualToIndex) {
   EXPECT_EQ(weighted_disjoint_set_.FindBlock(10), 10);
 }
