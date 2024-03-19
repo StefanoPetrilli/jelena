@@ -6,6 +6,7 @@ template <typename T>
 class DisjointSet {
  protected:
   std::vector<T> blocks_;
+  T GetFather(T element) { return this->blocks_.at(element); };
 
  public:
   DisjointSet(T size) : blocks_(size, -1) {}

@@ -20,7 +20,7 @@ class QuickUnion : public DisjointSet<T> {
     auto current_index = element;
 
     while (IsNotRoot(current_index))
-      current_index = this->blocks_.at(current_index);
+      current_index = this->GetFather(current_index);
 
     return current_index;
   }
@@ -30,9 +30,9 @@ class QuickUnion : public DisjointSet<T> {
 
     T current_index = element, previous_index;
 
-    while (this->blocks_.at(current_index) != current_index) {
+    while (IsNotRoot(current_index)) {
       previous_index = current_index;
-      current_index = this->blocks_.at(current_index);
+      current_index = this->GetFather(current_index);
       this->blocks_.at(previous_index) = representative;
     }
 
@@ -42,10 +42,10 @@ class QuickUnion : public DisjointSet<T> {
   T FindBlockPathSplitting(T element) override {
     T current_index = element, previous_index;
 
-    while (this->blocks_.at(current_index) != current_index) {
+    while (IsNotRoot(current_index)) {
       previous_index = current_index;
-      current_index = this->blocks_.at(current_index);
-      this->blocks_.at(previous_index) = this->blocks_.at(current_index);
+      current_index = this->GetFather(current_index);
+      this->blocks_.at(previous_index) = this->GetFather(current_index);
     }
 
     return current_index;
@@ -55,11 +55,11 @@ class QuickUnion : public DisjointSet<T> {
     T current_index = element, previous_index;
     bool is_even = true;
 
-    while (this->blocks_.at(current_index) != current_index) {
+    while (IsNotRoot(current_index)) {
       previous_index = current_index;
-      current_index = this->blocks_.at(current_index);
+      current_index = this->GetFather(current_index);
       if (is_even)
-        this->blocks_.at(previous_index) = this->blocks_.at(current_index);
+        this->blocks_.at(previous_index) = this->GetFather(current_index);
 
       is_even = !is_even;
     }
