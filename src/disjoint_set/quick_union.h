@@ -8,6 +8,9 @@ namespace disjoint_set {
 template <typename T,
           typename = typename std::enable_if<std::is_unsigned<T>::value>::type>
 class QuickUnion : public DisjointSet<T> {
+ private:
+  T IsNotRoot(T element) { return this->blocks_.at(element) != element; };
+
  public:
   QuickUnion(T size) : DisjointSet<T>(size) {
     std::iota(this->blocks_.begin(), this->blocks_.end(), 0);
@@ -16,7 +19,7 @@ class QuickUnion : public DisjointSet<T> {
   T FindBlock(T element) override {
     auto current_index = element;
 
-    while (this->blocks_.at(current_index) != current_index)
+    while (IsNotRoot(current_index))
       current_index = this->blocks_.at(current_index);
 
     return current_index;

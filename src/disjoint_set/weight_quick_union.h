@@ -21,12 +21,12 @@ class WeightQuickUnion : public DisjointSet<T> {
   WeightQuickUnion(T size) : DisjointSet<T>(size){};
 
   T FindBlock(T element) override {
-    auto element_root = element;
+    auto current_index = element;
 
-    while (IsNotRoot(element_root))
-      element_root = GetFather(element_root);
+    while (IsNotRoot(current_index))
+      current_index = GetFather(current_index);
 
-    return element_root;
+    return current_index;
   };
 
   void MergeBlocks(T first_block, T second_block) override {
