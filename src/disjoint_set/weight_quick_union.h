@@ -29,6 +29,12 @@ class WeightQuickUnion : public DisjointSet<T> {
     return current_index;
   };
 
+  T FindBlockFullCompression(T element) override { return FindBlock(element); }
+
+  T FindBlockPathSplitting(T element) override { return FindBlock(element); }
+
+  T FindBlockPathHalving(T element) override { return FindBlock(element); }
+
   void MergeBlocks(T first_block, T second_block) override {
     auto first_block_root = FindBlock(first_block),
          second_block_root = FindBlock(second_block),

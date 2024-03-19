@@ -11,6 +11,9 @@ class DisjointSet {
   DisjointSet(T size) : blocks_(size, -1) {}
 
   virtual T FindBlock(T element) = 0;
+  virtual T FindBlockFullCompression(T element) = 0;
+  virtual T FindBlockPathSplitting(T element) = 0;
+  virtual T FindBlockPathHalving(T element) = 0;
   virtual void MergeBlocks(T first_block, T second_block) = 0;
 };
 

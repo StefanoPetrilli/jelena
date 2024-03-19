@@ -21,6 +21,12 @@ class RankQuickUnion : public WeightQuickUnion<T> {
  public:
   RankQuickUnion(T size) : WeightQuickUnion<T>(size){};
 
+  T FindBlockFullCompression(T element) override { return this->FindBlock(element); }
+
+  T FindBlockPathSplitting(T element) override { return this->FindBlock(element); }
+
+  T FindBlockPathHalving(T element) override { return this->FindBlock(element); }
+
   void MergeBlocks(T first_block, T second_block) override {
     auto first_block_root = this->FindBlock(first_block),
          second_block_root = this->FindBlock(second_block),

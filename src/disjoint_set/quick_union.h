@@ -25,7 +25,7 @@ class QuickUnion : public DisjointSet<T> {
     return current_index;
   }
 
-  T FindBlockFullCompression(T element) {
+  T FindBlockFullCompression(T element) override {
     auto representative = FindBlock(element);
 
     T current_index = element, previous_index;
@@ -39,7 +39,7 @@ class QuickUnion : public DisjointSet<T> {
     return representative;
   }
 
-  T FindBlockPathSplitting(T element) {
+  T FindBlockPathSplitting(T element) override {
     T current_index = element, previous_index;
 
     while (this->blocks_.at(current_index) != current_index) {
@@ -51,7 +51,7 @@ class QuickUnion : public DisjointSet<T> {
     return current_index;
   }
 
-  T FindBlockPathHalving(T element) {
+  T FindBlockPathHalving(T element) override {
     T current_index = element, previous_index;
     bool is_even = true;
 
