@@ -12,20 +12,13 @@ class RankQuickUnion : public WeightQuickUnion<T> {
   T GetRootRank(T root) { return this->blocks_.at(root) * -1; }
   void MergeRoots(T larger_root, T larger_root_rank, T smaller_root,
                   T smaller_root_rank) {
-    this->blocks_.at(larger_root) -= smaller_root_rank;
     this->blocks_.at(larger_root) +=
-        std::min(smaller_root_rank, (T)(larger_root_rank - 1));
+        (smaller_root_rank == larger_root_rank) * -1;
     this->blocks_.at(smaller_root) = larger_root;
   }
 
  public:
   RankQuickUnion(T size) : WeightQuickUnion<T>(size){};
-
-  T FindBlockFullCompression(T element) override { return this->FindBlock(element); }
-
-  T FindBlockPathSplitting(T element) override { return this->FindBlock(element); }
-
-  T FindBlockPathHalving(T element) override { return this->FindBlock(element); }
 
   void MergeBlocks(T first_block, T second_block) override {
     auto first_block_root = this->FindBlock(first_block),
