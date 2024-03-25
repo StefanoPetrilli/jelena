@@ -6,7 +6,7 @@
 
 namespace disjoint_set_test {
 TEST_F(QuickUnionTest, AfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(quick_union_set_.FindBlock(10), 10);
+  EXPECT_EQ(quick_union_set_.FindBlock(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(QuickUnionTest, FindBiggerThanSize_Expect_OutOfRangeException) {
@@ -68,12 +68,35 @@ TEST_F(QuickUnionTest, AfterSeveralMerges_Expect_CorrectDistinctBlocksValue_2) {
 }
 
 TEST_F(QuickUnionTest,
-       UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
-  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kThirdBlock);
+       AfterMergeOfSameBlock_Expect_CorrectDistinctBlocksValue1) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                                     BlockIdentifier::kFourthBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
-  EXPECT_EQ(quick_union_set_.FindBlockFullCompression(10), 10);
+                                     BlockIdentifier::kSecondBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
+                                     BlockIdentifier::kFifthBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                     BlockIdentifier::kNineBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                                     BlockIdentifier::kTenthBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kEightBlock,
+                                     BlockIdentifier::kSeventhBlock);
+  EXPECT_EQ(quick_union_set_.FindBlock(kFirstBlock), kFirstBlock);
+  EXPECT_EQ(quick_union_set_.FindBlock(kSecondBlock), kFirstBlock);
+  EXPECT_EQ(quick_union_set_.FindBlock(kThirdBlock), kThirdBlock);
+  EXPECT_EQ(quick_union_set_.FindBlock(kFourthBlock), kThirdBlock);
+  EXPECT_EQ(quick_union_set_.FindBlock(kFifthBlock), kThirdBlock);
+  EXPECT_EQ(quick_union_set_.FindBlock(kSixthBlock), kSixthBlock);
+  EXPECT_EQ(quick_union_set_.FindBlock(kSeventhBlock), kEightBlock);
+  EXPECT_EQ(quick_union_set_.FindBlock(kEightBlock), kEightBlock);
+  EXPECT_EQ(quick_union_set_.FindBlock(kNineBlock), kFirstBlock);
+  EXPECT_EQ(quick_union_set_.FindBlock(kTenthBlock), kFirstBlock);
+  EXPECT_EQ(quick_union_set_.GetDistinctBlocks(), 4);
+}
+
+TEST_F(QuickUnionTest,
+       UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
+  EXPECT_EQ(quick_union_set_.FindBlockFullCompression(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(QuickUnionTest, UsingFullCompressionAfterMerge_Expect_CorrectValue) {
@@ -121,7 +144,7 @@ TEST_F(QuickUnionTest,
                                BlockIdentifier::kThirdBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                BlockIdentifier::kSecondBlock);
-  EXPECT_EQ(quick_union_set_.FindBlockPathSplitting(10), 10);
+  EXPECT_EQ(quick_union_set_.FindBlockPathSplitting(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(QuickUnionTest, UsingPathSplittingAfterMerge_Expect_CorrectValue) {
@@ -169,7 +192,7 @@ TEST_F(QuickUnionTest,
                                BlockIdentifier::kThirdBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                BlockIdentifier::kSecondBlock);
-  EXPECT_EQ(quick_union_set_.FindBlockPathHalving(10), 10);
+  EXPECT_EQ(quick_union_set_.FindBlockPathHalving(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(QuickUnionTest, UsingPathHalvingAfterMerge_Expect_CorrectValue) {
@@ -210,7 +233,7 @@ TEST_F(QuickUnionTest, UsingPathHalvingAfterFind_Expect_CorrectValue) {
 }
 
 TEST_F(WeightQuickUnion, AfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(weighted_disjoint_set_.FindBlock(10), 10);
+  EXPECT_EQ(weighted_disjoint_set_.FindBlock(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(WeightQuickUnion, FindBiggerThanSize_Expect_OutOfRangeException) {
@@ -369,7 +392,7 @@ TEST_F(WeightQuickUnion,
 
 TEST_F(WeightQuickUnion,
        UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(weighted_disjoint_set_.FindBlockFullCompression(10), 10);
+  EXPECT_EQ(weighted_disjoint_set_.FindBlockFullCompression(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(WeightQuickUnion,
@@ -455,7 +478,7 @@ TEST_F(
 
 TEST_F(WeightQuickUnion,
        UsingPathSplittingAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(weighted_disjoint_set_.FindBlockPathSplitting(10), 10);
+  EXPECT_EQ(weighted_disjoint_set_.FindBlockPathSplitting(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(WeightQuickUnion,
@@ -541,7 +564,7 @@ TEST_F(
 
 TEST_F(WeightQuickUnion,
        UsingPathHalvingAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(weighted_disjoint_set_.FindBlockPathHalving(10), 10);
+  EXPECT_EQ(weighted_disjoint_set_.FindBlockPathHalving(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(WeightQuickUnion,
@@ -626,7 +649,7 @@ TEST_F(
 }
 
 TEST_F(RankQuickUnionTest, AfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(rank_disjoint_set_.FindBlock(10), 10);
+  EXPECT_EQ(rank_disjoint_set_.FindBlock(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(RankQuickUnionTest, FindBiggerThanSize_Expect_OutOfRangeException) {
@@ -740,7 +763,7 @@ TEST_F(RankQuickUnionTest,
 
 TEST_F(RankQuickUnionTest,
        UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(rank_disjoint_set_.FindBlockFullCompression(10), 10);
+  EXPECT_EQ(rank_disjoint_set_.FindBlockFullCompression(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(RankQuickUnionTest,
@@ -824,7 +847,7 @@ TEST_F(
 
 TEST_F(RankQuickUnionTest,
        UsingPathHalvingAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(rank_disjoint_set_.FindBlockPathHalving(10), 10);
+  EXPECT_EQ(rank_disjoint_set_.FindBlockPathHalving(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(RankQuickUnionTest,
@@ -908,7 +931,7 @@ TEST_F(
 
 TEST_F(RankQuickUnionTest,
        UsingPathSplittingAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(rank_disjoint_set_.FindBlockPathSplitting(10), 10);
+  EXPECT_EQ(rank_disjoint_set_.FindBlockPathSplitting(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(RankQuickUnionTest,

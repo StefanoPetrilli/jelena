@@ -68,10 +68,10 @@ class QuickUnion : public DisjointSet<T> {
   }
 
   void MergeBlocks(T first_block, T second_block) override {
-    if (this->blocks_.at(second_block) == this->blocks_.at(first_block))
-      return;
-
-    this->blocks_.at(second_block) = this->blocks_.at(first_block);
+    auto root_first_block = this->FindBlock(first_block),
+         root_second_block = this->FindBlock(second_block);
+    if (root_second_block == root_first_block) return;
+    this->blocks_.at(root_second_block) = root_first_block;
     this->distinct_blocks_--;
   };
 };

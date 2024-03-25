@@ -26,10 +26,21 @@
 			"problemMatcher": []
 		},
 		{
+			"type": "shell",
+			"label": "Run benchmarks",
+			"command": "./build/benchmark/jelena_benchmark",
+			"group": {
+				"kind": "test",
+				"isDefault": false
+			},
+			"problemMatcher": []
+		},
+		{
 			"label": "Build and Test",
 			"dependsOn": [
 				"CMake: build",
-				"Run tests"
+				"Run tests",
+				"Run benchmarks"
 			],
 			"dependsOrder": "sequence",
 			"group": {

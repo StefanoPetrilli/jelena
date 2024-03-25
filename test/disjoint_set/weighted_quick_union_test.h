@@ -1,7 +1,6 @@
 #pragma once
 
 #include <gtest/gtest.h>
-#include <limits>
 #include <string>
 #include "disjoint_set.h"
 #include "quick_union.h"
@@ -10,7 +9,7 @@
 namespace disjoint_set_test {
 class WeightQuickUnion : public ::testing::Test {
  protected:
-  int16_t size_ = std::numeric_limits<int16_t>::max() / 2;
+  int16_t size_ = 10;
   disjoint_set::WeightQuickUnion<int16_t> weighted_disjoint_set_ =
       disjoint_set::WeightQuickUnion<int16_t>(size_);
 

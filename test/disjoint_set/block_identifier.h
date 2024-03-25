@@ -4,13 +4,15 @@
 
 namespace disjoint_set_test {
 enum BlockIdentifier : uint16_t {
-  kFirstBlock = 1,
-  kSecondBlock = 2,
-  kThirdBlock = 3,
-  kFourthBlock = 4,
-  kFifthBlock = 5,
-  kSixthBlock = 6,
-  kSeventhBlock = 7,
-  kEightBlock = 8
+  kFirstBlock = 0,
+  kSecondBlock = 1,
+  kThirdBlock = 2,
+  kFourthBlock = 3,
+  kFifthBlock = 4,
+  kSixthBlock = 5,
+  kSeventhBlock = 6,
+  kEightBlock = 7,
+  kNineBlock = 8,
+  kTenthBlock = 9
 };
 }
