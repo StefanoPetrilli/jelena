@@ -72,14 +72,20 @@ class WeightQuickUnion : public DisjointSet<T> {
 
   void MergeBlocks(T first_block, T second_block) override {
     auto first_block_root = FindBlock(first_block),
-         second_block_root = FindBlock(second_block),
-         first_block_root_weight = GetRootWeight(first_block_root),
+         second_block_root = FindBlock(second_block);
+
+    if (first_block_root == second_block_root)
+      return;
+
+    auto first_block_root_weight = GetRootWeight(first_block_root),
          second_block_root_weight = GetRootWeight(second_block_root);
 
     if (first_block_root_weight >= second_block_root_weight)
       MergeRoots(first_block_root, second_block_root, second_block_root_weight);
     else
       MergeRoots(second_block_root, first_block_root, first_block_root_weight);
+
+    this->distinct_blocks_--;
   };
 };
 

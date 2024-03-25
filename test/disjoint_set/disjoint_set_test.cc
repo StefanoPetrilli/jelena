@@ -30,6 +30,44 @@ TEST_F(QuickUnionTest, AfterSeveralMerges_Expect_CorrectValue) {
 }
 
 TEST_F(QuickUnionTest,
+       AfterInstantiation_Expect_CorrectNumberOfDistinctBlocks) {
+  EXPECT_EQ(quick_union_set_.GetDistinctBlocks(), size_);
+}
+
+TEST_F(QuickUnionTest, AfterMerge_Expect_CorrectDistinctBlocksValue) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(quick_union_set_.GetDistinctBlocks(), size_ - 1);
+}
+
+TEST_F(QuickUnionTest,
+       AfterMergeOfSameBlock_Expect_CorrectDistinctBlocksValue) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(quick_union_set_.GetDistinctBlocks(), size_ - 1);
+}
+
+TEST_F(QuickUnionTest, AfterSeveralMerges_Expect_CorrectDistinctBlocksValue) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(quick_union_set_.GetDistinctBlocks(), size_ - 2);
+}
+
+TEST_F(QuickUnionTest, AfterSeveralMerges_Expect_CorrectDistinctBlocksValue_2) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                               BlockIdentifier::kFourthBlock);
+  EXPECT_EQ(quick_union_set_.GetDistinctBlocks(), size_ - 3);
+}
+
+TEST_F(QuickUnionTest,
        UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
   quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kThirdBlock);
@@ -291,6 +329,45 @@ TEST_F(WeightQuickUnion,
 }
 
 TEST_F(WeightQuickUnion,
+       AfterInstantiation_Expect_CorrectNumberOfDistinctBlocks) {
+  EXPECT_EQ(weighted_disjoint_set_.GetDistinctBlocks(), size_);
+}
+
+TEST_F(WeightQuickUnion, AfterMerge_Expect_CorrectDistinctBlocksValue) {
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                     BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(weighted_disjoint_set_.GetDistinctBlocks(), size_ - 1);
+}
+
+TEST_F(WeightQuickUnion,
+       AfterMergeOfSameBlock_Expect_CorrectDistinctBlocksValue) {
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                     BlockIdentifier::kSecondBlock);
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                     BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(weighted_disjoint_set_.GetDistinctBlocks(), size_ - 1);
+}
+
+TEST_F(WeightQuickUnion, AfterSeveralMerges_Expect_CorrectDistinctBlocksValue) {
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                                     BlockIdentifier::kThirdBlock);
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                     BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(weighted_disjoint_set_.GetDistinctBlocks(), size_ - 2);
+}
+
+TEST_F(WeightQuickUnion,
+       AfterSeveralMerges_Expect_CorrectDistinctBlocksValue_2) {
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                     BlockIdentifier::kSecondBlock);
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                                     BlockIdentifier::kThirdBlock);
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                                     BlockIdentifier::kFourthBlock);
+  EXPECT_EQ(weighted_disjoint_set_.GetDistinctBlocks(), size_ - 3);
+}
+
+TEST_F(WeightQuickUnion,
        UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
   EXPECT_EQ(weighted_disjoint_set_.FindBlockFullCompression(10), 10);
 }
@@ -491,9 +568,9 @@ TEST_F(
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                      BlockIdentifier::kSecondBlock);
 
-  EXPECT_EQ(weighted_disjoint_set_.FindBlockPathHalving(
-                BlockIdentifier::kFirstBlock),
-            BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      weighted_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kFirstBlock),
+      BlockIdentifier::kSecondBlock);
 }
 
 TEST_F(
@@ -517,9 +594,9 @@ TEST_F(
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                      BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(weighted_disjoint_set_.FindBlockPathHalving(
-                BlockIdentifier::kFirstBlock),
-            BlockIdentifier::kFourthBlock);
+  EXPECT_EQ(
+      weighted_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kFirstBlock),
+      BlockIdentifier::kFourthBlock);
 }
 
 TEST_F(
@@ -543,9 +620,9 @@ TEST_F(
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                      BlockIdentifier::kSecondBlock);
 
-  EXPECT_EQ(weighted_disjoint_set_.FindBlockPathHalving(
-                BlockIdentifier::kSixthBlock),
-            BlockIdentifier::kFourthBlock);
+  EXPECT_EQ(
+      weighted_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kSixthBlock),
+      BlockIdentifier::kFourthBlock);
 }
 
 TEST_F(RankQuickUnionTest, AfterInstantiation_Expect_ValueEqualToIndex) {
@@ -621,35 +698,83 @@ TEST_F(RankQuickUnionTest,
             BlockIdentifier::kSecondBlock);
 }
 
-TEST_F(RankQuickUnionTest, UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
+TEST_F(RankQuickUnionTest,
+       AfterInstantiation_Expect_CorrectNumberOfDistinctBlocks) {
+  EXPECT_EQ(rank_disjoint_set_.GetDistinctBlocks(), size_);
+}
+
+TEST_F(RankQuickUnionTest, AfterMerge_Expect_CorrectDistinctBlocksValue) {
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                 BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(rank_disjoint_set_.GetDistinctBlocks(), size_ - 1);
+}
+
+TEST_F(RankQuickUnionTest,
+       AfterMergeOfSameBlock_Expect_CorrectDistinctBlocksValue) {
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                 BlockIdentifier::kSecondBlock);
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                 BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(rank_disjoint_set_.GetDistinctBlocks(), size_ - 1);
+}
+
+TEST_F(RankQuickUnionTest,
+       AfterSeveralMerges_Expect_CorrectDistinctBlocksValue) {
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                                 BlockIdentifier::kThirdBlock);
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                 BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(rank_disjoint_set_.GetDistinctBlocks(), size_ - 2);
+}
+
+TEST_F(RankQuickUnionTest,
+       AfterSeveralMerges_Expect_CorrectDistinctBlocksValue_2) {
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                 BlockIdentifier::kSecondBlock);
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                                 BlockIdentifier::kThirdBlock);
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                                 BlockIdentifier::kFourthBlock);
+  EXPECT_EQ(rank_disjoint_set_.GetDistinctBlocks(), size_ - 3);
+}
+
+TEST_F(RankQuickUnionTest,
+       UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
   EXPECT_EQ(rank_disjoint_set_.FindBlockFullCompression(10), 10);
 }
 
-TEST_F(RankQuickUnionTest, UsingFullCompressionFindBiggerThanSize_Expect_OutOfRangeException) {
-  EXPECT_THROW(rank_disjoint_set_.FindBlockFullCompression(size_ + 1), std::out_of_range);
+TEST_F(RankQuickUnionTest,
+       UsingFullCompressionFindBiggerThanSize_Expect_OutOfRangeException) {
+  EXPECT_THROW(rank_disjoint_set_.FindBlockFullCompression(size_ + 1),
+               std::out_of_range);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingFullCompressionAfterMergeOfEqualRank_Expect_FirstBlockGoesIntoSecondBlock) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingFullCompressionAfterMergeOfEqualRank_Expect_FirstBlockGoesIntoSecondBlock) {
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                  BlockIdentifier::kSecondBlock);
-  auto result = rank_disjoint_set_.FindBlockFullCompression(BlockIdentifier::kSecondBlock);
+  auto result = rank_disjoint_set_.FindBlockFullCompression(
+      BlockIdentifier::kSecondBlock);
   EXPECT_EQ(result, BlockIdentifier::kFirstBlock);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingFullCompressionAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger1) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingFullCompressionAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger1) {
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kThirdBlock);
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                  BlockIdentifier::kSecondBlock);
 
-  EXPECT_EQ(rank_disjoint_set_.FindBlockFullCompression(BlockIdentifier::kFirstBlock),
-            BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      rank_disjoint_set_.FindBlockFullCompression(BlockIdentifier::kFirstBlock),
+      BlockIdentifier::kSecondBlock);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingFullCompressionAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger2) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingFullCompressionAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger2) {
   //Create the first subtree
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kThirdBlock);
@@ -666,12 +791,14 @@ TEST_F(RankQuickUnionTest,
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(rank_disjoint_set_.FindBlockFullCompression(BlockIdentifier::kSixthBlock),
-            BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      rank_disjoint_set_.FindBlockFullCompression(BlockIdentifier::kSixthBlock),
+      BlockIdentifier::kSecondBlock);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingFullCompressionAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger3) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingFullCompressionAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger3) {
   //Create the first subtree
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kThirdBlock);
@@ -690,39 +817,48 @@ TEST_F(RankQuickUnionTest,
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(rank_disjoint_set_.FindBlockFullCompression(BlockIdentifier::kSixthBlock),
-            BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      rank_disjoint_set_.FindBlockFullCompression(BlockIdentifier::kSixthBlock),
+      BlockIdentifier::kSecondBlock);
 }
 
-TEST_F(RankQuickUnionTest, UsingPathHalvingAfterInstantiation_Expect_ValueEqualToIndex) {
+TEST_F(RankQuickUnionTest,
+       UsingPathHalvingAfterInstantiation_Expect_ValueEqualToIndex) {
   EXPECT_EQ(rank_disjoint_set_.FindBlockPathHalving(10), 10);
 }
 
-TEST_F(RankQuickUnionTest, UsingPathHalvingFindBiggerThanSize_Expect_OutOfRangeException) {
-  EXPECT_THROW(rank_disjoint_set_.FindBlockPathHalving(size_ + 1), std::out_of_range);
+TEST_F(RankQuickUnionTest,
+       UsingPathHalvingFindBiggerThanSize_Expect_OutOfRangeException) {
+  EXPECT_THROW(rank_disjoint_set_.FindBlockPathHalving(size_ + 1),
+               std::out_of_range);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingPathHalvingAfterMergeOfEqualRank_Expect_FirstBlockGoesIntoSecondBlock) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingPathHalvingAfterMergeOfEqualRank_Expect_FirstBlockGoesIntoSecondBlock) {
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                  BlockIdentifier::kSecondBlock);
-  auto result = rank_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kSecondBlock);
+  auto result =
+      rank_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kSecondBlock);
   EXPECT_EQ(result, BlockIdentifier::kFirstBlock);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingPathHalvingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger1) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingPathHalvingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger1) {
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kThirdBlock);
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                  BlockIdentifier::kSecondBlock);
 
-  EXPECT_EQ(rank_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kFirstBlock),
-            BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      rank_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kFirstBlock),
+      BlockIdentifier::kSecondBlock);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingPathHalvingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger2) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingPathHalvingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger2) {
   //Create the first subtree
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kThirdBlock);
@@ -739,12 +875,14 @@ TEST_F(RankQuickUnionTest,
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(rank_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kSixthBlock),
-            BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      rank_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kSixthBlock),
+      BlockIdentifier::kSecondBlock);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingPathHalvingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger3) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingPathHalvingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger3) {
   //Create the first subtree
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kThirdBlock);
@@ -763,39 +901,48 @@ TEST_F(RankQuickUnionTest,
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(rank_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kSixthBlock),
-            BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      rank_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kSixthBlock),
+      BlockIdentifier::kSecondBlock);
 }
 
-TEST_F(RankQuickUnionTest, UsingPathSplittingAfterInstantiation_Expect_ValueEqualToIndex) {
+TEST_F(RankQuickUnionTest,
+       UsingPathSplittingAfterInstantiation_Expect_ValueEqualToIndex) {
   EXPECT_EQ(rank_disjoint_set_.FindBlockPathSplitting(10), 10);
 }
 
-TEST_F(RankQuickUnionTest, UsingPathSplittingFindBiggerThanSize_Expect_OutOfRangeException) {
-  EXPECT_THROW(rank_disjoint_set_.FindBlockPathSplitting(size_ + 1), std::out_of_range);
+TEST_F(RankQuickUnionTest,
+       UsingPathSplittingFindBiggerThanSize_Expect_OutOfRangeException) {
+  EXPECT_THROW(rank_disjoint_set_.FindBlockPathSplitting(size_ + 1),
+               std::out_of_range);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingPathSplittingAfterMergeOfEqualRank_Expect_FirstBlockGoesIntoSecondBlock) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingPathSplittingAfterMergeOfEqualRank_Expect_FirstBlockGoesIntoSecondBlock) {
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                  BlockIdentifier::kSecondBlock);
-  auto result = rank_disjoint_set_.FindBlockPathSplitting(BlockIdentifier::kSecondBlock);
+  auto result =
+      rank_disjoint_set_.FindBlockPathSplitting(BlockIdentifier::kSecondBlock);
   EXPECT_EQ(result, BlockIdentifier::kFirstBlock);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingPathSplittingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger1) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingPathSplittingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger1) {
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kThirdBlock);
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                  BlockIdentifier::kSecondBlock);
 
-  EXPECT_EQ(rank_disjoint_set_.FindBlockPathSplitting(BlockIdentifier::kFirstBlock),
-            BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      rank_disjoint_set_.FindBlockPathSplitting(BlockIdentifier::kFirstBlock),
+      BlockIdentifier::kSecondBlock);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingPathSplittingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger2) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingPathSplittingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger2) {
   //Create the first subtree
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kThirdBlock);
@@ -812,12 +959,14 @@ TEST_F(RankQuickUnionTest,
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(rank_disjoint_set_.FindBlockPathSplitting(BlockIdentifier::kSixthBlock),
-            BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      rank_disjoint_set_.FindBlockPathSplitting(BlockIdentifier::kSixthBlock),
+      BlockIdentifier::kSecondBlock);
 }
 
-TEST_F(RankQuickUnionTest,
-       UsingPathSplittingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger3) {
+TEST_F(
+    RankQuickUnionTest,
+    UsingPathSplittingAfterMergeOfUnequalRank_Expect_SmallerBecomesChildOfBigger3) {
   //Create the first subtree
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kThirdBlock);
@@ -836,7 +985,8 @@ TEST_F(RankQuickUnionTest,
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(rank_disjoint_set_.FindBlockPathSplitting(BlockIdentifier::kSixthBlock),
-            BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(
+      rank_disjoint_set_.FindBlockPathSplitting(BlockIdentifier::kSixthBlock),
+      BlockIdentifier::kSecondBlock);
 }
 }  // namespace disjoint_set_test

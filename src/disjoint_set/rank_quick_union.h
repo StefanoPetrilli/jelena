@@ -22,8 +22,12 @@ class RankQuickUnion : public WeightQuickUnion<T> {
 
   void MergeBlocks(T first_block, T second_block) override {
     auto first_block_root = this->FindBlock(first_block),
-         second_block_root = this->FindBlock(second_block),
-         first_block_root_rank = GetRootRank(first_block_root),
+         second_block_root = this->FindBlock(second_block);
+
+    if (first_block_root == second_block_root)
+      return;
+
+    auto first_block_root_rank = GetRootRank(first_block_root),
          second_block_root_rank = GetRootRank(second_block_root);
 
     if (first_block_root_rank >= second_block_root_rank)
@@ -32,6 +36,7 @@ class RankQuickUnion : public WeightQuickUnion<T> {
     else
       MergeRoots(second_block_root, second_block_root_rank, first_block_root,
                  first_block_root_rank);
+    this->distinct_blocks_--;
   };
 };
 
