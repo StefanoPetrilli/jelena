@@ -87,6 +87,29 @@ class WeightQuickUnion : public DisjointSet<T> {
 
     this->distinct_blocks_--;
   };
+
+#ifdef FULL_BENCHMARK
+  T FindBlockDepth(T element) {
+    auto current_index = element;
+    T depth = 0;
+
+    while (IsNotRoot(current_index)) {
+      current_index = this->GetFather(current_index);
+      depth++;
+    }
+
+    return depth;
+  }
+
+  T GetTotalPathLenght() override {
+    T result = 0;
+
+    for (size_t i = 0; i < this->blocks_.size(); ++i)
+      result += FindBlockDepth(i);
+
+    return result;
+  }
+#endif
 };
 
 }  // namespace disjoint_set

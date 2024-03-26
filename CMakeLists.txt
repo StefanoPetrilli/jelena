@@ -8,6 +8,13 @@ set(CMAKE_EXE_LINKER_FLAGS
     "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -Wl,--no-whole-archive")
 add_compile_options(-Wall -Wextra -Wpedantic)
 
+option(FULL_BENCHMARK "Execute the full benchmarks" ON)
+
+if(FULL_BENCHMARK)
+  message(STATUS "Compiling full benchmarks")
+  add_definitions(-DFULL_BENCHMARK)
+endif()
+
 # Include google test
 include(FetchContent)
 include(GoogleTest)

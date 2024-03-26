@@ -1,5 +1,5 @@
-#include "block_identifier.h"
 #include "rank_quick_union_test.h"
+#include "block_identifier.h"
 
 namespace disjoint_set_test {
 TEST_F(RankQuickUnionTest, AfterInstantiation_Expect_ValueEqualToIndex) {
@@ -117,7 +117,8 @@ TEST_F(RankQuickUnionTest,
 
 TEST_F(RankQuickUnionTest,
        UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(rank_disjoint_set_.FindBlockFullCompression(kFifthBlock), kFifthBlock);
+  EXPECT_EQ(rank_disjoint_set_.FindBlockFullCompression(kFifthBlock),
+            kFifthBlock);
 }
 
 TEST_F(RankQuickUnionTest,
@@ -285,7 +286,8 @@ TEST_F(
 
 TEST_F(RankQuickUnionTest,
        UsingPathSplittingAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(rank_disjoint_set_.FindBlockPathSplitting(kFifthBlock), kFifthBlock);
+  EXPECT_EQ(rank_disjoint_set_.FindBlockPathSplitting(kFifthBlock),
+            kFifthBlock);
 }
 
 TEST_F(RankQuickUnionTest,
@@ -366,4 +368,29 @@ TEST_F(
       rank_disjoint_set_.FindBlockPathSplitting(BlockIdentifier::kSixthBlock),
       BlockIdentifier::kSecondBlock);
 }
+
+#ifdef FULL_BENCHMARK
+TEST_F(RankQuickUnionTest,
+       AfterInstantiationGetTotalPathLenght_Expect_CorrectValue) {
+  EXPECT_EQ(rank_disjoint_set_.GetTotalPathLenght(), 0);
+}
+
+TEST_F(RankQuickUnionTest,
+       AfterComplexMergeGetTotalPathLenght_Expect_CorrectValue) {
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                                 BlockIdentifier::kFourthBlock);
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                 BlockIdentifier::kSecondBlock);
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
+                                 BlockIdentifier::kFifthBlock);
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                 BlockIdentifier::kNineBlock);
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                                 BlockIdentifier::kTenthBlock);
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kEightBlock,
+                                 BlockIdentifier::kSeventhBlock);
+  EXPECT_EQ(rank_disjoint_set_.GetTotalPathLenght(), 6);
+}
+#endif
+
 }  // namespace disjoint_set_test

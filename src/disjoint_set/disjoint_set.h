@@ -18,6 +18,9 @@ class DisjointSet {
   virtual T FindBlockPathHalving(T element) = 0;
   virtual void MergeBlocks(T first_block, T second_block) = 0;
   T GetDistinctBlocks() { return distinct_blocks_; };
+  #ifdef FULL_BENCHMARK
+  virtual T GetTotalPathLenght() = 0;
+  #endif
 };
 
 }  // namespace disjoint_set

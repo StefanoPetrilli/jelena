@@ -70,10 +70,34 @@ class QuickUnion : public DisjointSet<T> {
   void MergeBlocks(T first_block, T second_block) override {
     auto root_first_block = this->FindBlock(first_block),
          root_second_block = this->FindBlock(second_block);
-    if (root_second_block == root_first_block) return;
+    if (root_second_block == root_first_block)
+      return;
     this->blocks_.at(root_second_block) = root_first_block;
     this->distinct_blocks_--;
   };
+
+#ifdef FULL_BENCHMARK
+  T FindBlockDepth(T element) {
+    auto current_index = element;
+    T depth = 0;
+
+    while (IsNotRoot(current_index)) {
+      current_index = this->GetFather(current_index);
+      depth++;
+    }
+
+    return depth;
+  }
+
+  T GetTotalPathLenght() override {
+    T result = 0;
+
+    for (size_t i = 0; i < this->blocks_.size(); ++i)
+      result += FindBlockDepth(i);
+
+    return result;
+  }
+#endif
 };
 
 }  // namespace disjoint_set

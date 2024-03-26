@@ -417,4 +417,29 @@ TEST_F(
       weighted_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kSixthBlock),
       BlockIdentifier::kFourthBlock);
 }
+
+#ifdef FULL_BENCHMARK
+TEST_F(WeightQuickUnion,
+       AfterInstantiationGetTotalPathLenght_Expect_CorrectValue) {
+  EXPECT_EQ(weighted_disjoint_set_.GetTotalPathLenght(), 0);
+}
+
+TEST_F(WeightQuickUnion,
+       AfterComplexMergeGetTotalPathLenght_Expect_CorrectValue) {
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                                 BlockIdentifier::kFourthBlock);
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                 BlockIdentifier::kSecondBlock);
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
+                                 BlockIdentifier::kFifthBlock);
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                 BlockIdentifier::kNineBlock);
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                                 BlockIdentifier::kTenthBlock);
+  weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kEightBlock,
+                                 BlockIdentifier::kSeventhBlock);
+  EXPECT_EQ(weighted_disjoint_set_.GetTotalPathLenght(), 6);
+}
+#endif
+
 }  // namespace disjoint_set_test
