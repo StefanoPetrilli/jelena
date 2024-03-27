@@ -28,12 +28,9 @@ class QuickUnion : public DisjointSet<T> {
     this->distinct_blocks_--;
 
 #ifdef FULL_BENCHMARK
-    this->root_child_number_.at(root_first_block) = 0;
-    this->root_child_number_.at(root_second_block)++;
     this->ResetTotalPathLength();
 #endif
   };
-
 };
 
 }  // namespace disjoint_set

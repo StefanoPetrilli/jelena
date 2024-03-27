@@ -19,10 +19,12 @@ TEST_F(DisjointSetBenchmark, QuickUnion) {
 
     if (previous_size != current_size) {
       previous_size = current_size;
-      WriteStatistics(
-          quick_union_statistics_, cycles, quick_union_set_.GetDistinctBlocks(),
-          quick_union_set_.GetTotalPathLenght(),
-          quick_union_set_.GetFullCompressionTotalPointersUpdates());
+      WriteStatistics(quick_union_statistics_, cycles,
+                      quick_union_set_.GetDistinctBlocks(),
+                      quick_union_set_.GetTotalPathLenght(),
+                      quick_union_set_.GetFullCompressionTotalPointersUpdates(),
+                      quick_union_set_.GetPathSplittingTotalPointersUpdates(),
+                      quick_union_set_.GetPathHalvingPointersUpdates());
     }
   }
 }
@@ -44,7 +46,9 @@ TEST_F(DisjointSetBenchmark, WeightQuickUnion) {
           weight_quick_union_statistics_, cycles,
           weighted_disjoint_set_.GetDistinctBlocks(),
           weighted_disjoint_set_.GetTotalPathLenght(),
-          weighted_disjoint_set_.GetFullCompressionTotalPointersUpdates());
+          weighted_disjoint_set_.GetFullCompressionTotalPointersUpdates(),
+          weighted_disjoint_set_.GetPathSplittingTotalPointersUpdates(),
+          weighted_disjoint_set_.GetPathHalvingPointersUpdates());
     }
   }
 }
@@ -66,7 +70,9 @@ TEST_F(DisjointSetBenchmark, RankQuickUnion) {
           rank_quick_union_statistics_, cycles,
           rank_disjoint_set_.GetDistinctBlocks(),
           rank_disjoint_set_.GetTotalPathLenght(),
-          rank_disjoint_set_.GetFullCompressionTotalPointersUpdates());
+          rank_disjoint_set_.GetFullCompressionTotalPointersUpdates(),
+          rank_disjoint_set_.GetPathSplittingTotalPointersUpdates(),
+          rank_disjoint_set_.GetPathHalvingPointersUpdates());
     }
   }
 }

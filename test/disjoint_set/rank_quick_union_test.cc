@@ -427,12 +427,12 @@ TEST_F(
 
 TEST_F(RankQuickUnionTest,
        AfterLinerMergeFullCompressionTotalPointersUpdates_Expect_CorrectValue) {
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                                 BlockIdentifier::kSecondBlock);
+  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                                 BlockIdentifier::kThirdBlock);
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                                     BlockIdentifier::kFourthBlock);
-  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                                     BlockIdentifier::kThirdBlock);
-  rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                                     BlockIdentifier::kFirstBlock);
+                                 BlockIdentifier::kFourthBlock);
   EXPECT_EQ(rank_disjoint_set_.GetFullCompressionTotalPointersUpdates(), 0);
 }
 

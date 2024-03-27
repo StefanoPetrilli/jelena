@@ -14,12 +14,6 @@ class WeightQuickUnion : public DisjointSet<T> {
   void MergeRoots(T larger_root, T smaller_root, T smaller_root_weight) {
     this->blocks_.at(smaller_root) = larger_root;
     this->blocks_.at(larger_root) -= smaller_root_weight;
-
-#ifdef FULL_BENCHMARK
-    this->root_child_number_.at(larger_root) +=
-        this->root_child_number_.at(smaller_root) + 1;
-    this->root_child_number_.at(smaller_root) = 0;
-#endif
   }
 
  public:

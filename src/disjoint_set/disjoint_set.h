@@ -12,7 +12,6 @@ class DisjointSet {
   T GetFather(T element) { return this->blocks_.at(element); };
   virtual T IsNotRoot(T element) = 0;
 #ifdef FULL_BENCHMARK
-  std::vector<T> root_child_number_;
   std::optional<T> total_path_length_;
 #endif
   void ResetTotalPathLength() {
@@ -25,10 +24,6 @@ class DisjointSet {
   DisjointSet(T size)
       : blocks_(size, -1),
         distinct_blocks_(size)
-#ifdef FULL_BENCHMARK
-        ,
-        root_child_number_(size, 0)
-#endif
   {
   }
 
@@ -120,14 +115,24 @@ class DisjointSet {
     return this->total_path_length_.value();
   }
 
+  T GetRootsChildrens() {
+    return this->blocks_.size() - this->distinct_blocks_;
+  }
+
   T GetFullCompressionTotalPointersUpdates() {
-    T total_path_length = this->GetTotalPathLenght();
+    return this->GetTotalPathLenght() - this->GetRootsChildrens();
+  }
 
-    T roots_childrens = 0;
+  T GetPathSplittingTotalPointersUpdates() {
+    return GetFullCompressionTotalPointersUpdates();
+  }
+
+  T GetPathHalvingPointersUpdates() {
+    T path_halving_cost = 0;
     for (size_t i = 0; i < this->blocks_.size(); ++i)
-      roots_childrens += this->root_child_number_.at(i);
+      path_halving_cost += this->FindBlockDepth(i) / 2;
 
-    return total_path_length - roots_childrens;
+    return path_halving_cost;
   }
 #endif
 };

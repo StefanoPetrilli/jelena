@@ -44,7 +44,8 @@ class DisjointSetBenchmark : public ::testing::Test {
 
   static void SetUpTestSuite() {
     std::string table_head =
-        "| Cycle count | Number of Blocks | TPL | Full Compression TPU |\n | - | - | - |  - |\n";
+        "| Cycle count | Number of Blocks | Total Path Lenght | Full Compression TPU | Path Splitting TPU | Path Halving TPU |\n | - "
+        "| - | - | - | - | - |\n";
 
     // sequence_file_.open("benchmark/disjoint_set/outputs/sequence.md");
     quick_union_statistics_.open(
@@ -67,10 +68,13 @@ class DisjointSetBenchmark : public ::testing::Test {
 
   void WriteStatistics(std::ostream& file, size_t cycles,
                        int16_t distinct_blocks, int16_t total_path_length,
-                       int16_t full_compression_total_pointers_update) {
+                       int16_t full_compression_total_pointers_update,
+                       int16_t path_splitting_total_pointers_update,
+                       int16_t path_halving_total_pointers_update) {
     file << cycles << " |" << distinct_blocks << " | " << total_path_length
-         << " | " << full_compression_total_pointers_update << " |"
-         << std::endl;
+         << " | " << full_compression_total_pointers_update << " | "
+         << path_splitting_total_pointers_update << " | "
+         << path_halving_total_pointers_update << " |" << std::endl;
   }
 };
 }  // namespace disjoint_set_benchmark
