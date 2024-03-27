@@ -4,3 +4,4 @@
 cmake-build-debug
 *.key
 benchmark/disjoint_set/outputs
+*.pdf

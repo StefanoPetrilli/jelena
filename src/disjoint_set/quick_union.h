@@ -84,12 +84,12 @@ class QuickUnion : public DisjointSet<T> {
          root_second_block = this->FindBlock(second_block);
     if (root_second_block == root_first_block)
       return;
-    this->blocks_.at(root_second_block) = root_first_block;
+    this->blocks_.at(root_first_block) = root_second_block;
     this->distinct_blocks_--;
 
 #ifdef FULL_BENCHMARK
-    this->root_child_number_.at(root_second_block) = 0;
-    this->root_child_number_.at(root_first_block) ++;
+    this->root_child_number_.at(root_first_block) = 0;
+    this->root_child_number_.at(root_second_block) ++;
     this->ResetTotalPathLength();
 #endif
   };
