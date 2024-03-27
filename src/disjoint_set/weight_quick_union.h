@@ -16,7 +16,8 @@ class WeightQuickUnion : public DisjointSet<T> {
     this->blocks_.at(larger_root) -= smaller_root_weight;
 
 #ifdef FULL_BENCHMARK
-    this->root_child_number_.at(larger_root) += this->root_child_number_.at(smaller_root) + 1;
+    this->root_child_number_.at(larger_root) +=
+        this->root_child_number_.at(smaller_root) + 1;
     this->root_child_number_.at(smaller_root) = 0;
 #endif
   }
@@ -24,72 +25,9 @@ class WeightQuickUnion : public DisjointSet<T> {
  public:
   WeightQuickUnion(T size) : DisjointSet<T>(size){};
 
-  T FindBlock(T element) override {
-    auto current_index = element;
-
-    while (IsNotRoot(current_index))
-      current_index = this->GetFather(current_index);
-
-    return current_index;
-  };
-
-  T FindBlockFullCompression(T element) override {
-    auto representative = FindBlock(element);
-
-    T current_index = element, previous_index;
-
-    while (IsNotRoot(current_index)) {
-      previous_index = current_index;
-      current_index = this->GetFather(current_index);
-      this->blocks_.at(previous_index) = representative;
-    }
-
-#ifdef FULL_BENCHMARK
-    this->ResetTotalPathLength();
-#endif
-
-    return representative;
-  }
-
-  T FindBlockPathSplitting(T element) override {
-    T current_index = element, previous_index;
-
-    while (IsNotRoot(current_index)) {
-      previous_index = current_index;
-      current_index = this->GetFather(current_index);
-      this->blocks_.at(previous_index) = this->GetFather(current_index);
-    }
-
-#ifdef FULL_BENCHMARK
-    this->ResetTotalPathLength();
-#endif
-
-    return current_index;
-  }
-
-  T FindBlockPathHalving(T element) override {
-    T current_index = element, previous_index;
-    bool is_even = true;
-
-    while (IsNotRoot(current_index)) {
-      previous_index = current_index;
-      current_index = this->GetFather(current_index);
-      if (is_even)
-        this->blocks_.at(previous_index) = this->GetFather(current_index);
-
-      is_even = !is_even;
-    }
-
-#ifdef FULL_BENCHMARK
-    this->ResetTotalPathLength();
-#endif
-
-    return current_index;
-  }
-
   void MergeBlocks(T first_block, T second_block) override {
-    auto first_block_root = FindBlock(first_block),
-         second_block_root = FindBlock(second_block);
+    auto first_block_root = this->FindBlock(first_block),
+         second_block_root = this->FindBlock(second_block);
 
     if (first_block_root == second_block_root)
       return;
@@ -103,10 +41,7 @@ class WeightQuickUnion : public DisjointSet<T> {
       MergeRoots(second_block_root, first_block_root, first_block_root_weight);
 
     this->distinct_blocks_--;
-
-#ifdef FULL_BENCHMARK
     this->ResetTotalPathLength();
-#endif
   };
 };
 

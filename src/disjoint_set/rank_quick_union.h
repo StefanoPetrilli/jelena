@@ -43,10 +43,7 @@ class RankQuickUnion : public WeightQuickUnion<T> {
       MergeRoots(second_block_root, second_block_root_rank, first_block_root,
                  first_block_root_rank);
     this->distinct_blocks_--;
-
-#ifdef FULL_BENCHMARK
     this->ResetTotalPathLength();
-#endif
   };
 };
 

@@ -14,10 +14,12 @@ class DisjointSet {
 #ifdef FULL_BENCHMARK
   std::vector<T> root_child_number_;
   std::optional<T> total_path_length_;
-  void ResetTotalPathLength() {
-    total_path_length_ = std::nullopt;
-  };
 #endif
+  void ResetTotalPathLength() {
+#ifdef FULL_BENCHMARK
+    total_path_length_ = std::nullopt;
+#endif
+  };
 
  public:
   DisjointSet(T size)
@@ -30,14 +32,65 @@ class DisjointSet {
   {
   }
 
-  virtual T FindBlock(T element) = 0;
-  virtual T FindBlockFullCompression(T element) = 0;
-  virtual T FindBlockPathSplitting(T element) = 0;
-  virtual T FindBlockPathHalving(T element) = 0;
   virtual void MergeBlocks(T first_block, T second_block) = 0;
   T GetDistinctBlocks() {
     return distinct_blocks_;
   };
+
+  T FindBlock(T element) {
+    auto current_index = element;
+
+    while (this->IsNotRoot(current_index))
+      current_index = this->GetFather(current_index);
+
+    return current_index;
+  }
+
+  T FindBlockFullCompression(T element) {
+    auto representative = this->FindBlock(element);
+
+    T current_index = element, previous_index;
+
+    while (this->IsNotRoot(current_index)) {
+      previous_index = current_index;
+      current_index = this->GetFather(current_index);
+      this->blocks_.at(previous_index) = representative;
+    }
+
+    this->ResetTotalPathLength();
+    return representative;
+  }
+
+  T FindBlockPathSplitting(T element) {
+    T current_index = element, previous_index;
+
+    while (this->IsNotRoot(current_index)) {
+      previous_index = current_index;
+      current_index = this->GetFather(current_index);
+      this->blocks_.at(previous_index) = this->GetFather(current_index);
+    }
+
+    this->ResetTotalPathLength();
+    return current_index;
+  }
+
+  T FindBlockPathHalving(T element) {
+    T current_index = element, previous_index;
+    bool is_even = true;
+
+    while (IsNotRoot(current_index)) {
+      previous_index = current_index;
+      current_index = this->GetFather(current_index);
+      if (is_even)
+        this->blocks_.at(previous_index) = this->GetFather(current_index);
+
+      is_even = !is_even;
+    }
+
+    this->ResetTotalPathLength();
+    return current_index;
+  }
+
 #ifdef FULL_BENCHMARK
   T FindBlockDepth(T element) {
     auto current_index = element;
