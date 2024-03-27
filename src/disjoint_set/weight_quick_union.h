@@ -25,6 +25,8 @@ class WeightQuickUnion : public DisjointSet<T> {
  public:
   WeightQuickUnion(T size) : DisjointSet<T>(size){};
 
+  using DisjointSet<T>::MergeBlocks;
+
   void MergeBlocks(T first_block, T second_block) override {
     auto first_block_root = this->FindBlock(first_block),
          second_block_root = this->FindBlock(second_block);

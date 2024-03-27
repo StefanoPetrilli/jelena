@@ -33,6 +33,10 @@ class DisjointSet {
   }
 
   virtual void MergeBlocks(T first_block, T second_block) = 0;
+  virtual void MergeBlocks(std::tuple<T, T> merge_pair) {
+    this->MergeBlocks(std::get<0>(merge_pair), std::get<1>(merge_pair));
+  }
+
   T GetDistinctBlocks() {
     return distinct_blocks_;
   };
