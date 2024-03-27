@@ -8,12 +8,17 @@ namespace disjoint_set {
 template <typename T>
 class WeightQuickUnion : public DisjointSet<T> {
  private:
-  T IsNotRoot(T element) { return this->blocks_.at(element) >= 0; };
+  T IsNotRoot(T element) override { return this->blocks_.at(element) >= 0; };
   T GetRootWeight(T root) { return this->blocks_.at(root) * -1; }
 
   void MergeRoots(T larger_root, T smaller_root, T smaller_root_weight) {
     this->blocks_.at(smaller_root) = larger_root;
     this->blocks_.at(larger_root) -= smaller_root_weight;
+
+#ifdef FULL_BENCHMARK
+    this->root_child_number_.at(larger_root) += this->root_child_number_.at(smaller_root) + 1;
+    this->root_child_number_.at(smaller_root) = 0;
+#endif
   }
 
  public:
@@ -39,6 +44,10 @@ class WeightQuickUnion : public DisjointSet<T> {
       this->blocks_.at(previous_index) = representative;
     }
 
+#ifdef FULL_BENCHMARK
+    this->ResetTotalPathLength();
+#endif
+
     return representative;
   }
 
@@ -50,6 +59,10 @@ class WeightQuickUnion : public DisjointSet<T> {
       current_index = this->GetFather(current_index);
       this->blocks_.at(previous_index) = this->GetFather(current_index);
     }
+
+#ifdef FULL_BENCHMARK
+    this->ResetTotalPathLength();
+#endif
 
     return current_index;
   }
@@ -66,6 +79,10 @@ class WeightQuickUnion : public DisjointSet<T> {
 
       is_even = !is_even;
     }
+
+#ifdef FULL_BENCHMARK
+    this->ResetTotalPathLength();
+#endif
 
     return current_index;
   }
@@ -86,30 +103,11 @@ class WeightQuickUnion : public DisjointSet<T> {
       MergeRoots(second_block_root, first_block_root, first_block_root_weight);
 
     this->distinct_blocks_--;
-  };
 
 #ifdef FULL_BENCHMARK
-  T FindBlockDepth(T element) {
-    auto current_index = element;
-    T depth = 0;
-
-    while (IsNotRoot(current_index)) {
-      current_index = this->GetFather(current_index);
-      depth++;
-    }
-
-    return depth;
-  }
-
-  T GetTotalPathLenght() override {
-    T result = 0;
-
-    for (size_t i = 0; i < this->blocks_.size(); ++i)
-      result += FindBlockDepth(i);
-
-    return result;
-  }
+    this->ResetTotalPathLength();
 #endif
+  };
 };
 
 }  // namespace disjoint_set

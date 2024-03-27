@@ -231,7 +231,8 @@ TEST_F(QuickUnionTest, UsingPathHalvingAfterFind_Expect_CorrectValue) {
 }
 
 #ifdef FULL_BENCHMARK
-TEST_F(QuickUnionTest, AfterInstantiationGetTotalPathLenght_Expect_CorrectValue) {
+TEST_F(QuickUnionTest,
+       AfterInstantiationGetTotalPathLenght_Expect_CorrectValue) {
 
   EXPECT_EQ(quick_union_set_.GetTotalPathLenght(), 0);
 }
@@ -251,6 +252,35 @@ TEST_F(QuickUnionTest,
   quick_union_set_.MergeBlocks(BlockIdentifier::kEightBlock,
                                BlockIdentifier::kSeventhBlock);
   EXPECT_EQ(quick_union_set_.GetTotalPathLenght(), 6);
+}
+
+TEST_F(
+    QuickUnionTest,
+    AfterComplexMergeGetFullCompressionTotalPointersUpdates_Expect_CorrectValue) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                               BlockIdentifier::kFourthBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
+                               BlockIdentifier::kFifthBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kNineBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kTenthBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kEightBlock,
+                               BlockIdentifier::kSeventhBlock);
+  EXPECT_EQ(quick_union_set_.GetFullCompressionTotalPointersUpdates(), 0);
+}
+
+TEST_F(QuickUnionTest,
+       AfterLinerMergeFullCompressionTotalPointersUpdates_Expect_CorrectValue) {
+  quick_union_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                               BlockIdentifier::kFourthBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kFirstBlock);
+  EXPECT_EQ(quick_union_set_.GetFullCompressionTotalPointersUpdates(), 2);
 }
 #endif
 

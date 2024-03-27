@@ -15,7 +15,7 @@
 namespace disjoint_set_benchmark {
 class DisjointSetBenchmark : public ::testing::Test {
  protected:
-  uint16_t size_ = 50;
+  uint16_t size_ = 100;
   std::vector<std::tuple<uint16_t, uint16_t>> distinct_pairs;
   std::mt19937 rng = std::mt19937(SEED);
 

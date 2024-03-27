@@ -9,7 +9,7 @@ template <typename T,
           typename = typename std::enable_if<std::is_unsigned<T>::value>::type>
 class QuickUnion : public DisjointSet<T> {
  private:
-  T IsNotRoot(T element) { return this->blocks_.at(element) != element; };
+  T IsNotRoot(T element) override { return this->blocks_.at(element) != element; };
 
  public:
   QuickUnion(T size) : DisjointSet<T>(size) {
@@ -36,6 +36,10 @@ class QuickUnion : public DisjointSet<T> {
       this->blocks_.at(previous_index) = representative;
     }
 
+#ifdef FULL_BENCHMARK
+    this->ResetTotalPathLength();
+#endif
+
     return representative;
   }
 
@@ -47,6 +51,10 @@ class QuickUnion : public DisjointSet<T> {
       current_index = this->GetFather(current_index);
       this->blocks_.at(previous_index) = this->GetFather(current_index);
     }
+
+#ifdef FULL_BENCHMARK
+    this->ResetTotalPathLength();
+#endif
 
     return current_index;
   }
@@ -64,6 +72,10 @@ class QuickUnion : public DisjointSet<T> {
       is_even = !is_even;
     }
 
+#ifdef FULL_BENCHMARK
+    this->ResetTotalPathLength();
+#endif
+
     return current_index;
   }
 
@@ -74,30 +86,13 @@ class QuickUnion : public DisjointSet<T> {
       return;
     this->blocks_.at(root_second_block) = root_first_block;
     this->distinct_blocks_--;
-  };
 
 #ifdef FULL_BENCHMARK
-  T FindBlockDepth(T element) {
-    auto current_index = element;
-    T depth = 0;
-
-    while (IsNotRoot(current_index)) {
-      current_index = this->GetFather(current_index);
-      depth++;
-    }
-
-    return depth;
-  }
-
-  T GetTotalPathLenght() override {
-    T result = 0;
-
-    for (size_t i = 0; i < this->blocks_.size(); ++i)
-      result += FindBlockDepth(i);
-
-    return result;
-  }
+    this->root_child_number_.at(root_second_block) = 0;
+    this->root_child_number_.at(root_first_block) ++;
+    this->ResetTotalPathLength();
 #endif
+  };
 };
 
 }  // namespace disjoint_set

@@ -15,6 +15,12 @@ class RankQuickUnion : public WeightQuickUnion<T> {
     this->blocks_.at(larger_root) +=
         (smaller_root_rank == larger_root_rank) * -1;
     this->blocks_.at(smaller_root) = larger_root;
+
+#ifdef FULL_BENCHMARK
+    this->root_child_number_.at(larger_root) +=
+        this->root_child_number_.at(smaller_root) + 1;
+    this->root_child_number_.at(smaller_root) = 0;
+#endif
   }
 
  public:
@@ -37,6 +43,10 @@ class RankQuickUnion : public WeightQuickUnion<T> {
       MergeRoots(second_block_root, second_block_root_rank, first_block_root,
                  first_block_root_rank);
     this->distinct_blocks_--;
+
+#ifdef FULL_BENCHMARK
+    this->ResetTotalPathLength();
+#endif
   };
 };
 
