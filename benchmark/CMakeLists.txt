@@ -3,6 +3,7 @@ add_executable(
   main_benchmark.cc
   disjoint_set/disjoint_set_benchmark.h
   disjoint_set/disjoint_set_benchmark.cc
+  disjoint_set/statistics.h
 )
 
 target_link_libraries(jelena_benchmark PUBLIC GTest::gtest_main disjoint_set)

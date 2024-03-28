@@ -5,6 +5,7 @@
 #include <fstream>
 #include <random>
 #include <string>
+#include "statistics.h"
 #include "disjoint_set.h"
 #include "quick_union.h"
 #include "rank_quick_union.h"
@@ -26,42 +27,6 @@ class DisjointSetBenchmark : public ::testing::Test {
   static std::ofstream quick_union_statistics_;
   static std::ofstream weight_quick_union_statistics_;
   static std::ofstream rank_quick_union_statistics_;
-
-  struct Statistics {
-    int16_t distinct_blocks;
-    int16_t cycles;
-    int16_t total_path_length;
-    int16_t full_compression_total_pointers_update;
-    int16_t path_splitting_total_pointers_update;
-    int16_t path_halving_total_pointers_update;
-    int16_t counter;
-
-    Statistics()
-        : distinct_blocks(0),
-          cycles(0),
-          total_path_length(0),
-          full_compression_total_pointers_update(0),
-          path_splitting_total_pointers_update(0),
-          path_halving_total_pointers_update(0),
-          counter(0) {}
-
-    void update(int16_t cycles, int16_t distinct_blocks,
-                int16_t total_path_length,
-                int16_t full_compression_total_pointers_update,
-                int16_t path_splitting_total_pointers_update,
-                int16_t path_halving_total_pointers_update) {
-      this->cycles += cycles;
-      this->distinct_blocks += distinct_blocks;
-      this->total_path_length += total_path_length;
-      this->full_compression_total_pointers_update +=
-          full_compression_total_pointers_update;
-      this->path_splitting_total_pointers_update +=
-          path_splitting_total_pointers_update;
-      this->path_halving_total_pointers_update +=
-          path_halving_total_pointers_update;
-      this->counter++;
-    }
-  };
 
   void SetUp() override {
     for (size_t i = 0; i < kSize_; i++)
@@ -95,17 +60,47 @@ class DisjointSetBenchmark : public ::testing::Test {
     rank_quick_union_statistics_.close();
   }
 
+  template <typename DisjointSetType>
+  void RunBenchmark(std::ofstream& statistics_file) {
+    std::vector<Statistics> statistics(kSize_ / kDelta_);
+    DisjointSetType disjoint_set(0);
+
+    for (int i = 0; i < kNumberExecution_; ++i) {
+      std::shuffle(distinct_pairs.begin(), distinct_pairs.end(), rng);
+      disjoint_set = DisjointSetType(kSize_);
+      uint16_t previous_size = 0, cycles = 0, change_counter = 0,
+               current_size = disjoint_set.GetDistinctBlocks();
+
+      while (current_size > 1) {
+        disjoint_set.MergeBlocks(distinct_pairs.at(cycles));
+
+        cycles++;
+        current_size = disjoint_set.GetDistinctBlocks();
+
+        if (previous_size != current_size) {
+          previous_size = current_size;
+          change_counter++;
+          if (change_counter % kDelta_)
+            continue;
+
+          statistics.at(change_counter / kDelta_)
+              .update(cycles, disjoint_set.GetDistinctBlocks(),
+                      disjoint_set.GetTotalPathlength(),
+                      disjoint_set.GetFullCompressionTotalPointersUpdates(),
+                      disjoint_set.GetPathSplittingTotalPointersUpdates(),
+                      disjoint_set.GetPathHalvingPointersUpdates());
+        }
+      }
+    }
+
+    for (auto element : statistics) {
+      if (element.counter > kCutoff)
+        WriteStatistics(statistics_file, element);
+    }
+  }
+
   void WriteStatistics(std::ostream& file, Statistics statistics) {
-    file << statistics.distinct_blocks / statistics.counter << " |"
-         << statistics.cycles / statistics.counter << " | "
-         << statistics.total_path_length / statistics.counter << " | "
-         << statistics.full_compression_total_pointers_update /
-                statistics.counter
-         << " | "
-         << statistics.path_splitting_total_pointers_update / statistics.counter
-         << " | "
-         << statistics.path_halving_total_pointers_update / statistics.counter
-         << " |" << std::endl;
+    file << statistics.ToString() << std::endl;
   }
 };
 }  // namespace disjoint_set_benchmark
