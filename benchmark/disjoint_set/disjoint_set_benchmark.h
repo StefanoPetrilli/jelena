@@ -5,10 +5,10 @@
 #include <fstream>
 #include <random>
 #include <string>
-#include "statistics.h"
 #include "disjoint_set.h"
 #include "quick_union.h"
 #include "rank_quick_union.h"
+#include "statistics.h"
 #include "weight_quick_union.h"
 
 #define SEED 42
@@ -16,7 +16,7 @@
 namespace disjoint_set_benchmark {
 class DisjointSetBenchmark : public ::testing::Test {
  protected:
-  const uint16_t kSize_ = 100;
+  const uint16_t kSize_ = 1000;
   const uint16_t kDelta_ = 20;
   const uint16_t kNumberExecution_ = 50;
   const uint16_t kCutoff = 5;
@@ -39,9 +39,10 @@ class DisjointSetBenchmark : public ::testing::Test {
 
   static void SetUpTestSuite() {
     std::string table_head =
-        "| Number of Blocks | Cycle count | Total Path length | Full "
-        "Compression TPU | Path Splitting TPU | Path Halving TPU |\n | - "
-        "| - | - | - | - | - |\n";
+        "| Number of Blocks | Cycle count | TPL | TPUFC | TPUPS | TPUPH | "
+        "Normalized TPL | Normalized TPUFC | Normalized TPUPS | "
+        "Normalized TPUPH |\n | - "
+        "| - | - | - | - | - | - | - | - | - |\n";
 
     quick_union_statistics_.open(
         "benchmark/disjoint_set/outputs/quick_union.md");
@@ -84,7 +85,7 @@ class DisjointSetBenchmark : public ::testing::Test {
             continue;
 
           statistics.at(change_counter / kDelta_)
-              .update(cycles, disjoint_set.GetDistinctBlocks(),
+              .Update(cycles, disjoint_set.GetDistinctBlocks(),
                       disjoint_set.GetTotalPathlength(),
                       disjoint_set.GetFullCompressionTotalPointersUpdates(),
                       disjoint_set.GetPathSplittingTotalPointersUpdates(),
@@ -95,12 +96,13 @@ class DisjointSetBenchmark : public ::testing::Test {
 
     for (auto element : statistics) {
       if (element.counter > kCutoff)
-        WriteStatistics(statistics_file, element);
+        WriteStatistics(statistics_file, element, this->kSize_);
     }
   }
 
-  void WriteStatistics(std::ostream& file, Statistics statistics) {
-    file << statistics.ToString() << std::endl;
+  void WriteStatistics(std::ostream& file, Statistics statistics,
+                       int32_t normalization_size) {
+    file << statistics.ToString(normalization_size) << std::endl;
   }
 };
 }  // namespace disjoint_set_benchmark
