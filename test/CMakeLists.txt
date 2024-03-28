@@ -9,10 +9,10 @@ add_executable(
   tree/binary_tree_test.h
   disjoint_set/quick_union_test.cc
   disjoint_set/quick_union_test.h
-  disjoint_set/rank_quick_union_test.cc
-  disjoint_set/rank_quick_union_test.h
-  disjoint_set/weighted_quick_union_test.cc
-  disjoint_set/weighted_quick_union_test.h
+  disjoint_set/rank_union_test.cc
+  disjoint_set/rank_union_test.h
+  disjoint_set/weighted_union_test.cc
+  disjoint_set/weighted_union_test.h
 )
 
 target_link_libraries(jelena_tests PUBLIC GTest::gtest_main node linked_list

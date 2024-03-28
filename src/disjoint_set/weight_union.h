@@ -6,7 +6,7 @@
 namespace disjoint_set {
 
 template <typename T>
-class WeightQuickUnion : public DisjointSet<T> {
+class WeightUnion : public DisjointSet<T> {
  private:
   T IsNotRoot(T element) override { return this->blocks_.at(element) >= 0; };
   T GetRootWeight(T root) { return this->blocks_.at(root) * -1; }
@@ -17,7 +17,7 @@ class WeightQuickUnion : public DisjointSet<T> {
   }
 
  public:
-  WeightQuickUnion(T size) : DisjointSet<T>(size){};
+  WeightUnion(T size) : DisjointSet<T>(size){};
 
   using DisjointSet<T>::MergeBlocks;
 

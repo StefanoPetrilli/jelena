@@ -7,17 +7,17 @@
 #include <string>
 #include "disjoint_set.h"
 #include "quick_union.h"
-#include "rank_quick_union.h"
+#include "rank_union.h"
 #include "statistics.h"
-#include "weight_quick_union.h"
+#include "weight_union.h"
 
 #define SEED 42
 
 namespace disjoint_set_benchmark {
 class DisjointSetBenchmark : public ::testing::Test {
  protected:
-  const uint16_t kSize_ = 1000;
-  const uint16_t kDelta_ = 100;
+  const uint16_t kSize_ = 1001;
+  const uint16_t kDelta_ = 50;
   const uint16_t kNumberExecution_ = 40;
   const uint16_t kCutoff = 5;
   const uint16_t kEpsilon_ = 2;
@@ -26,8 +26,8 @@ class DisjointSetBenchmark : public ::testing::Test {
   std::mt19937 rng = std::mt19937(SEED);
 
   static std::ofstream quick_union_statistics_;
-  static std::ofstream weight_quick_union_statistics_;
-  static std::ofstream rank_quick_union_statistics_;
+  static std::ofstream weight_union_statistics_;
+  static std::ofstream rank_union_statistics_;
 
   void SetUp() override {
     for (size_t i = 0; i < kSize_; i++)
@@ -48,24 +48,24 @@ class DisjointSetBenchmark : public ::testing::Test {
 
     quick_union_statistics_.open(
         "benchmark/disjoint_set/outputs/quick_union.md");
-    weight_quick_union_statistics_.open(
-        "benchmark/disjoint_set/outputs/weight_quick_union.md");
-    rank_quick_union_statistics_.open(
-        "benchmark/disjoint_set/outputs/rank_quick_union.md");
+    weight_union_statistics_.open(
+        "benchmark/disjoint_set/outputs/weight_union.md");
+    rank_union_statistics_.open(
+        "benchmark/disjoint_set/outputs/rank_union.md");
     quick_union_statistics_ << table_head;
-    weight_quick_union_statistics_ << table_head;
-    rank_quick_union_statistics_ << table_head;
+    weight_union_statistics_ << table_head;
+    rank_union_statistics_ << table_head;
   }
 
   static void TearDownTestSuite() {
     quick_union_statistics_.close();
-    weight_quick_union_statistics_.close();
-    rank_quick_union_statistics_.close();
+    weight_union_statistics_.close();
+    rank_union_statistics_.close();
   }
 
   template <typename DisjointSetType>
   void RunBenchmark(std::ofstream& statistics_file) {
-    std::vector<Statistics> statistics(kSize_ / kDelta_);
+    std::vector<Statistics> statistics((kSize_ / kDelta_) + 1);
     DisjointSetType disjoint_set(0);
 
     for (int i = 0; i < kNumberExecution_; ++i) {

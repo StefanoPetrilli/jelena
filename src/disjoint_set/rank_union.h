@@ -2,12 +2,12 @@
 
 #include <algorithm>
 #include <numeric>
-#include "weight_quick_union.h"
+#include "weight_union.h"
 
 namespace disjoint_set {
 
 template <typename T>
-class RankQuickUnion : public WeightQuickUnion<T> {
+class RankUnion : public WeightUnion<T> {
  private:
   T GetRootRank(T root) { return this->blocks_.at(root) * -1; }
   void MergeRoots(T larger_root, T larger_root_rank, T smaller_root,
@@ -18,7 +18,7 @@ class RankQuickUnion : public WeightQuickUnion<T> {
   }
 
  public:
-  RankQuickUnion(T size) : WeightQuickUnion<T>(size){};
+  RankUnion(T size) : WeightUnion<T>(size){};
 
   using DisjointSet<T>::MergeBlocks;
 
