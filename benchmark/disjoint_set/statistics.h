@@ -37,7 +37,7 @@ struct Statistics {
     this->counter++;
   }
 
-  std::string ToString(int32_t normalization_size) const {
+  std::string ToString(int32_t normalization_size, int16_t epsilon) const {
     auto TPL = total_path_length / counter;
     auto TPUFC = full_compression_total_pointers_update / counter;
     auto TPUPS = path_splitting_total_pointers_update / counter;
@@ -49,7 +49,10 @@ struct Statistics {
         << static_cast<double>(TPL) / normalization_size << " | "
         << static_cast<double>(TPUFC) / normalization_size << " | "
         << static_cast<double>(TPUPS) / normalization_size << " | "
-        << static_cast<double>(TPUPH) / normalization_size << " |";
+        << static_cast<double>(TPUPH) / normalization_size << " | "
+        << 2 * TPL + epsilon * TPUFC << " | "
+        << 2 * TPL + epsilon * TPUPS << " | "
+        << 2 * TPL + epsilon * TPUPH << " |";
     return oss.str();
   }
 };

@@ -17,9 +17,10 @@ namespace disjoint_set_benchmark {
 class DisjointSetBenchmark : public ::testing::Test {
  protected:
   const uint16_t kSize_ = 1000;
-  const uint16_t kDelta_ = 20;
-  const uint16_t kNumberExecution_ = 50;
+  const uint16_t kDelta_ = 100;
+  const uint16_t kNumberExecution_ = 40;
   const uint16_t kCutoff = 5;
+  const uint16_t kEpsilon_ = 2;
 
   std::vector<std::tuple<uint16_t, uint16_t>> distinct_pairs;
   std::mt19937 rng = std::mt19937(SEED);
@@ -41,8 +42,9 @@ class DisjointSetBenchmark : public ::testing::Test {
     std::string table_head =
         "| Number of Blocks | Cycle count | TPL | TPUFC | TPUPS | TPUPH | "
         "Normalized TPL | Normalized TPUFC | Normalized TPUPS | "
-        "Normalized TPUPH |\n | - "
-        "| - | - | - | - | - | - | - | - | - |\n";
+        "Normalized TPUPH | Total Cost FC | Total Cost PS | Total Cost PH |\n "
+        "| - "
+        "| - | - | - | - | - | - | - | - | - | - | - | - |\n";
 
     quick_union_statistics_.open(
         "benchmark/disjoint_set/outputs/quick_union.md");
@@ -96,13 +98,14 @@ class DisjointSetBenchmark : public ::testing::Test {
 
     for (auto element : statistics) {
       if (element.counter > kCutoff)
-        WriteStatistics(statistics_file, element, this->kSize_);
+        WriteStatistics(statistics_file, element, this->kSize_,
+                        this->kEpsilon_);
     }
   }
 
   void WriteStatistics(std::ostream& file, Statistics statistics,
-                       int32_t normalization_size) {
-    file << statistics.ToString(normalization_size) << std::endl;
+                       int32_t normalization_size, int16_t epsilon) {
+    file << statistics.ToString(normalization_size, epsilon) << std::endl;
   }
 };
 }  // namespace disjoint_set_benchmark
