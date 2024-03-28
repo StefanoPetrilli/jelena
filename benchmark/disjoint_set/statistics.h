@@ -51,8 +51,8 @@ struct Statistics {
         << static_cast<double>(TPUPS) / normalization_size << " | "
         << static_cast<double>(TPUPH) / normalization_size << " | "
         << 2 * TPL + epsilon * TPUFC << " | "
-        << 2 * TPL + epsilon * TPUPS << " | "
-        << 2 * TPL + epsilon * TPUPH << " |";
+        << TPL + epsilon * TPUPS << " | "
+        << TPL + epsilon * TPUPH << " |";
     return oss.str();
   }
 };
