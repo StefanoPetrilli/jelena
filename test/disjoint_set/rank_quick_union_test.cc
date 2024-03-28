@@ -371,12 +371,12 @@ TEST_F(
 
 #ifdef FULL_BENCHMARK
 TEST_F(RankQuickUnionTest,
-       AfterInstantiationGetTotalPathLenght_Expect_CorrectValue) {
-  EXPECT_EQ(rank_disjoint_set_.GetTotalPathLenght(), 0);
+       AfterInstantiationGetTotalPathlength_Expect_CorrectValue) {
+  EXPECT_EQ(rank_disjoint_set_.GetTotalPathlength(), 0);
 }
 
 TEST_F(RankQuickUnionTest,
-       AfterComplexMergeGetTotalPathLenght_Expect_CorrectValue) {
+       AfterComplexMergeGetTotalPathlength_Expect_CorrectValue) {
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
                                  BlockIdentifier::kFourthBlock);
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
@@ -389,11 +389,11 @@ TEST_F(RankQuickUnionTest,
                                  BlockIdentifier::kTenthBlock);
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kEightBlock,
                                  BlockIdentifier::kSeventhBlock);
-  EXPECT_EQ(rank_disjoint_set_.GetTotalPathLenght(), 6);
+  EXPECT_EQ(rank_disjoint_set_.GetTotalPathlength(), 6);
 }
 
 TEST_F(RankQuickUnionTest,
-       AfterComplexMergeGetTotalPathLenght_Expect_CorrectValue2) {
+       AfterComplexMergeGetTotalPathlength_Expect_CorrectValue2) {
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                      BlockIdentifier::kSecondBlock);
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
@@ -404,7 +404,7 @@ TEST_F(RankQuickUnionTest,
                                      BlockIdentifier::kFifthBlock);
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                      BlockIdentifier::kFourthBlock);
-  EXPECT_EQ(rank_disjoint_set_.GetTotalPathLenght(), 7);
+  EXPECT_EQ(rank_disjoint_set_.GetTotalPathlength(), 7);
 }
 
 TEST_F(

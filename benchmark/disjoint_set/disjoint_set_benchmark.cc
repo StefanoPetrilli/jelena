@@ -30,7 +30,7 @@ TEST_F(DisjointSetBenchmark, QuickUnion) {
 
         statistics.at(change_counter / kDelta_)
             .update(cycles, quick_union_set.GetDistinctBlocks(),
-                    quick_union_set.GetTotalPathLenght(),
+                    quick_union_set.GetTotalPathlength(),
                     quick_union_set.GetFullCompressionTotalPointersUpdates(),
                     quick_union_set.GetPathSplittingTotalPointersUpdates(),
                     quick_union_set.GetPathHalvingPointersUpdates());
@@ -69,7 +69,7 @@ TEST_F(DisjointSetBenchmark, WeightQuickUnion) {
         statistics.at(change_counter / kDelta_)
             .update(
                 cycles, weighted_disjoint_set.GetDistinctBlocks(),
-                weighted_disjoint_set.GetTotalPathLenght(),
+                weighted_disjoint_set.GetTotalPathlength(),
                 weighted_disjoint_set.GetFullCompressionTotalPointersUpdates(),
                 weighted_disjoint_set.GetPathSplittingTotalPointersUpdates(),
                 weighted_disjoint_set.GetPathHalvingPointersUpdates());
@@ -107,7 +107,7 @@ TEST_F(DisjointSetBenchmark, RankQuickUnion) {
 
         statistics.at(change_counter / kDelta_)
             .update(cycles, rank_disjoint_set.GetDistinctBlocks(),
-                    rank_disjoint_set.GetTotalPathLenght(),
+                    rank_disjoint_set.GetTotalPathlength(),
                     rank_disjoint_set.GetFullCompressionTotalPointersUpdates(),
                     rank_disjoint_set.GetPathSplittingTotalPointersUpdates(),
                     rank_disjoint_set.GetPathHalvingPointersUpdates());

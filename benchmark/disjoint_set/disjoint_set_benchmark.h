@@ -30,7 +30,7 @@ class DisjointSetBenchmark : public ::testing::Test {
   struct Statistics {
     int16_t distinct_blocks;
     int16_t cycles;
-    int16_t total_path_lenght;
+    int16_t total_path_length;
     int16_t full_compression_total_pointers_update;
     int16_t path_splitting_total_pointers_update;
     int16_t path_halving_total_pointers_update;
@@ -39,7 +39,7 @@ class DisjointSetBenchmark : public ::testing::Test {
     Statistics()
         : distinct_blocks(0),
           cycles(0),
-          total_path_lenght(0),
+          total_path_length(0),
           full_compression_total_pointers_update(0),
           path_splitting_total_pointers_update(0),
           path_halving_total_pointers_update(0),
@@ -52,7 +52,7 @@ class DisjointSetBenchmark : public ::testing::Test {
                 int16_t path_halving_total_pointers_update) {
       this->cycles += cycles;
       this->distinct_blocks += distinct_blocks;
-      this->total_path_lenght += total_path_length;
+      this->total_path_length += total_path_length;
       this->full_compression_total_pointers_update +=
           full_compression_total_pointers_update;
       this->path_splitting_total_pointers_update +=
@@ -74,7 +74,7 @@ class DisjointSetBenchmark : public ::testing::Test {
 
   static void SetUpTestSuite() {
     std::string table_head =
-        "| Number of Blocks | Cycle count | Total Path Lenght | Full "
+        "| Number of Blocks | Cycle count | Total Path length | Full "
         "Compression TPU | Path Splitting TPU | Path Halving TPU |\n | - "
         "| - | - | - | - | - |\n";
 
@@ -98,7 +98,7 @@ class DisjointSetBenchmark : public ::testing::Test {
   void WriteStatistics(std::ostream& file, Statistics statistics) {
     file << statistics.distinct_blocks / statistics.counter << " |"
          << statistics.cycles / statistics.counter << " | "
-         << statistics.total_path_lenght / statistics.counter << " | "
+         << statistics.total_path_length / statistics.counter << " | "
          << statistics.full_compression_total_pointers_update /
                 statistics.counter
          << " | "

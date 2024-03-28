@@ -103,7 +103,7 @@ class DisjointSet {
     return depth;
   }
 
-  T GetTotalPathLenght() {
+  T GetTotalPathlength() {
     if (this->total_path_length_.has_value())
       return this->total_path_length_.value();
 
@@ -120,7 +120,7 @@ class DisjointSet {
   }
 
   T GetFullCompressionTotalPointersUpdates() {
-    return this->GetTotalPathLenght() - this->GetRootsChildrens();
+    return this->GetTotalPathlength() - this->GetRootsChildrens();
   }
 
   T GetPathSplittingTotalPointersUpdates() {

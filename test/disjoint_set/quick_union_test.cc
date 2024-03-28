@@ -224,13 +224,13 @@ TEST_F(QuickUnionTest, UsingPathHalvingAfterFind_Expect_CorrectValue) {
 
 #ifdef FULL_BENCHMARK
 TEST_F(QuickUnionTest,
-       AfterInstantiationGetTotalPathLenght_Expect_CorrectValue) {
+       AfterInstantiationGetTotalPathlength_Expect_CorrectValue) {
 
-  EXPECT_EQ(quick_union_set_.GetTotalPathLenght(), 0);
+  EXPECT_EQ(quick_union_set_.GetTotalPathlength(), 0);
 }
 
 TEST_F(QuickUnionTest,
-       AfterComplexMergeGetTotalPathLenght_Expect_CorrectValue) {
+       AfterComplexMergeGetTotalPathlength_Expect_CorrectValue) {
   quick_union_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                BlockIdentifier::kThirdBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
@@ -243,11 +243,11 @@ TEST_F(QuickUnionTest,
                                BlockIdentifier::kTenthBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
                                BlockIdentifier::kEightBlock);
-  EXPECT_EQ(quick_union_set_.GetTotalPathLenght(), 10);
+  EXPECT_EQ(quick_union_set_.GetTotalPathlength(), 10);
 }
 
 TEST_F(QuickUnionTest,
-       AfterComplexMergeGetTotalPathLenght_Expect_CorrectValue2) {
+       AfterComplexMergeGetTotalPathlength_Expect_CorrectValue2) {
   quick_union_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
                                BlockIdentifier::kFifthBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kFifthBlock,
@@ -260,7 +260,7 @@ TEST_F(QuickUnionTest,
                                BlockIdentifier::kFirstBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kFirstBlock);
-  EXPECT_EQ(quick_union_set_.GetTotalPathLenght(), 10);
+  EXPECT_EQ(quick_union_set_.GetTotalPathlength(), 10);
 }
 
 TEST_F(QuickUnionTest, AfterLinerMergeGetTotalPathLength_Expect_CorrectValue) {
@@ -270,7 +270,7 @@ TEST_F(QuickUnionTest, AfterLinerMergeGetTotalPathLength_Expect_CorrectValue) {
                                BlockIdentifier::kSecondBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kFirstBlock);
-  EXPECT_EQ(quick_union_set_.GetTotalPathLenght(), 6);
+  EXPECT_EQ(quick_union_set_.GetTotalPathlength(), 6);
 }
 
 TEST_F(
