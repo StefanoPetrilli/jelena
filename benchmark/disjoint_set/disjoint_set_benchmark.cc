@@ -7,81 +7,117 @@ std::ofstream DisjointSetBenchmark::weight_quick_union_statistics_;
 std::ofstream DisjointSetBenchmark::rank_quick_union_statistics_;
 
 TEST_F(DisjointSetBenchmark, QuickUnion) {
-  uint16_t previous_size = 0, cycles = 0, cahnge_counter = 0,
-           current_size = quick_union_set_.GetDistinctBlocks();
+  std::vector<Statistics> statistics(kSize_ / kDelta_);
+  disjoint_set::QuickUnion<uint16_t> quick_union_set(0);
 
-  while (current_size > 1) {
-    quick_union_set_.MergeBlocks(distinct_pairs.at(cycles));
+  for (int i = 0; i < kNumberExecution_; ++i) {
+    std::shuffle(distinct_pairs.begin(), distinct_pairs.end(), rng);
+    quick_union_set = disjoint_set::QuickUnion<uint16_t>(kSize_);
+    uint16_t previous_size = 0, cycles = 0, change_counter = 0,
+             current_size = quick_union_set.GetDistinctBlocks();
 
-    cycles++;
-    current_size = quick_union_set_.GetDistinctBlocks();
+    while (current_size > 1) {
+      quick_union_set.MergeBlocks(distinct_pairs.at(cycles));
 
-    if (previous_size != current_size) {
-      previous_size = current_size;
-      cahnge_counter++;
-      if (cahnge_counter % kDelta_)
-        continue;
+      cycles++;
+      current_size = quick_union_set.GetDistinctBlocks();
 
-      WriteStatistics(quick_union_statistics_,
-                      quick_union_set_.GetDistinctBlocks(), cycles,
-                      quick_union_set_.GetTotalPathLenght(),
-                      quick_union_set_.GetFullCompressionTotalPointersUpdates(),
-                      quick_union_set_.GetPathSplittingTotalPointersUpdates(),
-                      quick_union_set_.GetPathHalvingPointersUpdates());
+      if (previous_size != current_size) {
+        previous_size = current_size;
+        change_counter++;
+        if (change_counter % kDelta_)
+          continue;
+
+        statistics.at(change_counter / kDelta_)
+            .update(cycles, quick_union_set.GetDistinctBlocks(),
+                    quick_union_set.GetTotalPathLenght(),
+                    quick_union_set.GetFullCompressionTotalPointersUpdates(),
+                    quick_union_set.GetPathSplittingTotalPointersUpdates(),
+                    quick_union_set.GetPathHalvingPointersUpdates());
+      }
     }
+  }
+
+  for (auto element : statistics) {
+    if (element.counter > kCutoff)
+      WriteStatistics(quick_union_statistics_, element);
   }
 }
 
 TEST_F(DisjointSetBenchmark, WeightQuickUnion) {
-  uint16_t previous_size = 0, cycles = 0, cahnge_counter = 0,
-           current_size = weighted_disjoint_set_.GetDistinctBlocks();
+  std::vector<Statistics> statistics(kSize_ / kDelta_);
+  disjoint_set::WeightQuickUnion<int16_t> weighted_disjoint_set(0);
 
-  while (current_size > 1) {
-    weighted_disjoint_set_.MergeBlocks(distinct_pairs.at(cycles));
+  for (int i = 0; i < kNumberExecution_; ++i) {
+    std::shuffle(distinct_pairs.begin(), distinct_pairs.end(), rng);
+    weighted_disjoint_set = disjoint_set::WeightQuickUnion<int16_t>(kSize_);
+    uint16_t previous_size = 0, cycles = 0, change_counter = 0,
+             current_size = weighted_disjoint_set.GetDistinctBlocks();
 
-    cycles++;
-    current_size = weighted_disjoint_set_.GetDistinctBlocks();
+    while (current_size > 1) {
+      weighted_disjoint_set.MergeBlocks(distinct_pairs.at(cycles));
 
-    if (previous_size != current_size) {
-      previous_size = current_size;
-      cahnge_counter++;
-      if (cahnge_counter % kDelta_)
-        continue;
+      cycles++;
+      current_size = weighted_disjoint_set.GetDistinctBlocks();
 
-      WriteStatistics(
-          weight_quick_union_statistics_,
-          weighted_disjoint_set_.GetDistinctBlocks(), cycles,
-          weighted_disjoint_set_.GetTotalPathLenght(),
-          weighted_disjoint_set_.GetFullCompressionTotalPointersUpdates(),
-          weighted_disjoint_set_.GetPathSplittingTotalPointersUpdates(),
-          weighted_disjoint_set_.GetPathHalvingPointersUpdates());
+      if (previous_size != current_size) {
+        previous_size = current_size;
+        change_counter++;
+        if (change_counter % kDelta_)
+          continue;
+
+        statistics.at(change_counter / kDelta_)
+            .update(
+                cycles, weighted_disjoint_set.GetDistinctBlocks(),
+                weighted_disjoint_set.GetTotalPathLenght(),
+                weighted_disjoint_set.GetFullCompressionTotalPointersUpdates(),
+                weighted_disjoint_set.GetPathSplittingTotalPointersUpdates(),
+                weighted_disjoint_set.GetPathHalvingPointersUpdates());
+      }
     }
+  }
+
+  for (auto element : statistics) {
+    if (element.counter > kCutoff)
+      WriteStatistics(weight_quick_union_statistics_, element);
   }
 }
 
 TEST_F(DisjointSetBenchmark, RankQuickUnion) {
-  uint16_t previous_size = 0, cycles = 0, cahnge_counter = 0,
-           current_size = rank_disjoint_set_.GetDistinctBlocks();
+  std::vector<Statistics> statistics(kSize_ / kDelta_);
+  disjoint_set::RankQuickUnion<int16_t> rank_disjoint_set(0);
 
-  while (current_size > 1) {
-    rank_disjoint_set_.MergeBlocks(distinct_pairs.at(cycles));
+  for (int i = 0; i < kNumberExecution_; ++i) {
+    std::shuffle(distinct_pairs.begin(), distinct_pairs.end(), rng);
+    rank_disjoint_set = disjoint_set::RankQuickUnion<int16_t>(kSize_);
+    uint16_t previous_size = 0, cycles = 0, change_counter = 0,
+             current_size = rank_disjoint_set.GetDistinctBlocks();
 
-    cycles++;
-    current_size = rank_disjoint_set_.GetDistinctBlocks();
+    while (current_size > 1) {
+      rank_disjoint_set.MergeBlocks(distinct_pairs.at(cycles));
 
-    if (previous_size != current_size) {
-      previous_size = current_size;
-      cahnge_counter++;
-      if (cahnge_counter % kDelta_)
-        continue;
+      cycles++;
+      current_size = rank_disjoint_set.GetDistinctBlocks();
 
-      WriteStatistics(
-          rank_quick_union_statistics_, rank_disjoint_set_.GetDistinctBlocks(),
-          cycles, rank_disjoint_set_.GetTotalPathLenght(),
-          rank_disjoint_set_.GetFullCompressionTotalPointersUpdates(),
-          rank_disjoint_set_.GetPathSplittingTotalPointersUpdates(),
-          rank_disjoint_set_.GetPathHalvingPointersUpdates());
+      if (previous_size != current_size) {
+        previous_size = current_size;
+        change_counter++;
+        if (change_counter % kDelta_)
+          continue;
+
+        statistics.at(change_counter / kDelta_)
+            .update(cycles, rank_disjoint_set.GetDistinctBlocks(),
+                    rank_disjoint_set.GetTotalPathLenght(),
+                    rank_disjoint_set.GetFullCompressionTotalPointersUpdates(),
+                    rank_disjoint_set.GetPathSplittingTotalPointersUpdates(),
+                    rank_disjoint_set.GetPathHalvingPointersUpdates());
+      }
     }
+  }
+
+  for (auto element : statistics) {
+    if (element.counter > kCutoff)
+      WriteStatistics(rank_quick_union_statistics_, element);
   }
 }
 }  // namespace disjoint_set_benchmark

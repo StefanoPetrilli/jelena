@@ -17,22 +17,51 @@ class DisjointSetBenchmark : public ::testing::Test {
  protected:
   const uint16_t kSize_ = 100;
   const uint16_t kDelta_ = 20;
+  const uint16_t kNumberExecution_ = 50;
+  const uint16_t kCutoff = 5;
+
   std::vector<std::tuple<uint16_t, uint16_t>> distinct_pairs;
   std::mt19937 rng = std::mt19937(SEED);
 
-  disjoint_set::QuickUnion<uint16_t> quick_union_set_ =
-      disjoint_set::QuickUnion<uint16_t>(kSize_);
-
-  disjoint_set::WeightQuickUnion<int16_t> weighted_disjoint_set_ =
-      disjoint_set::WeightQuickUnion<int16_t>(kSize_);
-
-  disjoint_set::RankQuickUnion<int16_t> rank_disjoint_set_ =
-      disjoint_set::RankQuickUnion<int16_t>(kSize_);
-
-  // static std::ofstream sequence_file_;
   static std::ofstream quick_union_statistics_;
   static std::ofstream weight_quick_union_statistics_;
   static std::ofstream rank_quick_union_statistics_;
+
+  struct Statistics {
+    int16_t distinct_blocks;
+    int16_t cycles;
+    int16_t total_path_lenght;
+    int16_t full_compression_total_pointers_update;
+    int16_t path_splitting_total_pointers_update;
+    int16_t path_halving_total_pointers_update;
+    int16_t counter;
+
+    Statistics()
+        : distinct_blocks(0),
+          cycles(0),
+          total_path_lenght(0),
+          full_compression_total_pointers_update(0),
+          path_splitting_total_pointers_update(0),
+          path_halving_total_pointers_update(0),
+          counter(0) {}
+
+    void update(int16_t cycles, int16_t distinct_blocks,
+                int16_t total_path_length,
+                int16_t full_compression_total_pointers_update,
+                int16_t path_splitting_total_pointers_update,
+                int16_t path_halving_total_pointers_update) {
+      this->cycles += cycles;
+      this->distinct_blocks += distinct_blocks;
+      this->total_path_lenght += total_path_length;
+      this->full_compression_total_pointers_update +=
+          full_compression_total_pointers_update;
+      this->path_splitting_total_pointers_update +=
+          path_splitting_total_pointers_update;
+      this->path_halving_total_pointers_update +=
+          path_halving_total_pointers_update;
+      this->counter++;
+    }
+  };
 
   void SetUp() override {
     for (size_t i = 0; i < kSize_; i++)
@@ -45,10 +74,10 @@ class DisjointSetBenchmark : public ::testing::Test {
 
   static void SetUpTestSuite() {
     std::string table_head =
-        "| Number of Blocks | Cycle count | Total Path Lenght | Full Compression TPU | Path Splitting TPU | Path Halving TPU |\n | - "
+        "| Number of Blocks | Cycle count | Total Path Lenght | Full "
+        "Compression TPU | Path Splitting TPU | Path Halving TPU |\n | - "
         "| - | - | - | - | - |\n";
 
-    // sequence_file_.open("benchmark/disjoint_set/outputs/sequence.md");
     quick_union_statistics_.open(
         "benchmark/disjoint_set/outputs/quick_union.md");
     weight_quick_union_statistics_.open(
@@ -61,21 +90,22 @@ class DisjointSetBenchmark : public ::testing::Test {
   }
 
   static void TearDownTestSuite() {
-    // sequence_file_.close();
     quick_union_statistics_.close();
     weight_quick_union_statistics_.close();
     rank_quick_union_statistics_.close();
   }
 
-  void WriteStatistics(std::ostream& file, size_t distinct_blocks,
-                       int16_t cycles, int16_t total_path_length,
-                       int16_t full_compression_total_pointers_update,
-                       int16_t path_splitting_total_pointers_update,
-                       int16_t path_halving_total_pointers_update) {
-    file << distinct_blocks << " |" << cycles << " | " << total_path_length
-         << " | " << full_compression_total_pointers_update << " | "
-         << path_splitting_total_pointers_update << " | "
-         << path_halving_total_pointers_update << " |" << std::endl;
+  void WriteStatistics(std::ostream& file, Statistics statistics) {
+    file << statistics.distinct_blocks / statistics.counter << " |"
+         << statistics.cycles / statistics.counter << " | "
+         << statistics.total_path_lenght / statistics.counter << " | "
+         << statistics.full_compression_total_pointers_update /
+                statistics.counter
+         << " | "
+         << statistics.path_splitting_total_pointers_update / statistics.counter
+         << " | "
+         << statistics.path_halving_total_pointers_update / statistics.counter
+         << " |" << std::endl;
   }
 };
 }  // namespace disjoint_set_benchmark
