@@ -43,4 +43,34 @@ class RankUnion : public WeightUnion<T> {
   };
 };
 
+template <typename T>
+class RankUnionFullCompression : public RankUnion<T> {
+ public:
+  RankUnionFullCompression(T size) : RankUnion<T>(size) {}
+
+  T FindBlock(T element) override {
+    return this->FindBlockFullCompression(element);
+  }
+};
+
+template <typename T>
+class RankUnionPathSplitting : public RankUnion<T> {
+ public:
+  RankUnionPathSplitting(T size) : RankUnion<T>(size) {}
+
+  T FindBlock(T element) override {
+    return this->FindBlockPathSplitting(element);
+  }
+};
+
+template <typename T>
+class RankUnionPathHalving : public RankUnion<T> {
+ public:
+  RankUnionPathHalving(T size) : RankUnion<T>(size) {}
+
+  T FindBlock(T element) override {
+    return this->FindBlockPathHalving(element);
+  }
+};
+
 }  // namespace disjoint_set

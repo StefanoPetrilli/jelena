@@ -18,6 +18,7 @@ class DisjointSetBenchmark : public ::testing::Test {
  protected:
   const uint16_t kSize_ = 101;
   const uint16_t kDelta_ = 10;
+  const uint16_t kCutoff_ = 5;
   const uint16_t kNumberExecution_ = 10;
   const uint16_t kEpsilon_ = 2;
 
@@ -95,7 +96,9 @@ class DisjointSetBenchmark : public ::testing::Test {
     }
 
     for (auto element : statistics) {
-      WriteStatistics(statistics_file, element, this->kSize_, this->kEpsilon_);
+      if (element.counter > kCutoff_)
+        WriteStatistics(statistics_file, element, this->kSize_,
+                        this->kEpsilon_);
     }
   }
 
