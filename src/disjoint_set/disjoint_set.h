@@ -36,7 +36,7 @@ class DisjointSet {
     return distinct_blocks_;
   };
 
-  T FindBlock(T element) {
+  virtual T FindBlock(T element) {
     auto current_index = element;
 
     while (this->IsNotRoot(current_index))

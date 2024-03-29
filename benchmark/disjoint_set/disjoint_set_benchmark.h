@@ -16,10 +16,9 @@
 namespace disjoint_set_benchmark {
 class DisjointSetBenchmark : public ::testing::Test {
  protected:
-  const uint16_t kSize_ = 1001;
+  const uint16_t kSize_ = 101;
   const uint16_t kDelta_ = 50;
-  const uint16_t kNumberExecution_ = 40;
-  const uint16_t kCutoff = 5;
+  const uint16_t kNumberExecution_ = 10;
   const uint16_t kEpsilon_ = 2;
 
   std::vector<std::tuple<uint16_t, uint16_t>> distinct_pairs;
@@ -50,8 +49,7 @@ class DisjointSetBenchmark : public ::testing::Test {
         "benchmark/disjoint_set/outputs/quick_union.md");
     weight_union_statistics_.open(
         "benchmark/disjoint_set/outputs/weight_union.md");
-    rank_union_statistics_.open(
-        "benchmark/disjoint_set/outputs/rank_union.md");
+    rank_union_statistics_.open("benchmark/disjoint_set/outputs/rank_union.md");
     quick_union_statistics_ << table_head;
     weight_union_statistics_ << table_head;
     rank_union_statistics_ << table_head;
@@ -97,9 +95,7 @@ class DisjointSetBenchmark : public ::testing::Test {
     }
 
     for (auto element : statistics) {
-      if (element.counter > kCutoff)
-        WriteStatistics(statistics_file, element, this->kSize_,
-                        this->kEpsilon_);
+      WriteStatistics(statistics_file, element, this->kSize_, this->kEpsilon_);
     }
   }
 

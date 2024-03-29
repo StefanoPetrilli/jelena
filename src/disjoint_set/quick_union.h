@@ -8,7 +8,7 @@ namespace disjoint_set {
 template <typename T,
           typename = typename std::enable_if<std::is_unsigned<T>::value>::type>
 class QuickUnion : public DisjointSet<T> {
- private:
+ protected:
   T IsNotRoot(T element) override {
     return this->blocks_.at(element) != element;
   };
@@ -31,6 +31,39 @@ class QuickUnion : public DisjointSet<T> {
     this->ResetTotalPathLength();
 #endif
   };
+};
+
+template <typename T,
+          typename = typename std::enable_if<std::is_unsigned<T>::value>::type>
+class QuickUnionFullCompression : public QuickUnion<T> {
+ public:
+  QuickUnionFullCompression(T size) : QuickUnion<T>(size) {}
+
+  T FindBlock(T element) override {
+    return this->FindBlockFullCompression(element);
+  }
+};
+
+template <typename T,
+          typename = typename std::enable_if<std::is_unsigned<T>::value>::type>
+class QuickUnionPathSplitting : public QuickUnion<T> {
+ public:
+  QuickUnionPathSplitting(T size) : QuickUnion<T>(size) {}
+
+  T FindBlock(T element) override {
+    return this->FindBlockPathSplitting(element);
+  }
+};
+
+template <typename T,
+          typename = typename std::enable_if<std::is_unsigned<T>::value>::type>
+class QuickUnionPathHalving : public QuickUnion<T> {
+ public:
+  QuickUnionPathHalving(T size) : QuickUnion<T>(size) {}
+
+  T FindBlock(T element) override {
+    return this->FindBlockPathHalving(element);
+  }
 };
 
 }  // namespace disjoint_set
