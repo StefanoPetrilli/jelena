@@ -20,31 +20,6 @@ class DisjointSet {
 #endif
   };
 
- public:
-  DisjointSet(T size)
-      : blocks_(size, -1),
-        distinct_blocks_(size)
-  {
-  }
-
-  virtual void MergeBlocks(T first_block, T second_block) = 0;
-  virtual void MergeBlocks(std::tuple<T, T> merge_pair) {
-    this->MergeBlocks(std::get<0>(merge_pair), std::get<1>(merge_pair));
-  }
-
-  T GetDistinctBlocks() {
-    return distinct_blocks_;
-  };
-
-  virtual T FindBlock(T element) {
-    auto current_index = element;
-
-    while (this->IsNotRoot(current_index))
-      current_index = this->GetFather(current_index);
-
-    return current_index;
-  }
-
   T FindBlockFullCompression(T element) {
     auto representative = this->FindBlock(element);
 
@@ -87,6 +62,27 @@ class DisjointSet {
     }
 
     this->ResetTotalPathLength();
+    return current_index;
+  }
+
+ public:
+  DisjointSet(T size) : blocks_(size, -1), distinct_blocks_(size) {}
+
+  virtual void MergeBlocks(T first_block, T second_block) = 0;
+  virtual void MergeBlocks(std::tuple<T, T> merge_pair) {
+    this->MergeBlocks(std::get<0>(merge_pair), std::get<1>(merge_pair));
+  }
+
+  T GetDistinctBlocks() {
+    return distinct_blocks_;
+  };
+
+  virtual T FindBlock(T element) {
+    auto current_index = element;
+
+    while (this->IsNotRoot(current_index))
+      current_index = this->GetFather(current_index);
+
     return current_index;
   }
 

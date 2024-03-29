@@ -162,13 +162,13 @@ TEST_F(WeightUnionTest,
 
 TEST_F(WeightUnionTest,
        UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(weighted_disjoint_FC_set_.FindBlockFullCompression(kFifthBlock),
+  EXPECT_EQ(weighted_disjoint_FC_set_.FindBlock(kFifthBlock),
             kFifthBlock);
 }
 
 TEST_F(WeightUnionTest,
        UsingFullCompressionFindBiggerThanSize_Expect_OutOfRangeException) {
-  EXPECT_THROW(weighted_disjoint_FC_set_.FindBlockFullCompression(size_ + 1),
+  EXPECT_THROW(weighted_disjoint_FC_set_.FindBlock(size_ + 1),
                std::out_of_range);
 }
 
@@ -177,7 +177,7 @@ TEST_F(
     UsingFullCompressionAfterMergeOfEqualWeight_Expect_FirstBlockGoesIntoSecondBlock) {
   weighted_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                      BlockIdentifier::kSecondBlock);
-  auto result = weighted_disjoint_FC_set_.FindBlockFullCompression(
+  auto result = weighted_disjoint_FC_set_.FindBlock(
       BlockIdentifier::kSecondBlock);
   EXPECT_EQ(result, BlockIdentifier::kFirstBlock);
 }
@@ -190,7 +190,7 @@ TEST_F(
   weighted_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                      BlockIdentifier::kSecondBlock);
 
-  EXPECT_EQ(weighted_disjoint_FC_set_.FindBlockFullCompression(
+  EXPECT_EQ(weighted_disjoint_FC_set_.FindBlock(
                 BlockIdentifier::kFirstBlock),
             BlockIdentifier::kSecondBlock);
 }
@@ -216,7 +216,7 @@ TEST_F(
   weighted_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                      BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(weighted_disjoint_FC_set_.FindBlockFullCompression(
+  EXPECT_EQ(weighted_disjoint_FC_set_.FindBlock(
                 BlockIdentifier::kFirstBlock),
             BlockIdentifier::kFourthBlock);
 }
@@ -242,20 +242,20 @@ TEST_F(
   weighted_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                      BlockIdentifier::kSecondBlock);
 
-  EXPECT_EQ(weighted_disjoint_FC_set_.FindBlockFullCompression(
+  EXPECT_EQ(weighted_disjoint_FC_set_.FindBlock(
                 BlockIdentifier::kSixthBlock),
             BlockIdentifier::kFourthBlock);
 }
 
 TEST_F(WeightUnionTest,
        UsingPathSplittingAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(weighted_disjoint_PS_set_.FindBlockPathSplitting(kFifthBlock),
+  EXPECT_EQ(weighted_disjoint_PS_set_.FindBlock(kFifthBlock),
             kFifthBlock);
 }
 
 TEST_F(WeightUnionTest,
        UsingPathSplittingFindBiggerThanSize_Expect_OutOfRangeException) {
-  EXPECT_THROW(weighted_disjoint_PS_set_.FindBlockPathSplitting(size_ + 1),
+  EXPECT_THROW(weighted_disjoint_PS_set_.FindBlock(size_ + 1),
                std::out_of_range);
 }
 
@@ -264,7 +264,7 @@ TEST_F(
     UsingPathSplittingAfterMergeOfEqualWeight_Expect_FirstBlockGoesIntoSecondBlock) {
   weighted_disjoint_PS_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                      BlockIdentifier::kSecondBlock);
-  auto result = weighted_disjoint_PS_set_.FindBlockPathSplitting(
+  auto result = weighted_disjoint_PS_set_.FindBlock(
       BlockIdentifier::kSecondBlock);
   EXPECT_EQ(result, BlockIdentifier::kFirstBlock);
 }
@@ -277,7 +277,7 @@ TEST_F(
   weighted_disjoint_PS_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                      BlockIdentifier::kSecondBlock);
 
-  EXPECT_EQ(weighted_disjoint_PS_set_.FindBlockPathSplitting(
+  EXPECT_EQ(weighted_disjoint_PS_set_.FindBlock(
                 BlockIdentifier::kFirstBlock),
             BlockIdentifier::kSecondBlock);
 }
@@ -303,7 +303,7 @@ TEST_F(
   weighted_disjoint_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                      BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(weighted_disjoint_PS_set_.FindBlockPathSplitting(
+  EXPECT_EQ(weighted_disjoint_PS_set_.FindBlock(
                 BlockIdentifier::kFirstBlock),
             BlockIdentifier::kFourthBlock);
 }
@@ -329,20 +329,20 @@ TEST_F(
   weighted_disjoint_PS_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                      BlockIdentifier::kSecondBlock);
 
-  EXPECT_EQ(weighted_disjoint_PS_set_.FindBlockPathSplitting(
+  EXPECT_EQ(weighted_disjoint_PS_set_.FindBlock(
                 BlockIdentifier::kSixthBlock),
             BlockIdentifier::kFourthBlock);
 }
 
 TEST_F(WeightUnionTest,
        UsingPathHalvingAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(weighted_disjoint_PH_set_.FindBlockPathHalving(kFifthBlock),
+  EXPECT_EQ(weighted_disjoint_PH_set_.FindBlock(kFifthBlock),
             kFifthBlock);
 }
 
 TEST_F(WeightUnionTest,
        UsingPathHalvingFindBiggerThanSize_Expect_OutOfRangeException) {
-  EXPECT_THROW(weighted_disjoint_PH_set_.FindBlockPathHalving(size_ + 1),
+  EXPECT_THROW(weighted_disjoint_PH_set_.FindBlock(size_ + 1),
                std::out_of_range);
 }
 
@@ -351,7 +351,7 @@ TEST_F(
     UsingPathHalvingAfterMergeOfEqualWeight_Expect_FirstBlockGoesIntoSecondBlock) {
   weighted_disjoint_PH_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                      BlockIdentifier::kSecondBlock);
-  auto result = weighted_disjoint_set_.FindBlockPathHalving(
+  auto result = weighted_disjoint_set_.FindBlock(
       BlockIdentifier::kSecondBlock);
   EXPECT_EQ(result, BlockIdentifier::kFirstBlock);
 }
@@ -365,7 +365,7 @@ TEST_F(
                                      BlockIdentifier::kSecondBlock);
 
   EXPECT_EQ(
-      weighted_disjoint_set_.FindBlockPathHalving(BlockIdentifier::kFirstBlock),
+      weighted_disjoint_set_.FindBlock(BlockIdentifier::kFirstBlock),
       BlockIdentifier::kSecondBlock);
 }
 
@@ -391,7 +391,7 @@ TEST_F(
                                      BlockIdentifier::kFourthBlock);
 
   EXPECT_EQ(
-      weighted_disjoint_PH_set_.FindBlockPathHalving(BlockIdentifier::kFirstBlock),
+      weighted_disjoint_PH_set_.FindBlock(BlockIdentifier::kFirstBlock),
       BlockIdentifier::kFourthBlock);
 }
 
@@ -417,7 +417,7 @@ TEST_F(
                                      BlockIdentifier::kSecondBlock);
 
   EXPECT_EQ(
-      weighted_disjoint_PH_set_.FindBlockPathHalving(BlockIdentifier::kSixthBlock),
+      weighted_disjoint_PH_set_.FindBlock(BlockIdentifier::kSixthBlock),
       BlockIdentifier::kFourthBlock);
 }
 
