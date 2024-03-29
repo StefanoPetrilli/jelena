@@ -17,7 +17,7 @@ namespace disjoint_set_benchmark {
 class DisjointSetBenchmark : public ::testing::Test {
  protected:
   const uint16_t kSize_ = 101;
-  const uint16_t kDelta_ = 50;
+  const uint16_t kDelta_ = 10;
   const uint16_t kNumberExecution_ = 10;
   const uint16_t kEpsilon_ = 2;
 

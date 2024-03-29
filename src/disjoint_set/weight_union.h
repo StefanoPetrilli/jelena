@@ -40,5 +40,34 @@ class WeightUnion : public DisjointSet<T> {
     this->ResetTotalPathLength();
   };
 };
+template <typename T>
+class WeightUnionFullCompression : public WeightUnion<T> {
+ public:
+  WeightUnionFullCompression(T size) : WeightUnion<T>(size) {}
+
+  T FindBlock(T element) override {
+    return this->FindBlockFullCompression(element);
+  }
+};
+
+template <typename T>
+class WeightUnionPathSplitting : public WeightUnion<T> {
+ public:
+  WeightUnionPathSplitting(T size) : WeightUnion<T>(size) {}
+
+  T FindBlock(T element) override {
+    return this->FindBlockPathSplitting(element);
+  }
+};
+
+template <typename T>
+class WeightUnionPathHalving : public WeightUnion<T> {
+ public:
+  WeightUnionPathHalving(T size) : WeightUnion<T>(size) {}
+
+  T FindBlock(T element) override {
+    return this->FindBlockPathHalving(element);
+  }
+};
 
 }  // namespace disjoint_set
