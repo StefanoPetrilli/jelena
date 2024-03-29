@@ -5,6 +5,7 @@
 #include <fstream>
 #include <random>
 #include <string>
+#include <ranges>
 #include "disjoint_set.h"
 #include "quick_union.h"
 #include "rank_union.h"
@@ -39,12 +40,15 @@ class DisjointSetBenchmark : public ::testing::Test {
   static std::ofstream rank_union_PH_statistics_;
 
   void SetUp() override {
-    for (size_t i = 0; i < kSize_; i++)
-      for (size_t j = 0; j < kSize_; j++)
-        distinct_pairs.push_back(std::make_tuple(i, j));
-
-    std::shuffle(distinct_pairs.begin(), distinct_pairs.end(), rng);
+    distinct_pairs.reserve(kSize_ * kSize_);
+    for (auto i : std::views::iota(0u, kSize_)) {
+      for (auto j : std::views::iota(0u, kSize_)) {
+        if (i == j) continue;
+        distinct_pairs.emplace_back(i, j);
+      }
+    }
   }
+
   void TearDown() override {}
 
   static void SetUpTestSuite() {
@@ -139,8 +143,8 @@ class DisjointSetBenchmark : public ::testing::Test {
 
     for (auto element : statistics) {
       if (element.counter > kCutoff_)
-        WriteStatistics(statistics_file, element, this->kSize_,
-                        this->kEpsilon_, isFC);
+        WriteStatistics(statistics_file, element, this->kSize_, this->kEpsilon_,
+                        isFC);
     }
   }
 
