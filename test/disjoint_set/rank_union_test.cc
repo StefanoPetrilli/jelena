@@ -187,7 +187,7 @@ TEST_F(
                                     BlockIdentifier::kFourthBlock);
 
   EXPECT_EQ(rank_disjoint_FC_set_.FindBlock(BlockIdentifier::kSixthBlock),
-            BlockIdentifier::kSecondBlock);
+            BlockIdentifier::kFourthBlock);
 }
 
 TEST_F(RankUnionTest,
@@ -272,7 +272,7 @@ TEST_F(
 
   EXPECT_EQ(
       rank_disjoint_PH_set_.FindBlock(BlockIdentifier::kSixthBlock),
-      BlockIdentifier::kSecondBlock);
+      BlockIdentifier::kFourthBlock);
 }
 
 TEST_F(RankUnionTest,
@@ -357,7 +357,7 @@ TEST_F(
 
   EXPECT_EQ(rank_disjoint_PS_set_.FindBlock(
                 BlockIdentifier::kSixthBlock),
-            BlockIdentifier::kSecondBlock);
+            BlockIdentifier::kFourthBlock);
 }
 
 #ifdef FULL_BENCHMARK
@@ -412,7 +412,7 @@ TEST_F(
                                     BlockIdentifier::kTenthBlock);
   rank_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kEightBlock,
                                     BlockIdentifier::kSeventhBlock);
-  EXPECT_EQ(rank_disjoint_FC_set_.GetFullCompressionTotalPointersUpdates(), 0);
+  EXPECT_EQ(rank_disjoint_FC_set_.GetTotalPointersUpdates(), 0);
 }
 
 TEST_F(RankUnionTest,
@@ -423,7 +423,7 @@ TEST_F(RankUnionTest,
                                     BlockIdentifier::kThirdBlock);
   rank_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
                                     BlockIdentifier::kFourthBlock);
-  EXPECT_EQ(rank_disjoint_FC_set_.GetFullCompressionTotalPointersUpdates(), 0);
+  EXPECT_EQ(rank_disjoint_FC_set_.GetTotalPointersUpdates(), 0);
 }
 
 TEST_F(
@@ -439,7 +439,7 @@ TEST_F(
                                     BlockIdentifier::kFifthBlock);
   rank_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
                                     BlockIdentifier::kFourthBlock);
-  EXPECT_EQ(rank_disjoint_FC_set_.GetFullCompressionTotalPointersUpdates(), 2);
+  EXPECT_EQ(rank_disjoint_FC_set_.GetTotalPointersUpdates(), 2);
 }
 #endif
 

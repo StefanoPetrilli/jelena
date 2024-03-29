@@ -51,6 +51,12 @@ class RankUnionFullCompression : public RankUnion<T> {
   T FindBlock(T element) override {
     return this->FindBlockFullCompression(element);
   }
+
+#ifdef FULL_BENCHMARK
+  T GetTotalPointersUpdates() override {
+    return this->GetFullCompressionTotalPointersUpdates();
+  }
+#endif
 };
 
 template <typename T>
@@ -61,6 +67,12 @@ class RankUnionPathSplitting : public RankUnion<T> {
   T FindBlock(T element) override {
     return this->FindBlockPathSplitting(element);
   }
+
+#ifdef FULL_BENCHMARK
+  T GetTotalPointersUpdates() override {
+    return this->GetPathSplittingTotalPointersUpdates();
+  }
+#endif
 };
 
 template <typename T>
@@ -71,6 +83,12 @@ class RankUnionPathHalving : public RankUnion<T> {
   T FindBlock(T element) override {
     return this->FindBlockPathHalving(element);
   }
+
+#ifdef FULL_BENCHMARK
+  T GetTotalPointersUpdates() override {
+    return this->GetPathHalvingPointersUpdates();
+  }
+#endif
 };
 
 }  // namespace disjoint_set

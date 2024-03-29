@@ -10,7 +10,9 @@ class DisjointSet {
   std::vector<T> blocks_;
   T distinct_blocks_;
   T GetFather(T element) { return this->blocks_.at(element); };
-  virtual T IsNotRoot(T element) = 0;
+  virtual bool IsNotRoot(T element) = 0;
+  bool IsRoot(T element) { return !this->IsNotRoot(element); };
+
 #ifdef FULL_BENCHMARK
   std::optional<T> total_path_length_;
 #endif
@@ -21,7 +23,7 @@ class DisjointSet {
   };
 
   T FindBlockFullCompression(T element) {
-    auto representative = this->FindBlock(element);
+    auto representative = DisjointSet<T>::FindBlock(element);
 
     T current_index = element, previous_index;
 
@@ -41,6 +43,9 @@ class DisjointSet {
     while (this->IsNotRoot(current_index)) {
       previous_index = current_index;
       current_index = this->GetFather(current_index);
+      if (this->IsRoot(current_index))
+        break;
+
       this->blocks_.at(previous_index) = this->GetFather(current_index);
     }
 
@@ -55,6 +60,9 @@ class DisjointSet {
     while (IsNotRoot(current_index)) {
       previous_index = current_index;
       current_index = this->GetFather(current_index);
+      if (this->IsRoot(current_index))
+        break;
+
       if (is_even)
         this->blocks_.at(previous_index) = this->GetFather(current_index);
 
@@ -111,12 +119,13 @@ class DisjointSet {
     return this->total_path_length_.value();
   }
 
-  T GetRootsChildrens() {
-    return this->blocks_.size() - this->distinct_blocks_;
+  T virtual GetTotalPointersUpdates() {
+    return 0;
   }
 
   T GetFullCompressionTotalPointersUpdates() {
-    return this->GetTotalPathlength() - this->GetRootsChildrens();
+    return this->GetTotalPathlength() -
+           (this->blocks_.size() - this->distinct_blocks_);
   }
 
   T GetPathSplittingTotalPointersUpdates() {

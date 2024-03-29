@@ -26,8 +26,17 @@ class DisjointSetBenchmark : public ::testing::Test {
   std::mt19937 rng = std::mt19937(SEED);
 
   static std::ofstream quick_union_statistics_;
+  static std::ofstream quick_union_FC_statistics_;
+  static std::ofstream quick_union_PS_statistics_;
+  static std::ofstream quick_union_PH_statistics_;
   static std::ofstream weight_union_statistics_;
+  static std::ofstream weight_union_FC_statistics_;
+  static std::ofstream weight_union_PS_statistics_;
+  static std::ofstream weight_union_PH_statistics_;
   static std::ofstream rank_union_statistics_;
+  static std::ofstream rank_union_FC_statistics_;
+  static std::ofstream rank_union_PS_statistics_;
+  static std::ofstream rank_union_PH_statistics_;
 
   void SetUp() override {
     for (size_t i = 0; i < kSize_; i++)
@@ -40,30 +49,65 @@ class DisjointSetBenchmark : public ::testing::Test {
 
   static void SetUpTestSuite() {
     std::string table_head =
-        "| Number of Blocks | Cycle count | TPL | TPUFC | TPUPS | TPUPH | "
-        "Normalized TPL | Normalized TPUFC | Normalized TPUPS | "
-        "Normalized TPUPH | Total Cost FC | Total Cost PS | Total Cost PH |\n "
-        "| - "
-        "| - | - | - | - | - | - | - | - | - | - | - | - |\n";
+        "| Number of Blocks | Cycle count | TPL | TPU | Normalized TPL | "
+        "Normalized TPU | Total Cost | Normalized Total Cost |\n"
+        "| - | - | - | - | - | - | - | - |\n";
 
     quick_union_statistics_.open(
         "benchmark/disjoint_set/outputs/quick_union.md");
+    quick_union_FC_statistics_.open(
+        "benchmark/disjoint_set/outputs/quick_union_FC.md");
+    quick_union_PS_statistics_.open(
+        "benchmark/disjoint_set/outputs/quick_union_PS.md");
+    quick_union_PH_statistics_.open(
+        "benchmark/disjoint_set/outputs/quick_union_PH.md");
     weight_union_statistics_.open(
         "benchmark/disjoint_set/outputs/weight_union.md");
+    weight_union_FC_statistics_.open(
+        "benchmark/disjoint_set/outputs/weight_union_FC.md");
+    weight_union_PS_statistics_.open(
+        "benchmark/disjoint_set/outputs/weight_union_PS.md");
+    weight_union_PH_statistics_.open(
+        "benchmark/disjoint_set/outputs/weight_union_PH.md");
     rank_union_statistics_.open("benchmark/disjoint_set/outputs/rank_union.md");
+    rank_union_FC_statistics_.open(
+        "benchmark/disjoint_set/outputs/rank_union_FC.md");
+    rank_union_PS_statistics_.open(
+        "benchmark/disjoint_set/outputs/rank_union_PS.md");
+    rank_union_PH_statistics_.open(
+        "benchmark/disjoint_set/outputs/rank_union_PH.md");
+
     quick_union_statistics_ << table_head;
+    quick_union_FC_statistics_ << table_head;
+    quick_union_PS_statistics_ << table_head;
+    quick_union_PH_statistics_ << table_head;
     weight_union_statistics_ << table_head;
+    weight_union_FC_statistics_ << table_head;
+    weight_union_PS_statistics_ << table_head;
+    weight_union_PH_statistics_ << table_head;
     rank_union_statistics_ << table_head;
+    rank_union_FC_statistics_ << table_head;
+    rank_union_PS_statistics_ << table_head;
+    rank_union_PH_statistics_ << table_head;
   }
 
   static void TearDownTestSuite() {
     quick_union_statistics_.close();
+    quick_union_FC_statistics_.close();
+    quick_union_PS_statistics_.close();
+    quick_union_PH_statistics_.close();
     weight_union_statistics_.close();
+    weight_union_FC_statistics_.close();
+    weight_union_PS_statistics_.close();
+    weight_union_PH_statistics_.close();
     rank_union_statistics_.close();
+    rank_union_FC_statistics_.close();
+    rank_union_PS_statistics_.close();
+    rank_union_PH_statistics_.close();
   }
 
   template <typename DisjointSetType>
-  void RunBenchmark(std::ofstream& statistics_file) {
+  void RunBenchmark(std::ofstream& statistics_file, bool isFC = false) {
     std::vector<Statistics> statistics((kSize_ / kDelta_) + 1);
     DisjointSetType disjoint_set(0);
 
@@ -88,9 +132,7 @@ class DisjointSetBenchmark : public ::testing::Test {
           statistics.at(change_counter / kDelta_)
               .Update(cycles, disjoint_set.GetDistinctBlocks(),
                       disjoint_set.GetTotalPathlength(),
-                      disjoint_set.GetFullCompressionTotalPointersUpdates(),
-                      disjoint_set.GetPathSplittingTotalPointersUpdates(),
-                      disjoint_set.GetPathHalvingPointersUpdates());
+                      disjoint_set.GetTotalPointersUpdates());
         }
       }
     }
@@ -98,13 +140,13 @@ class DisjointSetBenchmark : public ::testing::Test {
     for (auto element : statistics) {
       if (element.counter > kCutoff_)
         WriteStatistics(statistics_file, element, this->kSize_,
-                        this->kEpsilon_);
+                        this->kEpsilon_, isFC);
     }
   }
 
   void WriteStatistics(std::ostream& file, Statistics statistics,
-                       int32_t normalization_size, int16_t epsilon) {
-    file << statistics.ToString(normalization_size, epsilon) << std::endl;
+                       int32_t normalization_size, int16_t epsilon, bool isFC) {
+    file << statistics.ToString(normalization_size, epsilon, isFC) << std::endl;
   }
 };
 }  // namespace disjoint_set_benchmark

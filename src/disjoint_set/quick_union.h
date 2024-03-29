@@ -9,7 +9,7 @@ template <typename T,
           typename = typename std::enable_if<std::is_unsigned<T>::value>::type>
 class QuickUnion : public DisjointSet<T> {
  protected:
-  T IsNotRoot(T element) override {
+  bool IsNotRoot(T element) override {
     return this->blocks_.at(element) != element;
   };
 
@@ -42,6 +42,12 @@ class QuickUnionFullCompression : public QuickUnion<T> {
   T FindBlock(T element) override {
     return this->FindBlockFullCompression(element);
   }
+
+#ifdef FULL_BENCHMARK
+  T GetTotalPointersUpdates() override {
+    return this->GetFullCompressionTotalPointersUpdates();
+  }
+#endif
 };
 
 template <typename T,
@@ -53,6 +59,12 @@ class QuickUnionPathSplitting : public QuickUnion<T> {
   T FindBlock(T element) override {
     return this->FindBlockPathSplitting(element);
   }
+
+#ifdef FULL_BENCHMARK
+  T GetTotalPointersUpdates() override {
+    return this->GetPathSplittingTotalPointersUpdates();
+  }
+#endif
 };
 
 template <typename T,
@@ -64,6 +76,12 @@ class QuickUnionPathHalving : public QuickUnion<T> {
   T FindBlock(T element) override {
     return this->FindBlockPathHalving(element);
   }
+
+#ifdef FULL_BENCHMARK
+  T GetTotalPointersUpdates() override {
+    return this->GetPathHalvingPointersUpdates();
+  }
+#endif
 };
 
 }  // namespace disjoint_set

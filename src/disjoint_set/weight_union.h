@@ -8,7 +8,7 @@ namespace disjoint_set {
 template <typename T>
 class WeightUnion : public DisjointSet<T> {
  private:
-  T IsNotRoot(T element) override { return this->blocks_.at(element) >= 0; };
+  bool IsNotRoot(T element) override { return this->blocks_.at(element) >= 0; };
   T GetRootWeight(T root) { return this->blocks_.at(root) * -1; }
 
   void MergeRoots(T larger_root, T smaller_root, T smaller_root_weight) {
@@ -48,6 +48,12 @@ class WeightUnionFullCompression : public WeightUnion<T> {
   T FindBlock(T element) override {
     return this->FindBlockFullCompression(element);
   }
+
+#ifdef FULL_BENCHMARK
+  T GetTotalPointersUpdates() override {
+    return this->GetFullCompressionTotalPointersUpdates();
+  }
+#endif
 };
 
 template <typename T>
@@ -58,6 +64,12 @@ class WeightUnionPathSplitting : public WeightUnion<T> {
   T FindBlock(T element) override {
     return this->FindBlockPathSplitting(element);
   }
+
+#ifdef FULL_BENCHMARK
+  T GetTotalPointersUpdates() override {
+    return this->GetPathSplittingTotalPointersUpdates();
+  }
+#endif
 };
 
 template <typename T>
@@ -68,6 +80,12 @@ class WeightUnionPathHalving : public WeightUnion<T> {
   T FindBlock(T element) override {
     return this->FindBlockPathHalving(element);
   }
+
+#ifdef FULL_BENCHMARK
+  T GetTotalPointersUpdates() override {
+    return this->GetPathHalvingPointersUpdates();
+  }
+#endif
 };
 
 }  // namespace disjoint_set

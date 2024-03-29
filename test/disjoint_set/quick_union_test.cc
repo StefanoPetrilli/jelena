@@ -288,7 +288,7 @@ TEST_F(
                                BlockIdentifier::kTenthBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
                                BlockIdentifier::kEightBlock);
-  EXPECT_EQ(quick_union_FC_set_.GetFullCompressionTotalPointersUpdates(), 4);
+  EXPECT_EQ(quick_union_FC_set_.GetTotalPointersUpdates(), 4);
 }
 
 TEST_F(
@@ -306,7 +306,7 @@ TEST_F(
                                BlockIdentifier::kFirstBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kFirstBlock);
-  EXPECT_EQ(quick_union_FC_set_.GetFullCompressionTotalPointersUpdates(), 4);
+  EXPECT_EQ(quick_union_FC_set_.GetTotalPointersUpdates(), 4);
 }
 
 TEST_F(QuickUnionTest,
@@ -317,7 +317,7 @@ TEST_F(QuickUnionTest,
                                BlockIdentifier::kSecondBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kFirstBlock);
-  EXPECT_EQ(quick_union_FC_set_.GetFullCompressionTotalPointersUpdates(), 3);
+  EXPECT_EQ(quick_union_FC_set_.GetTotalPointersUpdates(), 3);
 }
 
 TEST_F(
@@ -335,7 +335,7 @@ TEST_F(
                                BlockIdentifier::kTenthBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
                                BlockIdentifier::kEightBlock);
-  EXPECT_EQ(quick_union_PS_set_.GetPathSplittingTotalPointersUpdates(), 4);
+  EXPECT_EQ(quick_union_PS_set_.GetTotalPointersUpdates(), 4);
 }
 
 TEST_F(
@@ -353,7 +353,7 @@ TEST_F(
                                BlockIdentifier::kFirstBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kFirstBlock);
-  EXPECT_EQ(quick_union_PS_set_.GetPathSplittingTotalPointersUpdates(), 4);
+  EXPECT_EQ(quick_union_PS_set_.GetTotalPointersUpdates(), 4);
 }
 
 TEST_F(QuickUnionTest,
@@ -364,7 +364,7 @@ TEST_F(QuickUnionTest,
                                BlockIdentifier::kSecondBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kFirstBlock);
-  EXPECT_EQ(quick_union_PS_set_.GetPathSplittingTotalPointersUpdates(), 3);
+  EXPECT_EQ(quick_union_PS_set_.GetTotalPointersUpdates(), 3);
 }
 
 TEST_F(
@@ -382,7 +382,7 @@ TEST_F(
                                BlockIdentifier::kTenthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
                                BlockIdentifier::kEightBlock);
-  EXPECT_EQ(quick_union_FH_set_.GetPathHalvingPointersUpdates(), 3);
+  EXPECT_EQ(quick_union_FH_set_.GetTotalPointersUpdates(), 3);
 }
 
 TEST_F(
@@ -400,7 +400,7 @@ TEST_F(
                                BlockIdentifier::kFirstBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kFirstBlock);
-  EXPECT_EQ(quick_union_FH_set_.GetPathHalvingPointersUpdates(), 3);
+  EXPECT_EQ(quick_union_FH_set_.GetTotalPointersUpdates(), 3);
 }
 
 TEST_F(QuickUnionTest,
@@ -411,7 +411,7 @@ TEST_F(QuickUnionTest,
                                BlockIdentifier::kSecondBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kFirstBlock);
-  EXPECT_EQ(quick_union_FH_set_.GetPathHalvingPointersUpdates(), 2);
+  EXPECT_EQ(quick_union_FH_set_.GetTotalPointersUpdates(), 2);
 }
 #endif
 
