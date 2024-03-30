@@ -374,7 +374,7 @@ TEST_F(RankUnionTest, AfterComplexMergeGetTotalPathlength_Expect_CorrectValue) {
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                  BlockIdentifier::kFifthBlock);
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                                 BlockIdentifier::kNineBlock);
+                                 BlockIdentifier::kNinthBlock);
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                  BlockIdentifier::kTenthBlock);
   rank_disjoint_set_.MergeBlocks(BlockIdentifier::kEightBlock,
@@ -407,7 +407,7 @@ TEST_F(
   rank_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                     BlockIdentifier::kFifthBlock);
   rank_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                                    BlockIdentifier::kNineBlock);
+                                    BlockIdentifier::kNinthBlock);
   rank_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                     BlockIdentifier::kTenthBlock);
   rank_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kEightBlock,

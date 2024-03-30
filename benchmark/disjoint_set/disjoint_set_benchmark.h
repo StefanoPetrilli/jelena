@@ -17,10 +17,10 @@
 namespace disjoint_set_benchmark {
 class DisjointSetBenchmark : public ::testing::Test {
  protected:
-  const uint16_t kSize_ = 101;
-  const uint16_t kDelta_ = 10;
+  const uint16_t kSize_ = 10001;
+  const uint16_t kDelta_ = kSize_ / 10;
   const uint16_t kCutoff_ = 5;
-  const uint16_t kNumberExecution_ = 10;
+  const uint16_t kNumberExecution_ = 20;
   const uint16_t kEpsilon_ = 2;
 
   std::vector<std::tuple<uint16_t, uint16_t>> distinct_pairs;

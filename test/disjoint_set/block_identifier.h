@@ -12,7 +12,7 @@ enum BlockIdentifier : uint16_t {
   kSixthBlock = 5,
   kSeventhBlock = 6,
   kEightBlock = 7,
-  kNineBlock = 8,
+  kNinthBlock = 8,
   kTenthBlock = 9
 };
 }

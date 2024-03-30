@@ -436,7 +436,7 @@ TEST_F(WeightUnionTest,
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                      BlockIdentifier::kFifthBlock);
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                                     BlockIdentifier::kNineBlock);
+                                     BlockIdentifier::kNinthBlock);
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                      BlockIdentifier::kTenthBlock);
   weighted_disjoint_set_.MergeBlocks(BlockIdentifier::kEightBlock,
@@ -469,7 +469,7 @@ TEST_F(
   weighted_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                      BlockIdentifier::kFifthBlock);
   weighted_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                                     BlockIdentifier::kNineBlock);
+                                     BlockIdentifier::kNinthBlock);
   weighted_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                      BlockIdentifier::kTenthBlock);
   weighted_disjoint_FC_set_.MergeBlocks(BlockIdentifier::kEightBlock,
@@ -514,7 +514,7 @@ TEST_F(
   weighted_disjoint_PS_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                      BlockIdentifier::kFifthBlock);
   weighted_disjoint_PS_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                                     BlockIdentifier::kNineBlock);
+                                     BlockIdentifier::kNinthBlock);
   weighted_disjoint_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                      BlockIdentifier::kTenthBlock);
   weighted_disjoint_PS_set_.MergeBlocks(BlockIdentifier::kEightBlock,
@@ -560,7 +560,7 @@ TEST_F(
   weighted_disjoint_PH_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                      BlockIdentifier::kFifthBlock);
   weighted_disjoint_PH_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                                     BlockIdentifier::kNineBlock);
+                                     BlockIdentifier::kNinthBlock);
   weighted_disjoint_PH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                      BlockIdentifier::kTenthBlock);
   weighted_disjoint_PH_set_.MergeBlocks(BlockIdentifier::kEightBlock,

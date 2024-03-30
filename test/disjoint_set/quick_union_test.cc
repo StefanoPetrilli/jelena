@@ -72,7 +72,7 @@ TEST_F(QuickUnionTest, AfterComplexMerge_Expect_CorrectDistinctBlocksValue) {
   quick_union_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                BlockIdentifier::kFifthBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kNineBlock);
+                               BlockIdentifier::kNinthBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kTenthBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
@@ -85,7 +85,7 @@ TEST_F(QuickUnionTest, AfterComplexMerge_Expect_CorrectDistinctBlocksValue) {
   EXPECT_EQ(quick_union_set_.FindBlock(kSixthBlock), kSixthBlock);
   EXPECT_EQ(quick_union_set_.FindBlock(kSeventhBlock), kEightBlock);
   EXPECT_EQ(quick_union_set_.FindBlock(kEightBlock), kEightBlock);
-  EXPECT_EQ(quick_union_set_.FindBlock(kNineBlock), kTenthBlock);
+  EXPECT_EQ(quick_union_set_.FindBlock(kNinthBlock), kTenthBlock);
   EXPECT_EQ(quick_union_set_.FindBlock(kTenthBlock), kTenthBlock);
   EXPECT_EQ(quick_union_set_.GetDistinctBlocks(), 4);
 }
@@ -238,7 +238,7 @@ TEST_F(QuickUnionTest,
   quick_union_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                BlockIdentifier::kFifthBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kNineBlock);
+                               BlockIdentifier::kNinthBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kTenthBlock);
   quick_union_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
@@ -283,7 +283,7 @@ TEST_F(
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                BlockIdentifier::kFifthBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kNineBlock);
+                               BlockIdentifier::kNinthBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kTenthBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
@@ -330,7 +330,7 @@ TEST_F(
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                BlockIdentifier::kFifthBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kNineBlock);
+                               BlockIdentifier::kNinthBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kTenthBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
@@ -377,7 +377,7 @@ TEST_F(
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
                                BlockIdentifier::kFifthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kNineBlock);
+                               BlockIdentifier::kNinthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kTenthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
@@ -412,6 +412,52 @@ TEST_F(QuickUnionTest,
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
                                BlockIdentifier::kFirstBlock);
   EXPECT_EQ(quick_union_FH_set_.GetTotalPointersUpdates(), 2);
+}
+
+TEST_F(
+    QuickUnionTest,
+    AfterMultipleMergesPathHalvingTotalPointersUpdates_Expect_CorrectValue) {
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                               BlockIdentifier::kFourthBlock);
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFifthBlock,
+                               BlockIdentifier::kSixthBlock);
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
+                               BlockIdentifier::kEightBlock);
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kNinthBlock,
+                               BlockIdentifier::kTenthBlock);
+  EXPECT_EQ(quick_union_FH_set_.GetTotalPointersUpdates(), 0);
+}
+
+TEST_F(
+    QuickUnionTest,
+    AfterMergingTwoLongTreesPathHalvingTotalPointersUpdates_Expect_CorrectValue) {
+  // Create first long tree
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
+                               BlockIdentifier::kSecondBlock);
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
+                               BlockIdentifier::kThirdBlock);
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
+                               BlockIdentifier::kFourthBlock);
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
+                               BlockIdentifier::kFifthBlock);
+
+  // Create second long tree
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSixthBlock,
+                               BlockIdentifier::kSeventhBlock);
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
+                               BlockIdentifier::kEightBlock);
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kEightBlock,
+                               BlockIdentifier::kNinthBlock);
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kNinthBlock,
+                               BlockIdentifier::kTenthBlock);
+
+  // Merge the two trees
+  quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFifthBlock,
+                               BlockIdentifier::kTenthBlock);
+
+  EXPECT_EQ(quick_union_FH_set_.GetTotalPointersUpdates(), 10);
 }
 #endif
 

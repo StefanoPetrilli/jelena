@@ -79,6 +79,7 @@
         "hash_map": "cpp",
         "charconv": "cpp",
         "span": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "ranges": "cpp"
     }
 }
