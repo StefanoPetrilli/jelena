@@ -3,11 +3,11 @@
 
 namespace disjoint_set_benchmark {
 struct Statistics {
-  int32_t distinct_blocks;
-  int32_t cycles;
-  int32_t total_path_length;
-  int32_t total_pointers_update;
-  int32_t counter;
+  int64_t distinct_blocks;
+  int64_t cycles;
+  int64_t total_path_length;
+  int64_t total_pointers_update;
+  int64_t counter;
 
   Statistics()
       : distinct_blocks(0),
@@ -16,8 +16,8 @@ struct Statistics {
         total_pointers_update(0),
         counter(0) {}
 
-  void Update(int32_t cycles, int32_t distinct_blocks,
-              int32_t total_path_length, int32_t total_pointers_update) {
+  void Update(int64_t cycles, int64_t distinct_blocks,
+              int64_t total_path_length, int64_t total_pointers_update) {
     this->cycles += cycles;
     this->distinct_blocks += distinct_blocks;
     this->total_path_length += total_path_length;
@@ -25,11 +25,11 @@ struct Statistics {
     this->counter++;
   }
 
-  std::string ToString(int32_t normalization_size, int16_t epsilon,
+  std::string ToString(int64_t normalization_size, int16_t epsilon,
                        bool isFC) const {
-    auto TPL = total_path_length / counter;
-    auto TPU = total_pointers_update / counter;
-    int32_t total_cost;
+    int64_t TPL = total_path_length / counter;
+    int64_t TPU = total_pointers_update / counter;
+    int64_t total_cost;
     if (isFC) {
       total_cost = 2 * TPL + epsilon * TPU;
     } else {
