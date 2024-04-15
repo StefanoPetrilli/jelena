@@ -39,8 +39,7 @@
 			"label": "Build and Test",
 			"dependsOn": [
 				"CMake: build",
-				"Run tests",
-				"Run benchmarks"
+				"Run tests"
 			],
 			"dependsOrder": "sequence",
 			"group": {

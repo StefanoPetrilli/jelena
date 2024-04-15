@@ -13,10 +13,12 @@ add_executable(
   disjoint_set/rank_union_test.h
   disjoint_set/weighted_union_test.cc
   disjoint_set/weighted_union_test.h
+  kd_tree/kd_tree_test.cc
+  kd_tree/kd_tree_test.h
 )
 
 target_link_libraries(jelena_tests PUBLIC GTest::gtest_main node linked_list
-                                          tree disjoint_set)
+                                          tree disjoint_set kd_tree)
 
 include(GoogleTest)
 gtest_discover_tests(jelena_tests)
