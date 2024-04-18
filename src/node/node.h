@@ -4,6 +4,12 @@
 #include <sstream>
 #include <string>
 
+//FIXME: this folder should not exist. As every data strcutre has his own
+//       variation of a node it's too difficult to have a generalized version
+//       and use inheritance.
+//       This should be removed completely. Every DS should implement his own
+//       version of this class.
+
 namespace node {
 template <typename T>
 class Node {
@@ -23,7 +29,6 @@ class Node {
   }
 
   std::string ToString() {
-    //TODO(StefanoPetrilli): Fully understand this snippet
     std::ostringstream oss;
     oss << value;
     return oss.str();
