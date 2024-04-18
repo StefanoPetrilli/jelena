@@ -1,39 +1,75 @@
 #pragma once
 
 #include <memory>
-#include "node.h"
-#include "tree.h"
 
 namespace tree {
 
 template <typename T>
-class BinaryTree : public Tree<T> {
+class BinaryTree {
 
- public:
-  void Insert(T value) override {
-    if (this->IsEmpty()) {
-      this->head_ = std::make_shared<node::Node<T>>(value);
+ private:
+  class Node {
+   private:
+    T value;
+    std::shared_ptr<Node> previous_node;
+    std::shared_ptr<Node> next_node;
+
+   public:
+    Node(T value, std::shared_ptr<Node> previous_node = nullptr,
+         std::shared_ptr<Node> next_node = nullptr)
+        : value(value), previous_node(previous_node), next_node(next_node) {}
+
+    ~Node() {
+      previous_node = nullptr;
+      next_node = nullptr;
     }
 
-    if (this->head_->GetValue() < value &&
-        this->head_->GetNextNode() == nullptr) {
-      this->head_->SetNext(std::make_shared<node::Node<T>>(value));
+    std::string ToString() {
+      std::ostringstream oss;
+      oss << value;
+      return oss.str();
+    }
+
+    bool HasNext() { return this->next_node != nullptr; }
+    bool HasPrevious() { return this->previous_node != nullptr; }
+
+    void SetNext(std::shared_ptr<Node> node) { next_node = node; }
+    void SetPrevious(std::shared_ptr<Node> node) { previous_node = node; }
+
+    std::shared_ptr<Node> GetNextNode() { return next_node; }
+    std::shared_ptr<Node> GetPreviousNode() { return previous_node; }
+
+    T GetValue() { return this->value; }
+  };
+
+  std::shared_ptr<Node> head_ = nullptr;
+
+ public:
+  bool IsEmpty() { return this->head_ == nullptr; }
+
+  void Insert(T value) {
+    if (this->IsEmpty()) {
+      head_ = std::make_shared<Node>(value);
+    }
+
+    if (head_->GetValue() < value && head_->GetNextNode() == nullptr) {
+      head_->SetNext(std::make_shared<Node>(value));
     }
   }
 
-  virtual bool Remove(T value) override {
+  bool Remove(T value) {
     if (this->IsEmpty())
       return false;
 
-    if (this->head_->GetValue() == value) {
-      this->head_ = nullptr;
+    if (head_->GetValue() == value) {
+      head_ = nullptr;
       return true;
     }
 
     return true;
   }
 
-  virtual std::shared_ptr<node::Node<T>> Search(T value) override {
+  std::shared_ptr<Node> Search(T value) {
     if (this->IsEmpty())
       return nullptr;
 
