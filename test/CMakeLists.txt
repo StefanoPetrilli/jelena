@@ -7,6 +7,8 @@ add_executable(
   linked_list/linked_list_test.h
   tree/binary_tree_test.cc
   tree/binary_tree_test.h
+  tree/b_tree_test.h
+  tree/b_tree_test.cc
   disjoint_set/quick_union_test.cc
   disjoint_set/quick_union_test.h
   disjoint_set/rank_union_test.cc

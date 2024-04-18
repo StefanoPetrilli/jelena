@@ -1,12 +1,12 @@
 #pragma once
 
 #include <gtest/gtest.h>
-#include "binary_tree.h"
+#include "b_tree.h"
 
 namespace tree_test {
-class BinaryTreeTest : public ::testing::Test {
+class BTreeTest : public ::testing::Test {
  protected:
-  tree::BinaryTree<int> empty_tree = tree::BinaryTree<int>();
+  tree::BTree<uint16_t> empty_tree = tree::BTree<uint16_t>(5);
   void SetUp() override {}
   void TearDown() override {}
 };
