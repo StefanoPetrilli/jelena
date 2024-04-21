@@ -12,6 +12,7 @@ class BTree {
   class Node {
    private:
     OrderType order_;
+    Node* parent_;
     std::vector<std::shared_ptr<Node>> pointers_;
     std::vector<ContentType> values_;
 
@@ -22,7 +23,7 @@ class BTree {
 
     void Split() {
       size_t middle_element = order_ / 2;
-      auto middle = values_.at(middle_element);
+      ContentType middle = values_.at(middle_element);
       std::vector<ContentType> first_half, second_half;
 
       for (size_t i = 0; i < middle_element; i++)
@@ -31,8 +32,8 @@ class BTree {
       for (size_t i = middle_element + 1; i < values_.size(); i++)
         second_half.push_back(values_.at(i));
 
-      pointers_.push_back(std::make_shared<Node>(order_, first_half));
-      pointers_.push_back(std::make_shared<Node>(order_, second_half));
+      pointers_.push_back(std::make_shared<Node>(order_, first_half, this));
+      pointers_.push_back(std::make_shared<Node>(order_, second_half, this));
 
       values_.clear();
       values_.push_back(middle);
@@ -48,12 +49,12 @@ class BTree {
       if (DoOverflow())
         Split();
     }
-    bool IsEmpty() { return values_.empty(); }
-    Node(OrderType order) : order_(order){};
-    Node(OrderType order, std::vector<ContentType> values)
-        : order_(order), values_(values){};
 
-    ~Node(){};
+    bool IsEmpty() { return values_.empty(); }
+
+    Node(OrderType order) : order_(order), parent_(this){};
+    Node(OrderType order, std::vector<ContentType> values, Node* parent)
+        : order_(order), parent_{parent}, values_(values){};
 
     std::string ValuesToString(const std::vector<ContentType>& values) {
       if (values.empty())
@@ -88,7 +89,6 @@ class BTree {
           result += pointers_.at(i - 1)->ToString();
         }
       }
-      //TODO: add left part
       return result;
     }
   };
@@ -104,10 +104,7 @@ class BTree {
 
   OrderType GetOrder() { return order_; }
 
-  void Insert(ContentType value) {
-    if (head_->IsLeaf())
-      head_->Insert(value);
-  }
+  void Insert(ContentType value) { head_->Insert(value); }
 
   std::string ToString() { return head_->ToString(); }
 };
