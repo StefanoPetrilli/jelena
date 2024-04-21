@@ -40,8 +40,7 @@ TEST_F(BTreeTest, AfterSplit_ToString_ReturnsExpectedString) {
   empty_tree.Insert(3);
   empty_tree.Insert(4);
   auto actual = empty_tree.ToString();
-  std::string expected =
-      "[Values: (0, 1)][Values: (2)][Values: (3, 4)]";
+  std::string expected = "[Values: (0, 1)][Values: (2)][Values: (3, 4)]";
 
   EXPECT_EQ(actual, expected);
 }

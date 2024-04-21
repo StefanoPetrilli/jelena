@@ -92,94 +92,87 @@ TEST_F(QuickUnionTest, AfterComplexMerge_Expect_CorrectDistinctBlocksValue) {
 
 TEST_F(QuickUnionTest,
        UsingFullCompressionAfterInstantiation_Expect_ValueEqualToIndex) {
-  EXPECT_EQ(quick_union_FC_set_.FindBlock(kFifthBlock),
-            kFifthBlock);
+  EXPECT_EQ(quick_union_FC_set_.FindBlock(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(QuickUnionTest, UsingFullCompressionAfterMerge_Expect_CorrectValue) {
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(
-      quick_union_FC_set_.FindBlock(BlockIdentifier::kFirstBlock),
-      BlockIdentifier::kFourthBlock);
+  EXPECT_EQ(quick_union_FC_set_.FindBlock(BlockIdentifier::kFirstBlock),
+            BlockIdentifier::kFourthBlock);
 }
 
 TEST_F(QuickUnionTest,
        UsingFullCompressionAfterSeveralMerges_Expect_CorrectValue) {
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
-  EXPECT_EQ(
-      quick_union_FC_set_.FindBlock(BlockIdentifier::kFirstBlock),
-      BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(quick_union_FC_set_.FindBlock(BlockIdentifier::kFirstBlock),
+            BlockIdentifier::kThirdBlock);
 }
 
 TEST_F(QuickUnionTest, UsingFullCompressionAfterFind_Expect_CorrectValue) {
 
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_FC_set_.FindBlock(BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(
-      quick_union_FC_set_.FindBlock(BlockIdentifier::kFirstBlock),
-      BlockIdentifier::kFirstBlock);
+  EXPECT_EQ(quick_union_FC_set_.FindBlock(BlockIdentifier::kFirstBlock),
+            BlockIdentifier::kFirstBlock);
 }
 
 TEST_F(QuickUnionTest,
        UsingPathSplittingAfterInstantiation_Expect_ValueEqualToIndex) {
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   EXPECT_EQ(quick_union_PS_set_.FindBlock(kFifthBlock), kFifthBlock);
 }
 
 TEST_F(QuickUnionTest, UsingPathSplittingAfterMerge_Expect_CorrectValue) {
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(
-      quick_union_PS_set_.FindBlock(BlockIdentifier::kSecondBlock),
-      BlockIdentifier::kFourthBlock);
+  EXPECT_EQ(quick_union_PS_set_.FindBlock(BlockIdentifier::kSecondBlock),
+            BlockIdentifier::kFourthBlock);
 }
 
 TEST_F(QuickUnionTest,
        UsingPathSplittingAfterSeveralMerges_Expect_CorrectValue) {
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
-  EXPECT_EQ(
-      quick_union_PS_set_.FindBlock(BlockIdentifier::kFirstBlock),
-      BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kSecondBlock);
+  EXPECT_EQ(quick_union_PS_set_.FindBlock(BlockIdentifier::kFirstBlock),
+            BlockIdentifier::kThirdBlock);
 }
 
 TEST_F(QuickUnionTest, UsingPathSplittingAfterFind_Expect_CorrectValue) {
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   quick_union_PS_set_.FindBlock(BlockIdentifier::kFourthBlock);
 
-  EXPECT_EQ(
-      quick_union_PS_set_.FindBlock(BlockIdentifier::kFourthBlock),
-      BlockIdentifier::kFirstBlock);
+  EXPECT_EQ(quick_union_PS_set_.FindBlock(BlockIdentifier::kFourthBlock),
+            BlockIdentifier::kFirstBlock);
 }
 
 TEST_F(QuickUnionTest,
@@ -189,11 +182,11 @@ TEST_F(QuickUnionTest,
 
 TEST_F(QuickUnionTest, UsingPathHalvingAfterMerge_Expect_CorrectValue) {
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
 
   EXPECT_EQ(quick_union_FH_set_.FindBlock(BlockIdentifier::kFirstBlock),
             BlockIdentifier::kFourthBlock);
@@ -201,25 +194,24 @@ TEST_F(QuickUnionTest, UsingPathHalvingAfterMerge_Expect_CorrectValue) {
 
 TEST_F(QuickUnionTest, UsingPathHalvingAfterSeveralMerges_Expect_CorrectValue) {
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   EXPECT_EQ(quick_union_FH_set_.FindBlock(BlockIdentifier::kFirstBlock),
             BlockIdentifier::kThirdBlock);
 }
 
 TEST_F(QuickUnionTest, UsingPathHalvingAfterFind_Expect_CorrectValue) {
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   quick_union_FH_set_.FindBlock(BlockIdentifier::kFirstBlock);
 
-  EXPECT_EQ(
-      quick_union_FH_set_.FindBlock(BlockIdentifier::kFourthBlock),
-      BlockIdentifier::kFirstBlock);
+  EXPECT_EQ(quick_union_FH_set_.FindBlock(BlockIdentifier::kFourthBlock),
+            BlockIdentifier::kFirstBlock);
 }
 
 #ifdef FULL_BENCHMARK
@@ -277,17 +269,17 @@ TEST_F(
     QuickUnionTest,
     AfterComplexMergeGetFullCompressionTotalPointersUpdates_Expect_CorrectValue) {
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kFifthBlock);
+                                  BlockIdentifier::kFifthBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kNinthBlock);
+                                  BlockIdentifier::kNinthBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kTenthBlock);
+                                  BlockIdentifier::kTenthBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
-                               BlockIdentifier::kEightBlock);
+                                  BlockIdentifier::kEightBlock);
   EXPECT_EQ(quick_union_FC_set_.GetTotalPointersUpdates(), 4);
 }
 
@@ -295,28 +287,28 @@ TEST_F(
     QuickUnionTest,
     AfterComplexMergeGetFullCompressionTotalPointersUpdates_Expect_CorrectValue2) {
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
-                               BlockIdentifier::kFifthBlock);
+                                  BlockIdentifier::kFifthBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFifthBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSixthBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   EXPECT_EQ(quick_union_FC_set_.GetTotalPointersUpdates(), 4);
 }
 
 TEST_F(QuickUnionTest,
        AfterLinerMergeFullCompressionTotalPointersUpdates_Expect_CorrectValue) {
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_FC_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   EXPECT_EQ(quick_union_FC_set_.GetTotalPointersUpdates(), 3);
 }
 
@@ -324,17 +316,17 @@ TEST_F(
     QuickUnionTest,
     AfterComplexMergeGetPathSplittingTotalPointersUpdates_Expect_CorrectValue) {
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kFifthBlock);
+                                  BlockIdentifier::kFifthBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kNinthBlock);
+                                  BlockIdentifier::kNinthBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kTenthBlock);
+                                  BlockIdentifier::kTenthBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
-                               BlockIdentifier::kEightBlock);
+                                  BlockIdentifier::kEightBlock);
   EXPECT_EQ(quick_union_PS_set_.GetTotalPointersUpdates(), 4);
 }
 
@@ -342,28 +334,28 @@ TEST_F(
     QuickUnionTest,
     AfterComplexMergeGetPathSplittingTotalPointersUpdates_Expect_CorrectValue2) {
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
-                               BlockIdentifier::kFifthBlock);
+                                  BlockIdentifier::kFifthBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFifthBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSixthBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   EXPECT_EQ(quick_union_PS_set_.GetTotalPointersUpdates(), 4);
 }
 
 TEST_F(QuickUnionTest,
        AfterLinerMergePathSplittingTotalPointersUpdates_Expect_CorrectValue) {
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_PS_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   EXPECT_EQ(quick_union_PS_set_.GetTotalPointersUpdates(), 3);
 }
 
@@ -371,17 +363,17 @@ TEST_F(
     QuickUnionTest,
     AfterComplexMergeGetPathHalvingTotalPointersUpdates_Expect_CorrectValue) {
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kFifthBlock);
+                                  BlockIdentifier::kFifthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kNinthBlock);
+                                  BlockIdentifier::kNinthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kTenthBlock);
+                                  BlockIdentifier::kTenthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
-                               BlockIdentifier::kEightBlock);
+                                  BlockIdentifier::kEightBlock);
   EXPECT_EQ(quick_union_FH_set_.GetTotalPointersUpdates(), 3);
 }
 
@@ -389,44 +381,43 @@ TEST_F(
     QuickUnionTest,
     AfterComplexMergeGetPathHalvingTotalPointersUpdates_Expect_CorrectValue2) {
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
-                               BlockIdentifier::kFifthBlock);
+                                  BlockIdentifier::kFifthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFifthBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSixthBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   EXPECT_EQ(quick_union_FH_set_.GetTotalPointersUpdates(), 3);
 }
 
 TEST_F(QuickUnionTest,
        AfterLinerMergePathHalvingTotalPointersUpdates_Expect_CorrectValue) {
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kFirstBlock);
+                                  BlockIdentifier::kFirstBlock);
   EXPECT_EQ(quick_union_FH_set_.GetTotalPointersUpdates(), 2);
 }
 
-TEST_F(
-    QuickUnionTest,
-    AfterMultipleMergesPathHalvingTotalPointersUpdates_Expect_CorrectValue) {
+TEST_F(QuickUnionTest,
+       AfterMultipleMergesPathHalvingTotalPointersUpdates_Expect_CorrectValue) {
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFifthBlock,
-                               BlockIdentifier::kSixthBlock);
+                                  BlockIdentifier::kSixthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
-                               BlockIdentifier::kEightBlock);
+                                  BlockIdentifier::kEightBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kNinthBlock,
-                               BlockIdentifier::kTenthBlock);
+                                  BlockIdentifier::kTenthBlock);
   EXPECT_EQ(quick_union_FH_set_.GetTotalPointersUpdates(), 0);
 }
 
@@ -435,27 +426,27 @@ TEST_F(
     AfterMergingTwoLongTreesPathHalvingTotalPointersUpdates_Expect_CorrectValue) {
   // Create first long tree
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFirstBlock,
-                               BlockIdentifier::kSecondBlock);
+                                  BlockIdentifier::kSecondBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSecondBlock,
-                               BlockIdentifier::kThirdBlock);
+                                  BlockIdentifier::kThirdBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kThirdBlock,
-                               BlockIdentifier::kFourthBlock);
+                                  BlockIdentifier::kFourthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFourthBlock,
-                               BlockIdentifier::kFifthBlock);
+                                  BlockIdentifier::kFifthBlock);
 
   // Create second long tree
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSixthBlock,
-                               BlockIdentifier::kSeventhBlock);
+                                  BlockIdentifier::kSeventhBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kSeventhBlock,
-                               BlockIdentifier::kEightBlock);
+                                  BlockIdentifier::kEightBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kEightBlock,
-                               BlockIdentifier::kNinthBlock);
+                                  BlockIdentifier::kNinthBlock);
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kNinthBlock,
-                               BlockIdentifier::kTenthBlock);
+                                  BlockIdentifier::kTenthBlock);
 
   // Merge the two trees
   quick_union_FH_set_.MergeBlocks(BlockIdentifier::kFifthBlock,
-                               BlockIdentifier::kTenthBlock);
+                                  BlockIdentifier::kTenthBlock);
 
   EXPECT_EQ(quick_union_FH_set_.GetTotalPointersUpdates(), 10);
 }
