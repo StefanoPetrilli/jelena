@@ -97,11 +97,8 @@ class BTree {
     }
 
     void Insert(ContentType value) {
-      values_.push_back(value);
-      // TODO(StefanoPetrilli): This is overpower. As we know the array to be
-      // already sorted it would make more sense to just put the element to be
-      // inserted in the right position
-      std::sort(values_.begin(), values_.end());
+      auto position = std::upper_bound(values_.begin(), values_.end(), value);
+      values_.insert(position, value);
 
       if (DoOverflow())
         Split();
