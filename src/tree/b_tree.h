@@ -27,14 +27,9 @@ class BTree {
 
     bool DoOverflow() { return values_.size() >= order_; }
 
-    //TODO(StefanoPetrilli): transform this into a binary search
     uint16_t FindInsertionLocation(ContentType value) {
-      uint16_t i;
-      for (i = 0; i < values_.size(); i++) {
-        if (value > values_.at(i))
-          return i;
-      }
-      return 0;
+      auto it = std::lower_bound(values_.begin(), values_.end(), value);
+      return std::distance(values_.begin(), it);
     }
 
     void InsertValue(ContentType value, uint16_t position) {
@@ -45,6 +40,10 @@ class BTree {
                         std::shared_ptr<Node> second_half, uint16_t location) {
       pointers_[location] = second_half;
       pointers_.insert(pointers_.begin() + location, first_half);
+    }
+
+    void InsertPointer(std::shared_ptr<Node> pointer) {
+      pointers_.push_back(pointer);
     }
 
     void Split() {
@@ -58,22 +57,42 @@ class BTree {
       for (size_t i = middle_element + 1; i < values_.size(); i++)
         second_half.push_back(values_.at(i));
 
-      if (IsRoot()) {
-        pointers_.push_back(std::make_shared<Node>(order_, first_half, this));
-        pointers_.push_back(std::make_shared<Node>(order_, second_half, this));
+      auto left_node = std::make_shared<Node>(order_, first_half, this),
+           right_node = std::make_shared<Node>(order_, second_half, this);
+
+      if (!IsLeaf()) {
+        for (size_t i = 0; i < middle_element; i++) {
+          left_node->InsertPointer(pointers_.at(i));
+          left_node->InsertPointer(pointers_.at(i + 1));
+        }
+
+        for (size_t i = middle_element + 1; i < values_.size(); i++) {
+          right_node->InsertPointer(pointers_.at(i));
+          right_node->InsertPointer(pointers_.at(i + 1));
+        }
+      }
+
+      if (IsRoot() && IsLeaf()) {
+        pointers_.push_back(left_node);
+        pointers_.push_back(right_node);
 
         values_.clear();
         values_.push_back(middle);
+      } else if (IsRoot()) {
+        pointers_.clear();
+        pointers_.push_back(left_node);
+        pointers_.push_back(right_node);
+
+        values_.clear();
+        InsertValue(middle, 0);
       } else {
         uint16_t insertion_location = parent_->FindInsertionLocation(middle);
 
         parent_->InsertValue(middle, insertion_location);
-        parent_->InsertPointers(
-            std::make_shared<Node>(order_, first_half, this),
-            std::make_shared<Node>(order_, second_half, this),
-            insertion_location);
+        parent_->InsertPointers(left_node, right_node, insertion_location);
 
-        //TODO(StefanoPetrilli): verify if it has to split?
+        if (parent_->DoOverflow())
+          parent_->Split();
       }
     }
 
@@ -110,7 +129,7 @@ class BTree {
         }
       }
 
-      result += "[Values: (" + ValuesToString(values_) + ")]";
+      result += "(" + ValuesToString(values_) + ")";
 
       if (!IsLeaf()) {
         for (size_t i = middle_point; i < pointers_.size(); i++) {
