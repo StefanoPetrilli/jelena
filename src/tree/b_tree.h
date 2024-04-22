@@ -18,6 +18,7 @@ class BTree {
 
    public:
     Node(OrderType order) : order_(order), parent_(this){};
+    Node(OrderType order, Node* parent) : order_(order), parent_(parent){};
     Node(OrderType order, std::vector<ContentType> values, Node* parent)
         : order_(order), parent_{parent}, values_(values){};
 
@@ -36,6 +37,8 @@ class BTree {
       values_.insert(values_.begin() + position, value);
     }
 
+    void InsertValue(ContentType value) { values_.push_back(value); }
+
     void InsertPointers(std::shared_ptr<Node> first_half,
                         std::shared_ptr<Node> second_half, uint16_t location) {
       pointers_[location] = second_half;
@@ -46,39 +49,38 @@ class BTree {
       pointers_.push_back(pointer);
     }
 
+    void PopulateLeafSplitNode(std::shared_ptr<Node>& node, size_t start,
+                               size_t end) {
+      for (size_t i = start; i < end; i++)
+        node->InsertValue(values_[i]);
+    }
+
+    void PopulateNonLeafSplitNode(std::shared_ptr<Node>& node, size_t start,
+                                  size_t end, size_t additional_pointer) {
+      for (size_t i = start; i < end; i++) {
+        node->InsertValue(values_[i]);
+        node->InsertPointer(pointers_[i]);
+      }
+      node->InsertPointer(pointers_.at(additional_pointer));
+    }
+
     void Split() {
       size_t middle_element = order_ / 2;
       ContentType middle = values_.at(middle_element);
-      std::vector<ContentType> first_half, second_half;
 
-      for (size_t i = 0; i < middle_element; i++)
-        first_half.push_back(values_.at(i));
+      auto left_node = std::make_shared<Node>(order_, this),
+           right_node = std::make_shared<Node>(order_, this);
 
-      for (size_t i = middle_element + 1; i < values_.size(); i++)
-        second_half.push_back(values_.at(i));
-
-      auto left_node = std::make_shared<Node>(order_, first_half, this),
-           right_node = std::make_shared<Node>(order_, second_half, this);
-
-      if (!IsLeaf()) {
-        for (size_t i = 0; i < middle_element; i++) {
-          left_node->InsertPointer(pointers_.at(i));
-          left_node->InsertPointer(pointers_.at(i + 1));
-        }
-
-        for (size_t i = middle_element + 1; i < values_.size(); i++) {
-          right_node->InsertPointer(pointers_.at(i));
-          right_node->InsertPointer(pointers_.at(i + 1));
-        }
+      if (IsLeaf()) {
+        PopulateLeafSplitNode(left_node, 0, middle_element);
+        PopulateLeafSplitNode(right_node, middle_element + 1, values_.size());
+      } else {
+        PopulateNonLeafSplitNode(left_node, 0, middle_element, middle_element);
+        PopulateNonLeafSplitNode(right_node, middle_element + 1, values_.size(),
+                                 values_.size());
       }
 
-      if (IsRoot() && IsLeaf()) {
-        pointers_.push_back(left_node);
-        pointers_.push_back(right_node);
-
-        values_.clear();
-        values_.push_back(middle);
-      } else if (IsRoot()) {
+      if (IsRoot()) {
         pointers_.clear();
         pointers_.push_back(left_node);
         pointers_.push_back(right_node);
