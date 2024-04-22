@@ -157,4 +157,31 @@ TEST_F(BTreeTest, BTreeExample7_ToString_ReturnsExpectedString) {
       "20)(21, 24)(22, 23)(25, 26)(28, 29)(30, 33)(31, 32)(34, 35)";
   EXPECT_EQ(actual, expected);
 }
+
+TEST_F(BTreeTest, AfterInserting1000Elements_Count_Returns1000) {
+  for (int i = 1; i <= 1000; i++)
+    empty_tree_order_3.Insert(i);
+
+  auto actual = empty_tree_order_3.Size();
+  uint16_t expected = 1000;
+  EXPECT_EQ(actual, expected);
+}
+
+TEST_F(BTreeTest, AfterInserting500Elements_Count_Returns500) {
+  for (int i = 1; i <= 500; i++)
+    empty_tree_order_4.Insert(i);
+
+  auto actual = empty_tree_order_4.Size();
+  uint16_t expected = 500;
+  EXPECT_EQ(actual, expected);
+}
+
+TEST_F(BTreeTest, AfterInserting100Elements_Count_Returns100) {
+  for (int i = 1; i <= 100; i++)
+    empty_tree_order_5.Insert(i);
+
+  auto actual = empty_tree_order_5.Size();
+  uint16_t expected = 100;
+  EXPECT_EQ(actual, expected);
+}
 }  // namespace tree_test

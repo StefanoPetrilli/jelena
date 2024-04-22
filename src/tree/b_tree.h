@@ -28,6 +28,9 @@ class BTree {
 
     bool DoOverflow() { return values_.size() >= order_; }
 
+    uint16_t Size() {
+      return values_.size();
+    }
     std::vector<std::shared_ptr<Node>> GetPointers() { return pointers_; }
 
     void UpdateParent(Node* new_parent) { parent_ = new_parent; }
@@ -194,6 +197,16 @@ class BTree {
   }
 
   std::string ToString() { return head_->ToString(); }
+
+  size_t Size(const std::shared_ptr<Node>& node) {
+    size_t count = node->Size();
+    for (const auto& pointer : node->GetPointers()) {
+      count += Size(pointer);
+    }
+    return count;
+  }
+
+  size_t Size() { return Size(head_); }
 };
 
 }  // namespace tree
