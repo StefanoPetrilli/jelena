@@ -76,4 +76,85 @@ TEST_F(BTreeTest, AfterThreeSplit_ToString_ReturnsExpectedString) {
   std::string expected = "(25)(30)(40)(50)(75)(80)(90)";
   EXPECT_EQ(actual, expected);
 }
+
+TEST_F(BTreeTest, BTreeExample_ToString_ReturnsExpectedString) {
+  empty_tree_order_5.Insert(1);
+  empty_tree_order_5.Insert(2);
+  empty_tree_order_5.Insert(5);
+  empty_tree_order_5.Insert(6);
+  empty_tree_order_5.Insert(7);
+  empty_tree_order_5.Insert(9);
+  empty_tree_order_5.Insert(12);
+  empty_tree_order_5.Insert(16);
+  empty_tree_order_5.Insert(18);
+  empty_tree_order_5.Insert(21);
+
+  auto actual = empty_tree_order_5.ToString();
+  std::string expected = "(1, 2)(5, 9)(6, 7)(12, 16, 18, 21)";
+  EXPECT_EQ(actual, expected);
+}
+
+TEST_F(BTreeTest, BTreeExample2_ToString_ReturnsExpectedString) {
+  for (int i = 1; i <= 7; i++)
+    empty_tree_order_3.Insert(i);
+
+  auto actual = empty_tree_order_3.ToString();
+  std::string expected = "(1)(2)(3)(4)(5)(6)(7)";
+  EXPECT_EQ(actual, expected);
+}
+
+TEST_F(BTreeTest, BTreeExample3_ToString_ReturnsExpectedString) {
+  for (int i = 1; i <= 8; i++) {
+    empty_tree_order_3.Insert(i);
+  }
+
+  auto actual = empty_tree_order_3.ToString();
+  std::string expected = "(1)(2)(3)(4)(5)(6)(7, 8)";
+  EXPECT_EQ(actual, expected);
+}
+
+TEST_F(BTreeTest, BTreeExample4_ToString_ReturnsExpectedString) {
+  for (int i = 1; i <= 31; i++) {
+    empty_tree_order_3.Insert(i);
+  }
+
+  auto actual = empty_tree_order_3.ToString();
+  std::string expected =
+      "(1)(2)(3)(4)(5)(6)(7)(8)(9)(10)(11)(12)(13)(14)(15)(16)(17)(18)(19)(20)("
+      "21)(22)(23)(24)(25)(26)(27)(28)(29)(30)(31)";
+  EXPECT_EQ(actual, expected);
+}
+
+TEST_F(BTreeTest, BTreeExample5_ToString_ReturnsExpectedString) {
+  for (int i = 31; i >= 1; i--) {
+    empty_tree_order_3.Insert(i);
+  }
+
+  auto actual = empty_tree_order_3.ToString();
+  std::string expected =
+      "(1)(2)(3)(4)(5)(6)(7)(8)(9)(10)(11)(12)(13)(14)(15)(16)(17)(18)(19)(20)("
+      "21)(22)(23)(24)(25)(26)(27)(28)(29)(30)(31)";
+  EXPECT_EQ(actual, expected);
+}
+
+TEST_F(BTreeTest, BTreeExample6_ToString_ReturnsExpectedString) {
+  for (int i = 17; i >= 1; i--)
+    empty_tree_order_5.Insert(i);
+
+  auto actual = empty_tree_order_5.ToString();
+  std::string expected =
+      "(1, 2)(3, 6)(4, 5)(7, 8)(9)(10, 11)(12, 15)(13, 14)(16, 17)";
+  EXPECT_EQ(actual, expected);
+}
+
+TEST_F(BTreeTest, BTreeExample7_ToString_ReturnsExpectedString) {
+  for (int i = 1; i <= 35; i++)
+    empty_tree_order_5.Insert(i);
+
+  auto actual = empty_tree_order_5.ToString();
+  std::string expected =
+      "(10, 11)(12, 15)(13, 14)(16, 17)(1, 2)(3, 6)(4, 5)(7, 8)(9, 18, 27)(19, "
+      "20)(21, 24)(22, 23)(25, 26)(28, 29)(30, 33)(31, 32)(34, 35)";
+  EXPECT_EQ(actual, expected);
+}
 }  // namespace tree_test

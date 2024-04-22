@@ -28,6 +28,10 @@ class BTree {
 
     bool DoOverflow() { return values_.size() >= order_; }
 
+    std::vector<std::shared_ptr<Node>> GetPointers() { return pointers_; }
+
+    void UpdateParent(Node* new_parent) { parent_ = new_parent; }
+
     uint16_t FindInsertionLocation(ContentType value) {
       auto it = std::lower_bound(values_.begin(), values_.end(), value);
       return std::distance(values_.begin(), it);
@@ -41,7 +45,10 @@ class BTree {
 
     void InsertPointers(std::shared_ptr<Node> first_half,
                         std::shared_ptr<Node> second_half, uint16_t location) {
-      pointers_[location] = second_half;
+      if (pointers_.size() < location)
+        pointers_.push_back(second_half);
+      else
+        pointers_[location] = second_half;
       pointers_.insert(pointers_.begin() + location, first_half);
     }
 
@@ -68,8 +75,8 @@ class BTree {
       size_t middle_element = order_ / 2;
       ContentType middle = values_.at(middle_element);
 
-      auto left_node = std::make_shared<Node>(order_, this),
-           right_node = std::make_shared<Node>(order_, this);
+      auto left_node = std::make_shared<Node>(order_, parent_),
+           right_node = std::make_shared<Node>(order_, parent_);
 
       if (IsLeaf()) {
         PopulateLeafSplitNode(left_node, 0, middle_element);
@@ -85,6 +92,12 @@ class BTree {
         pointers_.push_back(left_node);
         pointers_.push_back(right_node);
 
+        for (auto pointer : left_node->GetPointers())
+          pointer->UpdateParent(left_node.get());
+
+        for (auto pointer : right_node->GetPointers())
+          pointer->UpdateParent(right_node.get());
+
         values_.clear();
         InsertValue(middle, 0);
       } else {
@@ -92,6 +105,12 @@ class BTree {
 
         parent_->InsertValue(middle, insertion_location);
         parent_->InsertPointers(left_node, right_node, insertion_location);
+
+        for (auto pointer : left_node->GetPointers())
+          pointer->UpdateParent(left_node.get());
+
+        for (auto pointer : right_node->GetPointers())
+          pointer->UpdateParent(right_node.get());
 
         if (parent_->DoOverflow())
           parent_->Split();
