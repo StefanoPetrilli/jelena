@@ -158,6 +158,17 @@ TEST_F(BTreeTest, BTreeExample7_ToString_ReturnsExpectedString) {
   EXPECT_EQ(actual, expected);
 }
 
+TEST_F(BTreeTest, BTreeExample8_ToString_ReturnsExpectedString) {
+  for (int i = 1; i <= 32; i++)
+    empty_tree_order_4.Insert(i);
+
+  auto actual = empty_tree_order_4.ToString();
+  std::string expected =
+      "(1)(2)(3)(4)(5)(6)(7)(8, 16)(9)(10)(11)(12)(13)(14)(15)(17)(18)(19)(20, "
+      "24)(21)(22)(23)(27)(25)(26, 28, 30)(29)(31, 32)";
+  EXPECT_EQ(actual, expected);
+}
+
 TEST_F(BTreeTest, AfterInserting1000Elements_Count_Returns1000) {
   for (int i = 1; i <= 1000; i++)
     empty_tree_order_3.Insert(i);

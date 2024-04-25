@@ -22,18 +22,26 @@ class BTree {
     Node(OrderType order, std::vector<ContentType> values, Node* parent)
         : order_(order), parent_{parent}, values_(values){};
 
-    bool IsLeaf() { return pointers_.empty(); }
+    bool IsLeaf() const { return pointers_.empty(); }
 
-    bool IsRoot() { return this == parent_; }
+    bool IsRoot() const { return this == parent_; }
 
-    bool DoOverflow() { return values_.size() >= order_; }
+    bool DoOverflow() const { return values_.size() >= order_; }
 
-    uint16_t Size() {
-      return values_.size();
-    }
-    std::vector<std::shared_ptr<Node>> GetPointers() { return pointers_; }
+    uint16_t Size() const { return values_.size(); }
+
+    std::vector<std::shared_ptr<Node>> GetPointers() const { return pointers_; }
+
+    bool IsEmpty() const { return values_.empty(); }
 
     void UpdateParent(Node* new_parent) { parent_ = new_parent; }
+
+    void InsertValue(ContentType value) { values_.push_back(value); }
+
+    void Clear() {
+      values_.clear();
+      pointers_.clear();
+    }
 
     uint16_t FindInsertionLocation(ContentType value) {
       auto it = std::lower_bound(values_.begin(), values_.end(), value);
@@ -44,14 +52,12 @@ class BTree {
       values_.insert(values_.begin() + position, value);
     }
 
-    void InsertValue(ContentType value) { values_.push_back(value); }
-
     void InsertPointers(std::shared_ptr<Node> first_half,
                         std::shared_ptr<Node> second_half, uint16_t location) {
-      if (pointers_.size() < location)
-        pointers_.push_back(second_half);
-      else
+      if (pointers_.size() > location)
         pointers_[location] = second_half;
+      else
+        pointers_.push_back(second_half);
       pointers_.insert(pointers_.begin() + location, first_half);
     }
 
@@ -59,23 +65,32 @@ class BTree {
       pointers_.push_back(pointer);
     }
 
-    void PopulateLeafSplitNode(std::shared_ptr<Node>& node, size_t start,
-                               size_t end) {
-      for (size_t i = start; i < end; i++)
-        node->InsertValue(values_[i]);
+    void PopulateLeafSplitNode(std::shared_ptr<Node>& node, uint32_t start,
+                               uint32_t end) {
+      for (uint32_t i = start; i < end; i++)
+        node->InsertValue(values_.at(i));
     }
 
-    void PopulateNonLeafSplitNode(std::shared_ptr<Node>& node, size_t start,
-                                  size_t end, size_t additional_pointer) {
-      for (size_t i = start; i < end; i++) {
-        node->InsertValue(values_[i]);
-        node->InsertPointer(pointers_[i]);
+    void PopulateNonLeafSplitNode(std::shared_ptr<Node>& node, uint32_t start,
+                                  uint32_t end, uint32_t additional_pointer) {
+      for (uint32_t i = start; i < end; i++) {
+        node->InsertValue(values_.at(i));
+        node->InsertPointer(pointers_.at(i));
       }
       node->InsertPointer(pointers_.at(additional_pointer));
     }
 
+    void UpdateParentPointers(std::shared_ptr<Node> left_node,
+                              std::shared_ptr<Node> right_node) {
+      for (auto pointer : left_node->GetPointers())
+        pointer->UpdateParent(left_node.get());
+
+      for (auto pointer : right_node->GetPointers())
+        pointer->UpdateParent(right_node.get());
+    }
+
     void Split() {
-      size_t middle_element = order_ / 2;
+      uint32_t middle_element = order_ / 2 - (order_ % 2 == 0);
       ContentType middle = values_.at(middle_element);
 
       auto left_node = std::make_shared<Node>(order_, parent_),
@@ -91,17 +106,9 @@ class BTree {
       }
 
       if (IsRoot()) {
-        pointers_.clear();
-        pointers_.push_back(left_node);
-        pointers_.push_back(right_node);
-
-        for (auto pointer : left_node->GetPointers())
-          pointer->UpdateParent(left_node.get());
-
-        for (auto pointer : right_node->GetPointers())
-          pointer->UpdateParent(right_node.get());
-
-        values_.clear();
+        Clear();
+        InsertPointers(left_node, right_node, 0);
+        UpdateParentPointers(left_node, right_node);
         InsertValue(middle, 0);
       } else {
         uint16_t insertion_location = parent_->FindInsertionLocation(middle);
@@ -109,11 +116,7 @@ class BTree {
         parent_->InsertValue(middle, insertion_location);
         parent_->InsertPointers(left_node, right_node, insertion_location);
 
-        for (auto pointer : left_node->GetPointers())
-          pointer->UpdateParent(left_node.get());
-
-        for (auto pointer : right_node->GetPointers())
-          pointer->UpdateParent(right_node.get());
+        UpdateParentPointers(left_node, right_node);
 
         if (parent_->DoOverflow())
           parent_->Split();
@@ -127,8 +130,6 @@ class BTree {
       if (DoOverflow())
         Split();
     }
-
-    bool IsEmpty() { return values_.empty(); }
 
     std::string ValuesToString(const std::vector<ContentType>& values) {
       if (values.empty())
@@ -145,7 +146,7 @@ class BTree {
       auto middle_point = pointers_.size() / 2;
       std::string result = "";
       if (!IsLeaf()) {
-        for (size_t i = middle_point; i > 0; i--) {
+        for (uint32_t i = middle_point; i > 0; i--) {
           result += pointers_.at(i - 1)->ToString();
         }
       }
@@ -153,7 +154,7 @@ class BTree {
       result += "(" + ValuesToString(values_) + ")";
 
       if (!IsLeaf()) {
-        for (size_t i = middle_point; i < pointers_.size(); i++) {
+        for (uint32_t i = middle_point; i < pointers_.size(); i++) {
           result += pointers_.at(i)->ToString();
         }
       }
@@ -182,9 +183,13 @@ class BTree {
   BTree(OrderType order)
       : order_(order), head_(std::make_shared<Node>(order_)) {}
 
-  bool IsEmpty() { return head_->IsEmpty(); }
+  bool IsEmpty() const { return head_->IsEmpty(); }
 
-  OrderType GetOrder() { return order_; }
+  OrderType GetOrder() const { return order_; }
+
+  std::string ToString() const { return head_->ToString(); }
+
+  uint32_t Size() const { return Size(head_); }
 
   void Insert(ContentType value) {
     if (head_->IsLeaf()) {
@@ -196,17 +201,13 @@ class BTree {
     leaf->Insert(value);
   }
 
-  std::string ToString() { return head_->ToString(); }
-
-  size_t Size(const std::shared_ptr<Node>& node) {
-    size_t count = node->Size();
+  uint32_t Size(const std::shared_ptr<Node>& node) const {
+    uint32_t count = node->Size();
     for (const auto& pointer : node->GetPointers()) {
       count += Size(pointer);
     }
     return count;
   }
-
-  size_t Size() { return Size(head_); }
 };
 
 }  // namespace tree
