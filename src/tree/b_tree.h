@@ -177,27 +177,27 @@ class BTree {
   };
 
   OrderType order_;
-  std::unique_ptr<Node> head_;
+  std::unique_ptr<Node> root_;
 
  public:
   BTree(OrderType order)
-      : order_(order), head_(std::make_unique<Node>(order_)) {}
+      : order_(order), root_(std::make_unique<Node>(order_)) {}
 
-  bool IsEmpty() const { return head_->IsEmpty(); }
+  bool IsEmpty() const { return root_->IsEmpty(); }
 
   OrderType GetOrder() const { return order_; }
 
-  std::string ToString() const { return head_->ToString(); }
+  std::string ToString() const { return root_->ToString(); }
 
-  uint32_t Size() const { return Size(head_); }
+  uint32_t Size() const { return Size(root_); }
 
   void Insert(ContentType value) {
-    if (head_->IsLeaf()) {
-      head_->Insert(value);
+    if (root_->IsLeaf()) {
+      root_->Insert(value);
       return;
     }
 
-    auto leaf = head_->FindLeafForValue(value);
+    auto leaf = root_->FindLeafForValue(value);
     leaf->Insert(value);
   }
 
