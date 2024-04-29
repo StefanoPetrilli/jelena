@@ -165,14 +165,9 @@ class BTree {
       if (IsLeaf())
         return this;
 
-      uint16_t i;
-      for (i = 0; i < keys_.size(); i++) {
-        if (key > keys_.at(i))
-          continue;
-        return pointers_.at(i)->FindLeafForKey(key);
-      }
-
-      return pointers_.back()->FindLeafForKey(key);
+      auto it = std::lower_bound(keys_.begin(), keys_.end(), key);
+      uint16_t i = std::distance(keys_.begin(), it);
+      return pointers_.at(i)->FindLeafForKey(key);
     }
   };
 
