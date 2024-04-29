@@ -177,11 +177,11 @@ class BTree {
   };
 
   OrderType order_;
-  std::shared_ptr<Node> head_;
+  std::unique_ptr<Node> head_;
 
  public:
   BTree(OrderType order)
-      : order_(order), head_(std::make_shared<Node>(order_)) {}
+      : order_(order), head_(std::make_unique<Node>(order_)) {}
 
   bool IsEmpty() const { return head_->IsEmpty(); }
 
@@ -201,7 +201,8 @@ class BTree {
     leaf->Insert(value);
   }
 
-  uint32_t Size(const std::shared_ptr<Node>& node) const {
+  template <typename smart_pointer>
+  uint32_t Size(const smart_pointer& node) const {
     uint32_t count = node->Size();
     for (const auto& pointer : node->GetPointers()) {
       count += Size(pointer);
