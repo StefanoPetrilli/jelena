@@ -9,7 +9,6 @@
 #include "disjoint_set.h"
 #include "quick_union.h"
 #include "rank_union.h"
-#include "statistics.h"
 #include "weight_union.h"
 
 #define SEED 42

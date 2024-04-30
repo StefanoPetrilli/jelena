@@ -17,26 +17,46 @@ class BTree {
     std::vector<ContentType> keys_;
 
    public:
+#ifdef BTREE_BENCHMARK
+    static uint32_t split_counter_;
+#endif
+
     Node(OrderType order) : order_(order), parent_(this){};
     Node(OrderType order, Node* parent) : order_(order), parent_(parent){};
     Node(OrderType order, std::vector<ContentType> keys, Node* parent)
         : order_(order), parent_{parent}, keys_(keys){};
 
-    bool IsLeaf() const { return pointers_.empty(); }
+    bool IsLeaf() const {
+      return pointers_.empty();
+    }
 
-    bool IsRoot() const { return this == parent_; }
+    bool IsRoot() const {
+      return this == parent_;
+    }
 
-    bool DoOverflow() const { return keys_.size() >= order_; }
+    bool DoOverflow() const {
+      return keys_.size() >= order_;
+    }
 
-    uint16_t Size() const { return keys_.size(); }
+    uint16_t Size() const {
+      return keys_.size();
+    }
 
-    std::vector<std::shared_ptr<Node>> GetPointers() const { return pointers_; }
+    std::vector<std::shared_ptr<Node>> GetPointers() const {
+      return pointers_;
+    }
 
-    bool IsEmpty() const { return keys_.empty(); }
+    bool IsEmpty() const {
+      return keys_.empty();
+    }
 
-    void UpdateParent(Node* new_parent) { parent_ = new_parent; }
+    void UpdateParent(Node* new_parent) {
+      parent_ = new_parent;
+    }
 
-    void InsertKey(ContentType key) { keys_.push_back(key); }
+    void InsertKey(ContentType key) {
+      keys_.push_back(key);
+    }
 
     void Clear() {
       keys_.clear();
@@ -90,6 +110,9 @@ class BTree {
     }
 
     void Split() {
+#ifdef BTREE_BENCHMARK
+      split_counter_++;
+#endif
       uint32_t middle_element = order_ / 2 - (order_ % 2 == 0);
       ContentType middle = keys_.at(middle_element);
 
@@ -171,8 +194,7 @@ class BTree {
     }
 
     uint16_t GetHeight(uint16_t current_height) {
-      if (IsLeaf())
-      {
+      if (IsLeaf()) {
         return current_height;
       }
 
@@ -185,15 +207,27 @@ class BTree {
 
  public:
   BTree(OrderType order)
-      : order_(order), root_(std::make_unique<Node>(order_)) {}
+      : order_(order), root_(std::make_unique<Node>(order_)) {
+#ifdef BTREE_BENCHMARK
+    Node::split_counter_ = 0;
+#endif
+  }
 
-  bool IsEmpty() const { return root_->IsEmpty(); }
+  bool IsEmpty() const {
+    return root_->IsEmpty();
+  }
 
-  OrderType GetOrder() const { return order_; }
+  OrderType GetOrder() const {
+    return order_;
+  }
 
-  std::string ToString() const { return root_->ToString(); }
+  std::string ToString() const {
+    return root_->ToString();
+  }
 
-  uint32_t Size() const { return Size(root_); }
+  uint32_t Size() const {
+    return Size(root_);
+  }
 
   void Insert(ContentType key) {
     if (root_->IsLeaf()) {
@@ -217,6 +251,16 @@ class BTree {
   uint16_t GetHeight() {
     return root_->GetHeight(1);
   }
+
+#ifdef BTREE_BENCHMARK
+  uint32_t GetSplitCounter() {
+    return Node::split_counter_;
+  }
+#endif
 };
 
+#ifdef BTREE_BENCHMARK
+template <typename ContentType, typename OrderType>
+uint32_t BTree<ContentType, OrderType>::Node::split_counter_;
+#endif
 }  // namespace tree

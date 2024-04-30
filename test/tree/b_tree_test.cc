@@ -217,4 +217,26 @@ TEST_F(BTreeTest,
   EXPECT_EQ(actual, expected);
 }
 
+#ifdef BTREE_BENCHMARK
+TEST_F(BTreeTest,
+       AfterInsertingMultipleElements_GetSplitCounter_ReturnsExpectedValue) {
+  for (int i = 1; i <= 7; i++)
+    empty_tree_order_3.Insert(i);
+
+  auto actual = empty_tree_order_3.GetSplitCounter();
+  uint32_t expected = 4;
+  EXPECT_EQ(actual, expected);
+}
+
+TEST_F(BTreeTest,
+       AfterInsertingMultipleElements_GetSplitCounter_ReturnsExpectedValue2) {
+  for (int i = 31; i >= 1; i--) {
+    empty_tree_order_3.Insert(i);
+  }
+
+  auto actual = empty_tree_order_3.GetSplitCounter();
+  uint16_t expected = 26;
+  EXPECT_EQ(actual, expected);
+}
+#endif
 }  // namespace tree_test
