@@ -20,9 +20,8 @@ TEST_F(BTreeBenchmark, ReplicateTable5) {
     for (auto size : sizes) {
       for (uint16_t i = 0; i < kNumberExecition_; i++) {
         auto b_tree = tree::BTree<uint32_t>(order);
-        std::shuffle(keys_.begin(), keys_.end(), rng_);
         for (uint32_t i = 0; i < size; i++) {
-          b_tree.Insert(keys_[i]);
+          b_tree.Insert(dist_(rng_));
         }
         height += b_tree.GetHeight();
       }
@@ -36,7 +35,7 @@ TEST_F(BTreeBenchmark, ReplicateTable5) {
 
 TEST_F(BTreeBenchmark, SplitProbability) {
   split_count_ << "order | ";
-  std::array<uint32_t, 4> sizes = {1000, 10000, 100000, 1000000};
+  std::array<uint32_t, 3> sizes = {1000, 10000, 1000000};
   for (auto size : sizes) {
     split_count_ << size << " | ";
   }
@@ -50,9 +49,8 @@ TEST_F(BTreeBenchmark, SplitProbability) {
     for (auto size : sizes) {
       for (uint16_t i = 0; i < kNumberExecition_; i++) {
         auto b_tree = tree::BTree<uint32_t>(order);
-        std::shuffle(keys_.begin(), keys_.end(), rng_);
         for (uint32_t i = 0; i < size; i++) {
-          b_tree.Insert(keys_[i]);
+          b_tree.Insert(dist_(rng_));
         }
         split_count += b_tree.GetSplitCount();
       }
