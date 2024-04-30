@@ -33,6 +33,35 @@ TEST_F(BTreeBenchmark, ReplicateTable5) {
   }
 }
 
+TEST_F(BTreeBenchmark, UnbalancedSplitProbability) {
+  split_count_unbalanced_ << "order | ";
+  std::array<uint32_t, 3> sizes = {1000, 10000, 1000000};
+  for (auto size : sizes) {
+    split_count_unbalanced_ << size << " | ";
+  }
+  split_count_unbalanced_ << std::endl;
+  std::array<uint32_t, 4> orders = {5, 20, 200, 400};
+
+  for (auto order : orders) {
+    uint32_t split_count = 0;
+    split_count_unbalanced_ << order << " | ";
+
+    for (auto size : sizes) {
+      for (uint16_t i = 0; i < kNumberExecition_; i++) {
+        auto b_tree = tree::BTree<uint32_t>(order);
+        for (uint32_t i = 0; i < size; i++) {
+          b_tree.Insert(i);
+        }
+        split_count += b_tree.GetSplitCount();
+      }
+      split_count_unbalanced_ << static_cast<double>(split_count) / kNumberExecition_ / size
+                           << " | ";
+      split_count = 0;
+    }
+    split_count_unbalanced_ << std::endl;
+  }
+}
+
 TEST_F(BTreeBenchmark, SplitProbability) {
   split_count_ << "order | ";
   std::array<uint32_t, 3> sizes = {1000, 10000, 1000000};
