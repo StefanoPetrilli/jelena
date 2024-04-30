@@ -13,11 +13,11 @@ class DisjointSet {
   virtual bool IsNotRoot(T element) = 0;
   bool IsRoot(T element) { return !this->IsNotRoot(element); };
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
   std::optional<T> total_path_length_;
 #endif
   void ResetTotalPathLength() {
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
     total_path_length_ = std::nullopt;
 #endif
   };
@@ -94,7 +94,7 @@ class DisjointSet {
     return current_index;
   }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
   T FindBlockDepth(T element) {
     auto current_index = element;
     T depth = 0;

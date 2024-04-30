@@ -49,7 +49,7 @@ class WeightUnionFullCompression : public WeightUnion<T> {
     return this->FindBlockFullCompression(element);
   }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
   T GetTotalPointersUpdates() override {
     return this->GetFullCompressionTotalPointersUpdates();
   }
@@ -65,7 +65,7 @@ class WeightUnionPathSplitting : public WeightUnion<T> {
     return this->FindBlockPathSplitting(element);
   }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
   T GetTotalPointersUpdates() override {
     return this->GetPathSplittingTotalPointersUpdates();
   }
@@ -81,7 +81,7 @@ class WeightUnionPathHalving : public WeightUnion<T> {
     return this->FindBlockPathHalving(element);
   }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
   T GetTotalPointersUpdates() override {
     return this->GetPathHalvingPointersUpdates();
   }

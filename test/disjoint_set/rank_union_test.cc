@@ -348,7 +348,7 @@ TEST_F(
             BlockIdentifier::kFourthBlock);
 }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
 TEST_F(RankUnionTest,
        AfterInstantiationGetTotalPathlength_Expect_CorrectValue) {
   EXPECT_EQ(rank_disjoint_set_.GetTotalPathlength(), 0);

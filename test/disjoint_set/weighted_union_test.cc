@@ -409,7 +409,7 @@ TEST_F(
             BlockIdentifier::kFourthBlock);
 }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
 TEST_F(WeightUnionTest,
        AfterInstantiationGetTotalPathlength_Expect_CorrectValue) {
   EXPECT_EQ(weighted_disjoint_set_.GetTotalPathlength(), 0);

@@ -15,7 +15,9 @@
 #define SEED 42
 
 namespace disjoint_set_benchmark {
+
 class DisjointSetBenchmark : public ::testing::Test {
+#ifdef DISJOINT_SET_BENCHMARK
  protected:
   const uint16_t kSize_ = 10001;
   const uint16_t kDelta_ = kSize_ / 10;
@@ -152,5 +154,6 @@ class DisjointSetBenchmark : public ::testing::Test {
                        int32_t normalization_size, int16_t epsilon, bool isFC) {
     file << statistics.ToString(normalization_size, epsilon, isFC) << std::endl;
   }
+#endif
 };
 }  // namespace disjoint_set_benchmark

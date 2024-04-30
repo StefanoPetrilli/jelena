@@ -214,7 +214,7 @@ TEST_F(QuickUnionTest, UsingPathHalvingAfterFind_Expect_CorrectValue) {
             BlockIdentifier::kFirstBlock);
 }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
 TEST_F(QuickUnionTest,
        AfterInstantiationGetTotalPathlength_Expect_CorrectValue) {
 
