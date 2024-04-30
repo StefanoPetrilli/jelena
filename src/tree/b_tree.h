@@ -169,6 +169,15 @@ class BTree {
       uint16_t i = std::distance(keys_.begin(), it);
       return pointers_.at(i)->FindLeafForKey(key);
     }
+
+    uint16_t GetHeight(uint16_t current_height) {
+      if (IsLeaf())
+      {
+        return current_height;
+      }
+
+      return pointers_.back()->GetHeight(current_height + 1);
+    }
   };
 
   OrderType order_;
@@ -203,6 +212,10 @@ class BTree {
       count += Size(pointer);
     }
     return count;
+  }
+
+  uint16_t GetHeight() {
+    return root_->GetHeight(1);
   }
 };
 

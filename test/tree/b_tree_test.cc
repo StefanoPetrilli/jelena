@@ -195,4 +195,26 @@ TEST_F(BTreeTest, AfterInserting100Elements_Count_Returns100) {
   uint16_t expected = 100;
   EXPECT_EQ(actual, expected);
 }
+
+TEST_F(BTreeTest,
+       AfterInsertingMultipleElements_GetHeight_ReturnsExpectedValue) {
+  for (int i = 1; i <= 7; i++)
+    empty_tree_order_3.Insert(i);
+
+  auto actual = empty_tree_order_3.GetHeight();
+  uint16_t expected = 3;
+  EXPECT_EQ(actual, expected);
+}
+
+TEST_F(BTreeTest,
+       AfterInsertingMultipleElements_GetHeight_ReturnsExpectedValue2) {
+  for (int i = 31; i >= 1; i--) {
+    empty_tree_order_3.Insert(i);
+  }
+
+  auto actual = empty_tree_order_3.GetHeight();
+  uint16_t expected = 5;
+  EXPECT_EQ(actual, expected);
+}
+
 }  // namespace tree_test
