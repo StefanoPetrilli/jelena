@@ -253,7 +253,7 @@ class BTree {
   }
 
 #ifdef BTREE_BENCHMARK
-  uint32_t GetSplitCounter() {
+  uint32_t GetSplitCount() {
     return Node::split_counter_;
   }
 #endif

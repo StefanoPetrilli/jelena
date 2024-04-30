@@ -223,7 +223,7 @@ TEST_F(BTreeTest,
   for (int i = 1; i <= 7; i++)
     empty_tree_order_3.Insert(i);
 
-  auto actual = empty_tree_order_3.GetSplitCounter();
+  auto actual = empty_tree_order_3.GetSplitCount();
   uint32_t expected = 4;
   EXPECT_EQ(actual, expected);
 }
@@ -234,7 +234,7 @@ TEST_F(BTreeTest,
     empty_tree_order_3.Insert(i);
   }
 
-  auto actual = empty_tree_order_3.GetSplitCounter();
+  auto actual = empty_tree_order_3.GetSplitCount();
   uint16_t expected = 26;
   EXPECT_EQ(actual, expected);
 }
