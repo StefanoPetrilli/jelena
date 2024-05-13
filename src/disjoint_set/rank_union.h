@@ -52,7 +52,7 @@ class RankUnionFullCompression : public RankUnion<T> {
     return this->FindBlockFullCompression(element);
   }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
   T GetTotalPointersUpdates() override {
     return this->GetFullCompressionTotalPointersUpdates();
   }
@@ -68,7 +68,7 @@ class RankUnionPathSplitting : public RankUnion<T> {
     return this->FindBlockPathSplitting(element);
   }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
   T GetTotalPointersUpdates() override {
     return this->GetPathSplittingTotalPointersUpdates();
   }
@@ -84,7 +84,7 @@ class RankUnionPathHalving : public RankUnion<T> {
     return this->FindBlockPathHalving(element);
   }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
   T GetTotalPointersUpdates() override {
     return this->GetPathHalvingPointersUpdates();
   }

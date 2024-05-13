@@ -22,8 +22,7 @@ TEST_F(NodeTest, NoNeighborsNodeAfter_SetPrevious_HasPreviousReturnsTrue) {
   EXPECT_TRUE(no_neighbors_node_.HasPrevious());
 }
 
-TEST_F(NodeTest,
-       NoNeighborsNodeAfterSetNext_GetNext_ReturnsExpectedValue) {
+TEST_F(NodeTest, NoNeighborsNodeAfterSetNext_GetNext_ReturnsExpectedValue) {
   auto ptr = std::make_shared<node::Node<int>>(5);
   no_neighbors_node_.SetNext(ptr);
   EXPECT_EQ(no_neighbors_node_.GetNextNode(), ptr);

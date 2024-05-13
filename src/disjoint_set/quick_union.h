@@ -27,7 +27,7 @@ class QuickUnion : public DisjointSet<T> {
     this->blocks_.at(root_first_block) = root_second_block;
     this->distinct_blocks_--;
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
     this->ResetTotalPathLength();
 #endif
   };
@@ -43,7 +43,7 @@ class QuickUnionFullCompression : public QuickUnion<T> {
     return this->FindBlockFullCompression(element);
   }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
   T GetTotalPointersUpdates() override {
     return this->GetFullCompressionTotalPointersUpdates();
   }
@@ -60,7 +60,7 @@ class QuickUnionPathSplitting : public QuickUnion<T> {
     return this->FindBlockPathSplitting(element);
   }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
   T GetTotalPointersUpdates() override {
     return this->GetPathSplittingTotalPointersUpdates();
   }
@@ -77,7 +77,7 @@ class QuickUnionPathHalving : public QuickUnion<T> {
     return this->FindBlockPathHalving(element);
   }
 
-#ifdef FULL_BENCHMARK
+#ifdef DISJOINT_SET_BENCHMARK
   T GetTotalPointersUpdates() override {
     return this->GetPathHalvingPointersUpdates();
   }

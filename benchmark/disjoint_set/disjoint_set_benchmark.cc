@@ -1,6 +1,7 @@
 #include "disjoint_set_benchmark.h"
 
 namespace disjoint_set_benchmark {
+#ifdef DISJOINT_SET_BENCHMARK
 std::ofstream DisjointSetBenchmark::quick_union_statistics_;
 std::ofstream DisjointSetBenchmark::quick_union_FC_statistics_;
 std::ofstream DisjointSetBenchmark::quick_union_PS_statistics_;
@@ -70,5 +71,5 @@ TEST_F(DisjointSetBenchmark, RankUnionPH) {
   RunBenchmark<disjoint_set::RankUnionPathHalving<int64_t>>(
       rank_union_PH_statistics_);
 }
-
+#endif
 }  // namespace disjoint_set_benchmark

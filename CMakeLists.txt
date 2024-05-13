@@ -8,11 +8,17 @@ set(CMAKE_EXE_LINKER_FLAGS
     "${CMAKE_EXE_LINKER_FLAGS} -Wl,--whole-archive -Wl,--no-whole-archive")
 add_compile_options(-Wall -Wextra -Wpedantic)
 
-option(FULL_BENCHMARK "Execute the full benchmarks" ON)
+option(DISJOINT_SET_BENCHMARK "Execute the benchmarks for disjoint set" OFF)
+option(BTREE_BENCHMARK "Execute the benchmarks for B-Tree" ON)
 
-if(FULL_BENCHMARK)
-  message(STATUS "Compiling full benchmarks")
-  add_definitions(-DFULL_BENCHMARK)
+if(DISJOINT_SET_BENCHMARK)
+  message(STATUS "Compiling benchmarks for disjoint set")
+  add_definitions(-DDISJOINT_SET_BENCHMARK)
+endif()
+
+if(BTREE_BENCHMARK)
+  message(STATUS "Compiling benchmarks for B-Tree")
+  add_definitions(-DBTREE_BENCHMARK)
 endif()
 
 # Include google test

@@ -18,7 +18,7 @@
 		{
 			"type": "shell",
 			"label": "Run tests",
-			"command": "./build/test/jelena_tests",
+			"command": "./build/test/jelena_tests --gtest_break_on_failure",
 			"group": {
 				"kind": "test",
 				"isDefault": false
@@ -39,7 +39,8 @@
 			"label": "Build and Test",
 			"dependsOn": [
 				"CMake: build",
-				"Run tests"
+				"Run tests",
+				"Run benchmarks"
 			],
 			"dependsOrder": "sequence",
 			"group": {
