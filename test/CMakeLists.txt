@@ -1,6 +1,8 @@
 add_executable(
   jelena_tests
   main_test.cc
+  array/packed_memory_array_test.h
+  array/packed_memory_array_test.cc
   node/node_test.cc
   node/node_test.h
   linked_list/linked_list_test.cc
@@ -20,7 +22,7 @@ add_executable(
 )
 
 target_link_libraries(jelena_tests PUBLIC GTest::gtest_main node linked_list
-                                          tree disjoint_set kd_tree)
+                                          tree disjoint_set kd_tree array)
 
 include(GoogleTest)
 gtest_discover_tests(jelena_tests)
