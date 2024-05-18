@@ -62,6 +62,20 @@ class PackedMemoryArray {
     return *result;
   }
 
+  std::vector<ContentType> GetValuesInInterval(uint32_t begin,
+                                               uint32_t offset) {
+    std::vector<ContentType> result;
+    std::ranges::copy_if(this->content_.begin() + begin,
+                         this->content_.begin() + begin + offset,
+                         std::back_inserter(result),
+                         [](const auto& value) { return value != 0; });
+    return result;
+  }
+
+  uint32_t GetValuesCountInInterval(uint32_t begin, uint32_t offset) {
+    return GetValuesInInterval(begin, offset).size();
+  }
+
   uint32_t FindBlock(ContentType value, uint32_t left_block,
                      uint32_t right_block) {
     if (left_block == right_block)
@@ -94,15 +108,12 @@ class PackedMemoryArray {
   }
 
   void Insert(ContentType value, uint32_t block_id) {
-    std::vector<ContentType> auxiliary_vector;
-    auxiliary_vector.reserve(this->block_size_);
     auto initial_position = block_id * this->block_size_;
 
-    for (auto i = initial_position; i < initial_position + this->block_size_;
-         ++i) {
-      if (this->content_.at(i) != 0)
-        auxiliary_vector.push_back(content_.at(i));
-    }
+    std::vector<ContentType> auxiliary_vector;
+    auxiliary_vector.reserve(this->block_size_);
+    auxiliary_vector = GetValuesInInterval(initial_position, this->block_size_);
+
     auto position = std::ranges::lower_bound(auxiliary_vector, value);
     auxiliary_vector.insert(position, value);
 
@@ -112,11 +123,34 @@ class PackedMemoryArray {
           auxiliary_vector.begin() + std::min(i, auxiliary_vector.size()), 0);
     }
 
-    for (uint32_t i = 0; i < auxiliary_vector.size(); ++i) {
-      this->content_[initial_position + i] = auxiliary_vector[i];
+    std::copy(auxiliary_vector.begin(), auxiliary_vector.end(),
+              this->content_.begin() + initial_position);
+    ++this->elements_count_;
+  }
+
+  void RebalanceInterval(uint32_t block_id, uint32_t level) {
+    uint32_t normalized_block_id, normalized_block_size;
+    std::tie(normalized_block_id, normalized_block_size) =
+        GetNormalizedBlockAndSize(block_id, level);
+
+    auto initial_position = normalized_block_id * normalized_block_size;
+
+    std::vector<ContentType> auxiliary_vector;
+    auxiliary_vector.reserve(normalized_block_size);
+    auxiliary_vector =
+        GetValuesInInterval(initial_position, normalized_block_size);
+
+    //FIXME(StefanoPetrilli): make it add the spaces distributed evenly
+    for (size_t i = 1; auxiliary_vector.size() < normalized_block_size;
+         i += 2) {
+      auxiliary_vector.insert(auxiliary_vector.begin() + i, 0);
+      if (auxiliary_vector.size() >= normalized_block_size)
+        break;
+      auxiliary_vector.insert(auxiliary_vector.end() - i, 0);
     }
 
-    ++this->elements_count_;
+    std::copy(auxiliary_vector.begin(), auxiliary_vector.end(),
+              this->content_.begin() + initial_position);
   }
 
   uint32_t GetElementsInBlock(uint32_t block_id) {
@@ -133,7 +167,6 @@ class PackedMemoryArray {
     return elements_in_block < this->block_size_;
   }
 
-  // FIXME(StefanoPetrilli) make this readable once it's clear that it works
   uint32_t OtherBlocksHaveSpace(uint32_t block_id, uint32_t level = 1) {
     if (level > this->level_count_ + 1)
       return 0;
@@ -143,12 +176,9 @@ class PackedMemoryArray {
     std::tie(normalized_block_id, normalized_block_size) =
         GetNormalizedBlockAndSize(block_id, level);
 
-    auto block_start = std::next(this->content_.begin(),
-                                 normalized_block_id * normalized_block_size);
-    auto block_end = std::next(block_start, normalized_block_size);
-
-    auto element_count = std::ranges::count_if(
-        block_start, block_end, [](auto value) { return value != 0; });
+    auto initial_position = normalized_block_id * normalized_block_size;
+    auto element_count =
+        GetValuesCountInInterval(initial_position, normalized_block_size);
 
     auto density = element_count / static_cast<float>(normalized_block_size);
     if (density <= upper_threshold)
@@ -159,7 +189,7 @@ class PackedMemoryArray {
   void IncreaseSize() {
     auto new_capacity = this->capacity_ * 2;
     std::vector<ContentType> temp_content(new_capacity);
-    double density = new_capacity / this->elements_count_;
+    auto density = new_capacity / static_cast<float>(this->elements_count_);
 
     uint32_t control = 0;
     for (uint32_t i = 0; i < this->content_.size(); ++i) {
@@ -171,36 +201,6 @@ class PackedMemoryArray {
 
     this->content_.swap(temp_content);
     this->UpdateVars(new_capacity);
-  }
-
-  // FIXME(StefanoPetrilli) make this readable once it's celar that it works
-  void RebalanceInterval(uint32_t block_id, uint32_t level) {
-    uint32_t normalized_block_id, normalized_block_size;
-    std::tie(normalized_block_id, normalized_block_size) =
-        GetNormalizedBlockAndSize(block_id, level);
-
-    std::vector<ContentType> auxiliary_vector;
-    auxiliary_vector.reserve(normalized_block_size);
-
-    auto initial_position = normalized_block_id * normalized_block_size;
-
-    for (auto i = initial_position;
-         i < initial_position + normalized_block_size; ++i) {
-      if (this->content_.at(i) != 0)
-        auxiliary_vector.push_back(content_.at(i));
-    }
-
-    for (size_t i = 1; auxiliary_vector.size() < normalized_block_size;
-         i += 2) {
-      auxiliary_vector.insert(auxiliary_vector.begin() + i, 0);
-      if (auxiliary_vector.size() >= normalized_block_size)
-        break;
-      auxiliary_vector.insert(auxiliary_vector.end() - i, 0);
-    }
-
-    for (uint32_t i = 0; i < auxiliary_vector.size(); ++i) {
-      this->content_[initial_position + i] = auxiliary_vector[i];
-    }
   }
 
  public:
