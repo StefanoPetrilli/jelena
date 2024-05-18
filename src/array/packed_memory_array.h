@@ -21,14 +21,14 @@ class PackedMemoryArray {
   uint32_t IntegerPartOfLog2(uint32_t n) { return std::bit_width(n) - 1; }
 
   /*
-  * A block_number on the current level corresponds to a different block_number
-  * in a different level. Given the block_number and the level_difference, this
-  * function finds the block_number and the size of the block on the upper
+  * A block_id on the current level corresponds to a different block_id
+  * in a different level. Given the block_id and the level_difference, this
+  * function finds the block_id and the size of the block on the upper
   * level.
   */
   std::tuple<uint32_t, uint32_t> GetNormalizedBlockAndSize(
-      uint32_t block_number, uint32_t level_difference) {
-    return std::make_tuple(block_number / (1 << (level_difference - 1)),
+      uint32_t block_id, uint32_t level_difference) {
+    return std::make_tuple(block_id / (1 << (level_difference - 1)),
                            this->block_size_ << (level_difference - 1));
   }
 
@@ -44,8 +44,8 @@ class PackedMemoryArray {
     this->level_count_ = IntegerPartOfLog2(this->block_count_);
   }
 
-  ContentType GetMinimumFromBlock(uint32_t block_number) {
-    auto starting_point = block_number * block_size_;
+  ContentType GetMinimumFromBlock(uint32_t block_id) {
+    auto starting_point = block_id * block_size_;
     auto result = std::find_if(content_.begin() + starting_point,
                                content_.begin() + starting_point + block_size_,
                                [](int value) { return value != 0; });
@@ -53,8 +53,8 @@ class PackedMemoryArray {
     return *result;
   }
 
-  ContentType GetMaximumFromBlock(uint32_t block_number) {
-    auto starting_point = block_number * block_size_;
+  ContentType GetMaximumFromBlock(uint32_t block_id) {
+    auto starting_point = block_id * block_size_;
     auto result = std::ranges::max_element(
         content_.begin() + starting_point,
         content_.begin() + starting_point + block_size_);
@@ -93,10 +93,10 @@ class PackedMemoryArray {
     return FindBlock(value, middle_block + 1, this->block_count_ - 1);
   }
 
-  void Insert(ContentType value, uint32_t block_number) {
+  void Insert(ContentType value, uint32_t block_id) {
     std::vector<ContentType> auxiliary_vector;
     auxiliary_vector.reserve(this->block_size_);
-    auto initial_position = block_number * this->block_size_;
+    auto initial_position = block_id * this->block_size_;
 
     for (auto i = initial_position; i < initial_position + this->block_size_;
          ++i) {
@@ -119,33 +119,32 @@ class PackedMemoryArray {
     ++this->elements_count_;
   }
 
-  uint32_t GetElementsInBlock(uint32_t block_number) {
+  uint32_t GetElementsInBlock(uint32_t block_id) {
     auto block_start =
-        std::next(this->content_.begin(), block_number * this->block_size_);
+        std::next(this->content_.begin(), block_id * this->block_size_);
     auto block_end = std::next(block_start, this->block_size_);
 
     return std::ranges::count_if(block_start, block_end,
                                  [](auto value) { return value != 0; });
   }
 
-  bool BlockHasSpace(uint32_t block_number) {
-    uint32_t elements_in_block = GetElementsInBlock(block_number);
+  bool BlockHasSpace(uint32_t block_id) {
+    uint32_t elements_in_block = GetElementsInBlock(block_id);
     return elements_in_block < this->block_size_;
   }
 
   // FIXME(StefanoPetrilli) make this readable once it's clear that it works
-  uint32_t OtherBlocksHaveSpace(uint32_t block_number, uint32_t level = 1) {
+  uint32_t OtherBlocksHaveSpace(uint32_t block_id, uint32_t level = 1) {
     if (level > this->level_count_ + 1)
       return 0;
 
     auto upper_threshold = GetUpperTreshold(level);
-    uint32_t normalized_block_number, normalized_block_size;
-    std::tie(normalized_block_number, normalized_block_size) =
-        GetNormalizedBlockAndSize(block_number, level);
+    uint32_t normalized_block_id, normalized_block_size;
+    std::tie(normalized_block_id, normalized_block_size) =
+        GetNormalizedBlockAndSize(block_id, level);
 
-    auto block_start =
-        std::next(this->content_.begin(),
-                  normalized_block_number * normalized_block_size);
+    auto block_start = std::next(this->content_.begin(),
+                                 normalized_block_id * normalized_block_size);
     auto block_end = std::next(block_start, normalized_block_size);
 
     auto element_count = std::ranges::count_if(
@@ -154,7 +153,7 @@ class PackedMemoryArray {
     auto density = element_count / static_cast<float>(normalized_block_size);
     if (density <= upper_threshold)
       return level;
-    return OtherBlocksHaveSpace(block_number, level + 1);
+    return OtherBlocksHaveSpace(block_id, level + 1);
   }
 
   void IncreaseSize() {
@@ -175,15 +174,15 @@ class PackedMemoryArray {
   }
 
   // FIXME(StefanoPetrilli) make this readable once it's celar that it works
-  void RebalanceInterval(uint32_t block_number, uint32_t level) {
-    uint32_t normalized_block_number, normalized_block_size;
-    std::tie(normalized_block_number, normalized_block_size) =
-        GetNormalizedBlockAndSize(block_number, level);
+  void RebalanceInterval(uint32_t block_id, uint32_t level) {
+    uint32_t normalized_block_id, normalized_block_size;
+    std::tie(normalized_block_id, normalized_block_size) =
+        GetNormalizedBlockAndSize(block_id, level);
 
     std::vector<ContentType> auxiliary_vector;
     auxiliary_vector.reserve(normalized_block_size);
 
-    auto initial_position = normalized_block_number * normalized_block_size;
+    auto initial_position = normalized_block_id * normalized_block_size;
 
     for (auto i = initial_position;
          i < initial_position + normalized_block_size; ++i) {
@@ -211,17 +210,17 @@ class PackedMemoryArray {
   }
 
   void Insert(ContentType value) {
-    auto block_number = FindBlock(value);
+    auto block_id = FindBlock(value);
 
-    if (BlockHasSpace(block_number)) {
-      this->Insert(value, block_number);
+    if (BlockHasSpace(block_id)) {
+      this->Insert(value, block_id);
       return;
     }
 
-    auto space_at_level = OtherBlocksHaveSpace(block_number);
+    auto space_at_level = OtherBlocksHaveSpace(block_id);
     if (space_at_level) {
-      this->RebalanceInterval(block_number, space_at_level);
-      this->Insert(value, block_number);
+      this->RebalanceInterval(block_id, space_at_level);
+      this->Insert(value, block_id);
       return;
     }
 
