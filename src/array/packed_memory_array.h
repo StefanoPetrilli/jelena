@@ -17,29 +17,19 @@ class PackedMemoryArray {
   uint32_t block_count_;
   uint32_t level_count_;
 
-  //TODO(StefanoPetrilli) rewrite using bit_width
-  int Log2(int n) {
-    int lg2 = 0;
-    while (n > 1) {
-      n /= 2;
-      ++lg2;
-    }
-    return lg2;
+  uint32_t IntegerPartOfLog2(uint32_t n) {
+    return std::bit_width(n) - 1;
   }
 
-  // int Log2(uint32_t n) {
-  //   return std::bit_width(n) - 1;
-  // }
-
   double GetUpperTreshold(uint32_t level) {
-    return 1.0 - ((1.0 - 0.5) * level) / (double)Log2(this->capacity_);
+    return 1.0 - ((1.0 - 0.5) * level) / (double)IntegerPartOfLog2(this->capacity_);
   }
 
   void UpdateVars(int capacity) {
     this->capacity_ = capacity;
-    this->block_size_ = 1 << Log2(Log2(capacity) * 2);
+    this->block_size_ = 1 << IntegerPartOfLog2(IntegerPartOfLog2(capacity) * 2);
     this->block_count_ = this->capacity_ / this->block_size_;
-    this->level_count_ = Log2(this->block_count_);
+    this->level_count_ = IntegerPartOfLog2(this->block_count_);
   }
 
   ContentType GetMinimumFromBlock(uint32_t block_number) {
