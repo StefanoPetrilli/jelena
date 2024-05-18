@@ -1,8 +1,9 @@
 #pragma once
 
 #include <algorithm>
-#include <bit>
+#include <cmath>
 #include <tuple>
+#include <bit>
 
 namespace array {
 
@@ -76,6 +77,20 @@ class PackedMemoryArray {
     return GetValuesInInterval(begin, offset).size();
   }
 
+  void InsertPadding(std::vector<ContentType>& vector, uint32_t target_size) {
+    auto insertions = target_size - vector.size();
+    if (insertions == 0)
+      return;
+
+    uint32_t interval =
+        std::ceil(vector.size() / static_cast<float>(insertions));
+
+    for (size_t i = 0; i < insertions; i++) {
+      vector.insert(vector.begin() + std::min(i * interval + i, vector.size()),
+                    0);
+    }
+  }
+
   uint32_t FindBlock(ContentType value, uint32_t left_block,
                      uint32_t right_block) {
     if (left_block == right_block)
@@ -117,11 +132,7 @@ class PackedMemoryArray {
     auto position = std::ranges::lower_bound(auxiliary_vector, value);
     auxiliary_vector.insert(position, value);
 
-    //FIXME(StefanoPetrilli): make it add the spaces distributed evenly
-    for (size_t i = 1; auxiliary_vector.size() < this->block_size_; i += 2) {
-      auxiliary_vector.insert(
-          auxiliary_vector.begin() + std::min(i, auxiliary_vector.size()), 0);
-    }
+    InsertPadding(auxiliary_vector, this->block_size_);
 
     std::copy(auxiliary_vector.begin(), auxiliary_vector.end(),
               this->content_.begin() + initial_position);
@@ -140,14 +151,7 @@ class PackedMemoryArray {
     auxiliary_vector =
         GetValuesInInterval(initial_position, normalized_block_size);
 
-    //FIXME(StefanoPetrilli): make it add the spaces distributed evenly
-    for (size_t i = 1; auxiliary_vector.size() < normalized_block_size;
-         i += 2) {
-      auxiliary_vector.insert(auxiliary_vector.begin() + i, 0);
-      if (auxiliary_vector.size() >= normalized_block_size)
-        break;
-      auxiliary_vector.insert(auxiliary_vector.end() - i, 0);
-    }
+    InsertPadding(auxiliary_vector, normalized_block_size);
 
     std::copy(auxiliary_vector.begin(), auxiliary_vector.end(),
               this->content_.begin() + initial_position);
