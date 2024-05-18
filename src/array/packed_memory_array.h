@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <bit>
+#include <tuple>
 
 namespace array {
 
@@ -17,12 +18,23 @@ class PackedMemoryArray {
   uint32_t block_count_;
   uint32_t level_count_;
 
-  uint32_t IntegerPartOfLog2(uint32_t n) {
-    return std::bit_width(n) - 1;
+  uint32_t IntegerPartOfLog2(uint32_t n) { return std::bit_width(n) - 1; }
+
+  /*
+  * A block_number on the current level corresponds to a different block_number
+  * in a different level. Given the block_number and the level_difference, this
+  * function finds the block_number and the size of the block on the upper
+  * level.
+  */
+  std::tuple<uint32_t, uint32_t> GetNormalizedBlockAndSize(
+      uint32_t block_number, uint32_t level_difference) {
+    return std::make_tuple(block_number / (1 << (level_difference - 1)),
+                           this->block_size_ << (level_difference - 1));
   }
 
   double GetUpperTreshold(uint32_t level) {
-    return 1.0 - ((1.0 - 0.5) * level) / (double)IntegerPartOfLog2(this->capacity_);
+    return 1.0 -
+           ((1.0 - 0.5) * level) / (double)IntegerPartOfLog2(this->capacity_);
   }
 
   void UpdateVars(int capacity) {
@@ -127,9 +139,9 @@ class PackedMemoryArray {
       return 0;
 
     auto upper_threshold = GetUpperTreshold(level);
-    uint32_t denomiantor = 1 << (level - 1);
-    uint32_t normalized_block_number = block_number / denomiantor;
-    uint32_t normalized_block_size = this->block_size_ << (level - 1);
+    uint32_t normalized_block_number, normalized_block_size;
+    std::tie(normalized_block_number, normalized_block_size) =
+        GetNormalizedBlockAndSize(block_number, level);
 
     auto block_start =
         std::next(this->content_.begin(),
@@ -164,9 +176,9 @@ class PackedMemoryArray {
 
   // FIXME(StefanoPetrilli) make this readable once it's celar that it works
   void RebalanceInterval(uint32_t block_number, uint32_t level) {
-    uint32_t denomiantor = 1 << (level - 1);
-    uint32_t normalized_block_number = block_number / denomiantor;
-    uint32_t normalized_block_size = this->block_size_ << (level - 1);
+    uint32_t normalized_block_number, normalized_block_size;
+    std::tie(normalized_block_number, normalized_block_size) =
+        GetNormalizedBlockAndSize(block_number, level);
 
     std::vector<ContentType> auxiliary_vector;
     auxiliary_vector.reserve(normalized_block_size);
