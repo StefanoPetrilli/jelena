@@ -11,6 +11,8 @@ add_executable(
   tree/binary_tree_test.h
   tree/b_tree_test.h
   tree/b_tree_test.cc
+  tree/cob_tree_test.h
+  tree/cob_tree_test.cc
   disjoint_set/quick_union_test.cc
   disjoint_set/quick_union_test.h
   disjoint_set/rank_union_test.cc
