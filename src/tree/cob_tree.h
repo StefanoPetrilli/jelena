@@ -154,11 +154,12 @@ class COBTree {
       return;
     }
 
-    uint sqrt_nodes = static_cast<int>(std::sqrt(number_of_nodes));
-    uint top_tree_size = sqrt_nodes;
-    if (sqrt_nodes * sqrt_nodes < number_of_nodes) {
-      top_tree_size += 1;
-    }
+    // Calculate the height of the tree
+    uint height = static_cast<uint>(std::ceil(std::log2(number_of_nodes + 1)));
+    uint top_tree_height =
+        (height + 1) /
+        2;  // Split height by two, lower tree is bigger if height is odd
+    uint top_tree_size = (1 << top_tree_height) - 1;
 
     // Place the top nodes
     for (uint i = 0; i < top_tree_size; ++i) {
@@ -168,14 +169,15 @@ class COBTree {
     }
 
     // Recursively place the subtrees
-    for (uint i = 0; i < top_tree_size; ++i) {
-      uint subtree_start_index = start_index + top_tree_size + i * sqrt_nodes;
-      uint subtree_end_index =
-          std::min(subtree_start_index + sqrt_nodes, end_index);
-      BuildVEBTree(input_array, veb_array, subtree_start_index,
-                   subtree_end_index,
-                   veb_index + top_tree_size + i * sqrt_nodes);
-    }
+    uint subtree_start_index = start_index + top_tree_size;
+    uint subtree_size = (number_of_nodes - top_tree_size) / 2;
+    uint left_subtree_end_index = subtree_start_index + subtree_size;
+    uint right_subtree_start_index = left_subtree_end_index;
+
+    BuildVEBTree(input_array, veb_array, subtree_start_index,
+                 left_subtree_end_index, veb_index + top_tree_size);
+    BuildVEBTree(input_array, veb_array, right_subtree_start_index, end_index,
+                 veb_index + top_tree_size + subtree_size);
   }
 
   uint LowerBoundVEB(const std::vector<ContentType>& veb_array,
