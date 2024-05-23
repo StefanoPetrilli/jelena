@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <bit>
 #include <cmath>
+#include <optional>
 #include <tuple>
 
 namespace tree {
@@ -14,13 +15,14 @@ class COBTree {
  private:
   std::vector<ContentType> content_;
   std::vector<ContentType> tree_;
-  std::vector<bool> is_leaf_;
   std::vector<uint> map_;
+  std::vector<bool> is_leaf_;
   uint capacity_;
   ContentType elements_count_;
   uint block_size_;
   uint block_count_;
   uint level_count_;
+  std::optional<ContentType> min_value_;
 
   uint IntegerPartOfLog2(uint n) { return std::bit_width(n) - 1; }
 
@@ -93,11 +95,16 @@ class COBTree {
     }
   }
 
-  uint FromBlockIdToTreePosition(uint block_id) {
-    if (!block_id)
-      return 0;
-    throw std::logic_error("FromBlockIdToTreePosition not yet implemented");
-    return 0;
+  std::vector<uint> FromBlockIdToTreePositions(uint block_id) {
+    std::vector<uint> result;
+
+    for (size_t i = 0; i < this->map_.size(); i++) {
+      if (map_.at(i) == block_id) {
+        result.push_back(i);
+      }
+    }
+
+    return result;
   }
 
   /*
@@ -228,18 +235,17 @@ class COBTree {
   }
 
   void UpdateSearchTree(ContentType value, uint block_id) {
-    auto position = FromBlockIdToTreePosition(block_id);
-
-    tree_.at(position) = value;
-    // TODO we have to propagate the change upward
+    auto positions = FromBlockIdToTreePositions(block_id);
+    for (auto position : positions) {
+      tree_.at(position) = value;
+    }
   }
 
   uint FindBlock(ContentType value) {
-    // if (is_leaf_.at(0))
-    //   return 0;
+    if (min_value_.has_value() && this->min_value_.value() > value)
+      return 0;
 
     auto e = LowerBoundVEB(this->tree_, 0, this->tree_.size(), value, 0);
-    //throw std::logic_error("FindBlock not yet implemented");
     return map_[e];
   }
 
@@ -338,6 +344,13 @@ class COBTree {
     this->RebuildSearchTree();
   }
 
+  void UpdateMinValue(ContentType value) {
+    if (!this->min_value_.has_value())
+      min_value_ = value;
+    else
+      min_value_ = std::min(min_value_.value(), value);
+  }
+
   std::string ToStringData() {
     std::string result = "";
     for (auto element : content_) {
@@ -372,6 +385,7 @@ class COBTree {
 
     if (BlockHasSpace(block_id)) {
       this->Insert(value, block_id);
+      this->UpdateMinValue(value);
       return;
     }
 
@@ -379,6 +393,7 @@ class COBTree {
     if (space_at_level) {
       this->RebalanceInterval(block_id, space_at_level);
       this->Insert(value, block_id);
+      this->UpdateMinValue(value);
       return;
     }
 
