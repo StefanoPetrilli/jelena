@@ -126,8 +126,8 @@ class COBTree {
     while (stride >= 1) {
       auto counter = stride;
       while (counter < block_min.size()) {
-        result.at(index) = block_min.at(stride);
-        block_map.at(index) = stride;
+        result.at(index) = block_min.at(counter);
+        block_map.at(index) = counter;
         index++;
         counter *= 2;
       }

@@ -60,7 +60,7 @@ TEST_F(COBTreeTest, AfterFirstDimensionIncrease_Returns_CorrectString3) {
   EXPECT_EQ(actual, expected);
 }
 
-TEST_F(COBTreeTest, AfterFirstDimensionIncrease_Returns_CorrectString4) {
+TEST_F(COBTreeTest, AfterFirstDimensionIncrease_Returns_CorrectString5) {
   cob_tree.Insert(80);
   cob_tree.Insert(50);
   cob_tree.Insert(70);
@@ -71,6 +71,10 @@ TEST_F(COBTreeTest, AfterFirstDimensionIncrease_Returns_CorrectString4) {
   cob_tree.Insert(100);
   cob_tree.Insert(83);
   cob_tree.Insert(45);
+  cob_tree.Insert(10);
+  cob_tree.Insert(5);
+  cob_tree.Insert(4);
+  cob_tree.Insert(2);
 
   auto actual = cob_tree.ToString();
   std::string expected =
