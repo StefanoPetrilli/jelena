@@ -16,7 +16,6 @@ class COBTree {
   std::vector<ContentType> content_;
   std::vector<ContentType> tree_;
   std::vector<uint> map_;
-  std::vector<bool> is_leaf_;
   uint capacity_;
   ContentType elements_count_;
   uint block_size_;
@@ -271,8 +270,6 @@ class COBTree {
 
   void RebuildSearchTree() {
     tree_.resize((this->block_count_ * 2) - 1);
-    is_leaf_.resize((this->block_count_ * 2) - 1);
-    std::fill(is_leaf_.begin(), is_leaf_.end(), false);
 
     std::vector<ContentType> bf_tree;
     std::tie(bf_tree, this->map_) = BuildBFTree();
@@ -441,7 +438,6 @@ class COBTree {
  public:
   COBTree() : capacity_(kInitialCapacity), elements_count_(0) {
     tree_.push_back(0);
-    is_leaf_.push_back(true);
     content_.resize(capacity_);
     this->UpdateVariables(capacity_);
     this->map_.resize(1);
