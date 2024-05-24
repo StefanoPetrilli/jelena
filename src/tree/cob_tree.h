@@ -129,7 +129,7 @@ class COBTree {
         result.at(index) = block_min.at(counter);
         block_map.at(index) = counter;
         index++;
-        counter *= 2;
+        counter += 2;
       }
       stride /= 2;
     }
@@ -141,43 +141,86 @@ class COBTree {
     return std::make_tuple(result, block_map);
   }
 
+  std::vector<ContentType> GetCurrentLevelNodes(
+      const std::vector<ContentType>& input_array, uint tree_index,
+      uint level) {
+    uint number_of_nodes = 1 << level;
+    std::vector<ContentType> new_vector(
+        input_array.begin() + tree_index,
+        input_array.begin() + tree_index + number_of_nodes);
+    return new_vector;
+  }
+
+  std::vector<ContentType> GetCurrentLevelNodesMap(uint tree_index,
+                                                   uint level) {
+    uint number_of_nodes = 1 << level;
+    std::vector<ContentType> new_vector(
+        this->map_.begin() + tree_index,
+        this->map_.begin() + tree_index + number_of_nodes);
+    return new_vector;
+  }
+
   void BuildVEBTree(const std::vector<ContentType>& input_array,
-                    std::vector<ContentType>& veb_array, uint start_index,
-                    uint end_index, uint veb_index = 0) {
-    if (start_index >= end_index) {
+                    std::vector<uint> new_map = {}, uint tree_index = 0,
+                    uint level = 0) {
+
+    if (level == 0)
+      new_map.resize(input_array.size());
+
+    uint initial_level = level;
+    uint levels_in_input = 0;
+    uint nodes_count_in_input = input_array.size() - tree_index;
+    if (nodes_count_in_input == 0) {
+      this->map_.swap(new_map);
       return;
     }
-
-    uint number_of_nodes = end_index - start_index;
-    if (number_of_nodes == 1) {
-      veb_array[veb_index] = input_array[start_index];
-      return;
+    while (nodes_count_in_input > 0) {
+      nodes_count_in_input -= 1 << initial_level;
+      initial_level++;
+      levels_in_input++;
     }
 
-    // Calculate the height of the tree
-    uint height = static_cast<uint>(std::ceil(std::log2(number_of_nodes + 1)));
-    uint top_tree_height =
-        (height + 1) /
-        2;  // Split height by two, lower tree is bigger if height is odd
-    uint top_tree_size = (1 << top_tree_height) - 1;
-
-    // Place the top nodes
-    for (uint i = 0; i < top_tree_size; ++i) {
-      if (start_index + i < end_index) {
-        veb_array[veb_index + i] = input_array[start_index + i];
+    uint upper_tree_height, lower_tree_height;
+    if (levels_in_input <= 2) {
+      lower_tree_height = 0;
+      upper_tree_height = levels_in_input;
+    } else {
+      if (levels_in_input % 2 == 1) {
+        upper_tree_height = 1;
+        lower_tree_height = levels_in_input - upper_tree_height;
+      } else {
+        lower_tree_height = levels_in_input / 2;
+        upper_tree_height = levels_in_input - lower_tree_height;
       }
     }
 
-    // Recursively place the subtrees
-    uint subtree_start_index = start_index + top_tree_size;
-    uint subtree_size = (number_of_nodes - top_tree_size) / 2;
-    uint left_subtree_end_index = subtree_start_index + subtree_size;
-    uint right_subtree_start_index = left_subtree_end_index;
+    if (upper_tree_height == 1) {
+      auto nodes = GetCurrentLevelNodes(input_array, tree_index, level);
+      tree_.at(tree_index) = nodes.at(0);
+      new_map.at(tree_index) = map_.at(0);
+      tree_index++;
+    } else if (upper_tree_height == 2) {
+      auto nodes = GetCurrentLevelNodes(input_array, tree_index, level);
+      auto nodes_map = GetCurrentLevelNodesMap(tree_index, level);
+      auto nodes_child = GetCurrentLevelNodes(
+          input_array, tree_index + nodes.size(), level + 1);
+      auto nodes_child_map =
+          GetCurrentLevelNodesMap(tree_index + nodes.size(), level + 1);
 
-    BuildVEBTree(input_array, veb_array, subtree_start_index,
-                 left_subtree_end_index, veb_index + top_tree_size);
-    BuildVEBTree(input_array, veb_array, right_subtree_start_index, end_index,
-                 veb_index + top_tree_size + subtree_size);
+      for (size_t i = 0; i < nodes.size(); ++i) {
+        tree_.at(tree_index) = nodes.at(i);
+        new_map.at(tree_index) = nodes_map.at(i);
+        tree_index++;
+        tree_.at(tree_index) = nodes_child.at(2 * i);
+        new_map.at(tree_index) = nodes_child_map.at(2 * i);
+        tree_index++;
+        tree_.at(tree_index) = nodes_child.at(2 * i + 1);
+        new_map.at(tree_index) = nodes_child_map.at(2 * i + 1);
+        tree_index++;
+      }
+    }
+
+    BuildVEBTree(input_array, new_map, tree_index, level + upper_tree_height);
   }
 
   uint LowerBoundVEB(const std::vector<ContentType>& veb_array,
@@ -233,7 +276,7 @@ class COBTree {
 
     std::vector<ContentType> bf_tree;
     std::tie(bf_tree, this->map_) = BuildBFTree();
-    BuildVEBTree(bf_tree, tree_, 0, tree_.size());
+    BuildVEBTree(bf_tree);
   }
 
   void UpdateSearchTree(ContentType value, uint block_id) {
