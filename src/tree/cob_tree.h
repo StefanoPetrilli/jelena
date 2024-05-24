@@ -334,8 +334,23 @@ class COBTree {
 
     InsertPadding(auxiliary_vector, normalized_block_size);
 
+    auto modified_blocks = normalized_block_size / block_size_;
+    std::vector<ContentType> before_modification;
+    for (int modified_block_id = block_id;
+         modified_block_id < modified_blocks + block_id; modified_block_id++) {
+      before_modification.push_back(GetMinimumFromBlock(modified_block_id));
+    }
+
     std::copy(auxiliary_vector.begin(), auxiliary_vector.end(),
               this->content_.begin() + initial_position);
+
+    for (int modified_block_id = block_id;
+         modified_block_id < modified_blocks + block_id; modified_block_id++) {
+      auto new_min = GetMinimumFromBlock(modified_block_id);
+      if (new_min != before_modification.at(modified_block_id)) {
+        UpdateSearchTree(new_min, modified_block_id);
+      }
+    }
   }
 
   uint GetElementsInBlock(uint block_id) {
