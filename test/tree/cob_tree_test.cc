@@ -157,4 +157,38 @@ TEST_F(COBTreeTest, AfterFirstDimensionIncrease_Returns_CorrectString8) {
       ",90, ,100, ,101]\nTree: [70,45,1,45,83,70,83]";
   EXPECT_EQ(actual, expected);
 }
+
+TEST_F(COBTreeTest, AfterFirstDimensionIncrease_Returns_CorrectString9) {
+  cob_tree.Insert(80);
+  cob_tree.Insert(50);
+  cob_tree.Insert(70);
+  cob_tree.Insert(90);
+  cob_tree.Insert(65);
+  cob_tree.Insert(51);
+  cob_tree.Insert(81);
+  cob_tree.Insert(100);
+  cob_tree.Insert(83);
+  cob_tree.Insert(45);
+  cob_tree.Insert(10);
+  cob_tree.Insert(5);
+  cob_tree.Insert(4);
+  cob_tree.Insert(2);
+  cob_tree.Insert(101);
+  cob_tree.Insert(49);
+  cob_tree.Insert(1);
+  cob_tree.Insert(6);
+  cob_tree.Insert(20);
+  cob_tree.Insert(82);
+  cob_tree.Insert(84);
+  cob_tree.Insert(85);
+  cob_tree.Insert(86);
+  cob_tree.Insert(87);
+  cob_tree.Insert(88);
+
+  auto actual = cob_tree.ToString();
+  std::string expected =
+      "Data: [ ,1,2,4,5,6,10,20, ,45,49,50, ,51,65, , ,70,80,81, ,82,83,84, "
+      ",85,86,87,88,90,100,101]\nTree: [70,45,1,45,85,70,85]";
+  EXPECT_EQ(actual, expected);
+}
 }  // namespace tree_test

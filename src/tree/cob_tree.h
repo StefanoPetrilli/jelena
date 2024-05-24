@@ -336,18 +336,25 @@ class COBTree {
 
     auto modified_blocks = normalized_block_size / block_size_;
     std::vector<ContentType> before_modification;
-    for (int modified_block_id = block_id;
-         modified_block_id < modified_blocks + block_id; modified_block_id++) {
+    uint starting_modification_id = block_id;
+    while (starting_modification_id + modified_blocks > this->block_count_) {
+      starting_modification_id--;
+    }
+
+    for (uint modified_block_id = starting_modification_id;
+         modified_block_id < modified_blocks + starting_modification_id;
+         modified_block_id++) {
       before_modification.push_back(GetMinimumFromBlock(modified_block_id));
     }
 
     std::copy(auxiliary_vector.begin(), auxiliary_vector.end(),
               this->content_.begin() + initial_position);
 
-    for (int modified_block_id = block_id;
-         modified_block_id < modified_blocks + block_id; modified_block_id++) {
+    for (uint modified_block_id = starting_modification_id, counter = 0;
+         modified_block_id < modified_blocks + starting_modification_id;
+         modified_block_id++, counter++) {
       auto new_min = GetMinimumFromBlock(modified_block_id);
-      if (new_min != before_modification.at(modified_block_id)) {
+      if (new_min != before_modification.at(counter)) {
         UpdateSearchTree(new_min, modified_block_id);
       }
     }
