@@ -243,4 +243,14 @@ TEST_F(COBTreeTest, AfterFirstDimensionIncrease_Returns_CorrectString12) {
       "76,86,81,86,96,91,96]";
   EXPECT_EQ(actual, expected);
 }
+
+TEST_F(COBTreeTest, EvenTreeContainsEven_Returns_True) {
+  for (uint32_t i = 2; i < 64; i += 2)
+    EXPECT_EQ(cob_tree_even.Contains(i), true);
+}
+
+TEST_F(COBTreeTest, EvenTreeContainsOdd_Returns_False) {
+  for (uint32_t i = 1; i < 64; i += 2)
+    EXPECT_EQ(cob_tree_even.Contains(i), false);
+}
 }  // namespace tree_test

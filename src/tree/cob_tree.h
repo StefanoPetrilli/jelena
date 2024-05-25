@@ -464,6 +464,15 @@ class COBTree {
     Insert(value);
   }
 
+  bool Contains(ContentType value) {
+    auto block_id = FindBlock(value);
+    auto initial_position = block_id * block_size_;
+    auto auxiliary_vector = GetValuesInInterval(initial_position, block_size_);
+
+    return std::binary_search(auxiliary_vector.begin(), auxiliary_vector.end(),
+                              value);
+  }
+
   std::string ToString() {
     return "Data: [" + ToStringData() + "]\nTree: [" + ToStringTree() + "]";
   }
