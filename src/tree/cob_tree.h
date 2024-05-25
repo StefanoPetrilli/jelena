@@ -51,18 +51,27 @@ class COBTree {
 
   ContentType GetMinimumFromBlock(uint block_id) {
     auto starting_point = block_id * block_size_;
-    auto result = std::find_if(content_.begin() + starting_point,
-                               content_.begin() + starting_point + block_size_,
-                               [](int value) { return value != 0; });
+    auto result =
+        std::find_if(this->content_.begin() + starting_point,
+                     this->content_.begin() + starting_point + block_size_,
+                     [](int value) { return value != 0; });
 
     return *result;
   }
 
+  /*
+  * As the values in the blocks are ordered, we only need to search for
+  * the first non-zero value in the block
+  */
   ContentType GetMaximumFromBlock(uint block_id) {
     auto starting_point = block_id * block_size_;
-    auto result = std::ranges::max_element(
-        content_.begin() + starting_point,
-        content_.begin() + starting_point + block_size_);
+    auto ending_point = starting_point + block_size_;
+
+    auto rbegin = std::make_reverse_iterator(content_.begin() + ending_point);
+    auto rend = std::make_reverse_iterator(content_.begin() + starting_point);
+
+    auto result = std::ranges::find_if(
+        rbegin, rend, [](ContentType value) { return value != 0; });
 
     return *result;
   }
