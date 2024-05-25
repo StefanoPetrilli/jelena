@@ -30,19 +30,19 @@ class PackedMemoryArray {
   std::tuple<uint, uint> GetNormalizedBlockAndSize(uint block_id,
                                                    uint level_difference) {
     return std::make_tuple(block_id / (1 << (level_difference - 1)),
-                           this->block_size_ << (level_difference - 1));
+                           block_size_ << (level_difference - 1));
   }
 
   double GetUpperTreshold(uint level) {
     return 1.0 - ((1.0 - 0.5) * level) /
-                     static_cast<float>(IntegerPartOfLog2(this->capacity_));
+                     static_cast<float>(IntegerPartOfLog2(capacity_));
   }
 
   void UpdateVariables(int capacity) {
     this->capacity_ = capacity;
-    this->block_size_ = 1 << IntegerPartOfLog2(IntegerPartOfLog2(capacity) * 2);
-    this->block_count_ = this->capacity_ / this->block_size_;
-    this->level_count_ = IntegerPartOfLog2(this->block_count_);
+    block_size_ = 1 << IntegerPartOfLog2(IntegerPartOfLog2(capacity) * 2);
+    block_count_ = this->capacity_ / block_size_;
+    level_count_ = IntegerPartOfLog2(block_count_);
   }
 
   ContentType GetMinimumFromBlock(uint block_id) {
@@ -65,8 +65,8 @@ class PackedMemoryArray {
 
   std::vector<ContentType> GetValuesInInterval(uint begin, uint offset) {
     std::vector<ContentType> result;
-    std::ranges::copy_if(this->content_.begin() + begin,
-                         this->content_.begin() + begin + offset,
+    std::ranges::copy_if(content_.begin() + begin,
+                         content_.begin() + begin + offset,
                          std::back_inserter(result),
                          [](const auto& value) { return value != 0; });
     return result;
@@ -107,9 +107,9 @@ class PackedMemoryArray {
     if (elements_count_ == 0)
       return 0;
 
-    uint middle_block = (this->block_count_ - 1) / 2;
+    uint middle_block = (block_count_ - 1) / 2;
 
-    if (middle_block == this->block_count_ - 1)
+    if (middle_block == block_count_ - 1)
       return 0;
 
     ContentType highest_middle = GetMaximumFromBlock(middle_block);
@@ -117,24 +117,24 @@ class PackedMemoryArray {
     if (value < highest_middle)
       return FindBlock(value, 0, middle_block);
 
-    return FindBlock(value, middle_block + 1, this->block_count_ - 1);
+    return FindBlock(value, middle_block + 1, block_count_ - 1);
   }
 
   void Insert(ContentType value, uint block_id) {
-    auto initial_position = block_id * this->block_size_;
+    auto initial_position = block_id * block_size_;
 
     std::vector<ContentType> auxiliary_vector;
-    auxiliary_vector.reserve(this->block_size_);
-    auxiliary_vector = GetValuesInInterval(initial_position, this->block_size_);
+    auxiliary_vector.reserve(block_size_);
+    auxiliary_vector = GetValuesInInterval(initial_position, block_size_);
 
     auto position = std::ranges::lower_bound(auxiliary_vector, value);
     auxiliary_vector.insert(position, value);
 
-    InsertPadding(auxiliary_vector, this->block_size_);
+    InsertPadding(auxiliary_vector, block_size_);
 
     std::copy(auxiliary_vector.begin(), auxiliary_vector.end(),
-              this->content_.begin() + initial_position);
-    ++this->elements_count_;
+              content_.begin() + initial_position);
+    ++elements_count_;
   }
 
   void RebalanceInterval(uint block_id, uint level) {
@@ -152,13 +152,12 @@ class PackedMemoryArray {
     InsertPadding(auxiliary_vector, normalized_block_size);
 
     std::copy(auxiliary_vector.begin(), auxiliary_vector.end(),
-              this->content_.begin() + initial_position);
+              content_.begin() + initial_position);
   }
 
   uint GetElementsInBlock(uint block_id) {
-    auto block_start =
-        std::next(this->content_.begin(), block_id * this->block_size_);
-    auto block_end = std::next(block_start, this->block_size_);
+    auto block_start = std::next(content_.begin(), block_id * block_size_);
+    auto block_end = std::next(block_start, block_size_);
 
     return std::ranges::count_if(block_start, block_end,
                                  [](auto value) { return value != 0; });
@@ -166,11 +165,11 @@ class PackedMemoryArray {
 
   bool BlockHasSpace(uint block_id) {
     uint elements_in_block = GetElementsInBlock(block_id);
-    return elements_in_block < this->block_size_;
+    return elements_in_block < block_size_;
   }
 
   uint OtherBlocksHaveSpace(uint block_id, uint level = 1) {
-    if (level > this->level_count_ + 1)
+    if (level > level_count_ + 1)
       return 0;
 
     auto upper_threshold = GetUpperTreshold(level);
@@ -189,45 +188,45 @@ class PackedMemoryArray {
   }
 
   void IncreaseSize() {
-    auto new_capacity = this->capacity_ * 2;
+    auto new_capacity = capacity_ * 2;
     std::vector<ContentType> temp_content(new_capacity);
-    auto density = new_capacity / static_cast<float>(this->elements_count_);
+    auto density = new_capacity / static_cast<float>(elements_count_);
 
     uint control = 0;
-    for (uint i = 0; i < this->content_.size(); ++i) {
-      if (this->content_.at(i)) {
+    for (uint i = 0; i < content_.size(); ++i) {
+      if (content_.at(i)) {
         int idx = density * (control++);
-        temp_content.at(idx) = this->content_.at(i);
+        temp_content.at(idx) = content_.at(i);
       }
     }
 
-    this->content_.swap(temp_content);
-    this->UpdateVariables(new_capacity);
+    content_.swap(temp_content);
+    UpdateVariables(new_capacity);
   }
 
  public:
   PackedMemoryArray() : capacity_(kInitialCapacity), elements_count_(0) {
     content_.resize(capacity_);
-    this->UpdateVariables(capacity_);
+    UpdateVariables(capacity_);
   }
 
   void Insert(ContentType value) {
     auto block_id = FindBlock(value);
 
     if (BlockHasSpace(block_id)) {
-      this->Insert(value, block_id);
+      Insert(value, block_id);
       return;
     }
 
     auto space_at_level = OtherBlocksHaveSpace(block_id);
     if (space_at_level) {
-      this->RebalanceInterval(block_id, space_at_level);
-      this->Insert(value, block_id);
+      RebalanceInterval(block_id, space_at_level);
+      Insert(value, block_id);
       return;
     }
 
-    this->IncreaseSize();
-    this->Insert(value);
+    IncreaseSize();
+    Insert(value);
   }
 
   std::string ToString() {

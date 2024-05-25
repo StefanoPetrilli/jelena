@@ -34,27 +34,26 @@ class COBTree {
   std::tuple<uint, uint> GetNormalizedBlockAndSize(uint block_id,
                                                    uint level_difference) {
     return std::make_tuple(block_id / (1 << (level_difference - 1)),
-                           this->block_size_ << (level_difference - 1));
+                           block_size_ << (level_difference - 1));
   }
 
   double GetUpperTreshold(uint level) {
     return 1.0 - ((1.0 - 0.5) * level) /
-                     static_cast<float>(IntegerPartOfLog2(this->capacity_));
+                     static_cast<float>(IntegerPartOfLog2(capacity_));
   }
 
   void UpdateVariables(int capacity) {
-    this->capacity_ = capacity;
-    this->block_size_ = 1 << IntegerPartOfLog2(IntegerPartOfLog2(capacity) * 2);
-    this->block_count_ = this->capacity_ / this->block_size_;
-    this->level_count_ = IntegerPartOfLog2(this->block_count_);
+    capacity_ = capacity;
+    block_size_ = 1 << IntegerPartOfLog2(IntegerPartOfLog2(capacity) * 2);
+    block_count_ = capacity_ / block_size_;
+    level_count_ = IntegerPartOfLog2(block_count_);
   }
 
   ContentType GetMinimumFromBlock(uint block_id) {
     auto starting_point = block_id * block_size_;
-    auto result =
-        std::find_if(this->content_.begin() + starting_point,
-                     this->content_.begin() + starting_point + block_size_,
-                     [](int value) { return value != 0; });
+    auto result = std::find_if(content_.begin() + starting_point,
+                               content_.begin() + starting_point + block_size_,
+                               [](int value) { return value != 0; });
 
     return *result;
   }
@@ -78,8 +77,8 @@ class COBTree {
 
   std::vector<ContentType> GetValuesInInterval(uint begin, uint offset) {
     std::vector<ContentType> result;
-    std::ranges::copy_if(this->content_.begin() + begin,
-                         this->content_.begin() + begin + offset,
+    std::ranges::copy_if(content_.begin() + begin,
+                         content_.begin() + begin + offset,
                          std::back_inserter(result),
                          [](const auto& value) { return value != 0; });
     return result;
@@ -110,12 +109,12 @@ class COBTree {
   std::tuple<std::vector<ContentType>, std::vector<uint>> BuildBFTree() {
     std::vector<ContentType> result;
     std::vector<uint> block_map;
-    result.resize((this->block_count_ * 2) - 1);
-    block_map.resize((this->block_count_ * 2) - 1);
+    result.resize((block_count_ * 2) - 1);
+    block_map.resize((block_count_ * 2) - 1);
 
     std::vector<ContentType> block_min;
-    for (uint i = 0; i < this->block_count_; i++)
-      block_min.push_back(this->GetMinimumFromBlock(i));
+    for (uint i = 0; i < block_count_; i++)
+      block_min.push_back(GetMinimumFromBlock(i));
 
     uint stride = block_min.size() / 2;
     uint index = 0;
@@ -151,8 +150,7 @@ class COBTree {
                                                    uint level) {
     uint number_of_nodes = 1 << level;
     std::vector<ContentType> new_vector(
-        this->map_.begin() + tree_index,
-        this->map_.begin() + tree_index + number_of_nodes);
+        map_.begin() + tree_index, map_.begin() + tree_index + number_of_nodes);
     return new_vector;
   }
 
@@ -167,7 +165,7 @@ class COBTree {
     uint levels_in_input = 0;
     uint nodes_count_in_input = input_array.size() - tree_index;
     if (nodes_count_in_input == 0) {
-      this->map_.swap(new_map);
+      map_.swap(new_map);
       return;
     }
     while (nodes_count_in_input > 0) {
@@ -266,17 +264,17 @@ class COBTree {
   }
 
   void RebuildSearchTree() {
-    tree_.resize((this->block_count_ * 2) - 1);
+    tree_.resize((block_count_ * 2) - 1);
 
     std::vector<ContentType> bf_tree;
-    std::tie(bf_tree, this->map_) = BuildBFTree();
+    std::tie(bf_tree, map_) = BuildBFTree();
     BuildVEBTree(bf_tree);
   }
 
   std::vector<uint> FromBlockIdToTreePositions(uint block_id) {
     std::vector<uint> result;
 
-    for (size_t i = 0; i < this->map_.size(); i++) {
+    for (size_t i = 0; i < map_.size(); i++) {
       if (map_.at(i) == block_id) {
         result.push_back(i);
       }
@@ -293,22 +291,21 @@ class COBTree {
   }
 
   bool IsSmallerThanMinimum(ContentType value) {
-    return min_value_.has_value() && this->min_value_.value() > value;
+    return min_value_.has_value() && min_value_.value() > value;
   }
 
   uint FindBlock(ContentType value) {
     if (IsSmallerThanMinimum(value))
       return 0;
 
-    auto block = LowerBoundVEB(this->tree_, 0, this->tree_.size(), value, 0);
+    auto block = LowerBoundVEB(tree_, 0, tree_.size(), value, 0);
     return map_[block];
   }
 
   void Insert(ContentType value, uint block_id) {
-    auto initial_position = block_id * this->block_size_;
+    auto initial_position = block_id * block_size_;
 
-    auto auxiliary_vector =
-        GetValuesInInterval(initial_position, this->block_size_);
+    auto auxiliary_vector = GetValuesInInterval(initial_position, block_size_);
     auto insert_pos = std::ranges::lower_bound(auxiliary_vector, value);
 
     /*
@@ -320,55 +317,50 @@ class COBTree {
 
     auxiliary_vector.insert(insert_pos, value);
 
-    InsertPadding(auxiliary_vector, this->block_size_);
+    InsertPadding(auxiliary_vector, block_size_);
 
     std::copy(auxiliary_vector.begin(), auxiliary_vector.end(),
-              this->content_.begin() + initial_position);
-    ++this->elements_count_;
+              content_.begin() + initial_position);
+    ++elements_count_;
   }
 
   void RebalanceInterval(uint block_id, uint level) {
-    uint normalized_block_id, normalized_block_size;
-    std::tie(normalized_block_id, normalized_block_size) =
+    auto [normalized_block_id, normalized_block_size] =
         GetNormalizedBlockAndSize(block_id, level);
-
     auto initial_position = normalized_block_id * normalized_block_size;
-
     auto auxiliary_vector =
         GetValuesInInterval(initial_position, normalized_block_size);
 
     InsertPadding(auxiliary_vector, normalized_block_size);
 
     auto modified_blocks = normalized_block_size / block_size_;
-    std::vector<ContentType> before_modification;
-    uint starting_modification_id = block_id;
-    while (starting_modification_id + modified_blocks > this->block_count_) {
-      starting_modification_id--;
+    auto starting_modification_id = block_id;
+
+    while (starting_modification_id + modified_blocks > block_count_) {
+      starting_modification_id = block_count_ - modified_blocks;
     }
 
-    for (uint modified_block_id = starting_modification_id;
-         modified_block_id < modified_blocks + starting_modification_id;
-         modified_block_id++) {
-      before_modification.push_back(GetMinimumFromBlock(modified_block_id));
+    std::vector<ContentType> before_modification(modified_blocks);
+    for (uint i = 0; i < modified_blocks; ++i) {
+      before_modification.at(i) =
+          GetMinimumFromBlock(starting_modification_id + i);
     }
 
     std::copy(auxiliary_vector.begin(), auxiliary_vector.end(),
-              this->content_.begin() + initial_position);
+              content_.begin() + initial_position);
 
-    for (uint modified_block_id = starting_modification_id, counter = 0;
-         modified_block_id < modified_blocks + starting_modification_id;
-         modified_block_id++, counter++) {
+    for (uint i = 0; i < modified_blocks; ++i) {
+      uint modified_block_id = starting_modification_id + i;
       auto new_min = GetMinimumFromBlock(modified_block_id);
-      if (new_min != before_modification.at(counter)) {
+      if (new_min != before_modification.at(i)) {
         UpdateSearchTree(new_min, modified_block_id);
       }
     }
   }
 
   uint GetElementsInBlock(uint block_id) {
-    auto block_start =
-        std::next(this->content_.begin(), block_id * this->block_size_);
-    auto block_end = std::next(block_start, this->block_size_);
+    auto block_start = std::next(content_.begin(), block_id * block_size_);
+    auto block_end = std::next(block_start, block_size_);
 
     return std::ranges::count_if(block_start, block_end,
                                  [](auto value) { return value != 0; });
@@ -376,11 +368,11 @@ class COBTree {
 
   bool BlockHasSpace(uint block_id) {
     uint elements_in_block = GetElementsInBlock(block_id);
-    return elements_in_block < this->block_size_;
+    return elements_in_block < block_size_;
   }
 
   uint OtherBlocksHaveSpace(uint block_id, uint level = 1) {
-    if (level > this->level_count_ + 1)
+    if (level > level_count_ + 1)
       return 0;
 
     auto upper_threshold = GetUpperTreshold(level);
@@ -399,25 +391,25 @@ class COBTree {
   }
 
   void IncreaseSize() {
-    auto new_capacity = this->capacity_ * 2;
+    auto new_capacity = capacity_ * 2;
     std::vector<ContentType> temp_content(new_capacity);
-    auto density = new_capacity / static_cast<float>(this->elements_count_);
+    auto density = new_capacity / static_cast<float>(elements_count_);
 
     uint control = 0;
-    for (uint i = 0; i < this->content_.size(); ++i) {
-      if (this->content_.at(i)) {
+    for (uint i = 0; i < content_.size(); ++i) {
+      if (content_.at(i)) {
         int idx = density * (control++);
-        temp_content.at(idx) = this->content_.at(i);
+        temp_content.at(idx) = content_.at(i);
       }
     }
 
-    this->content_.swap(temp_content);
-    this->UpdateVariables(new_capacity);
-    this->RebuildSearchTree();
+    content_.swap(temp_content);
+    UpdateVariables(new_capacity);
+    RebuildSearchTree();
   }
 
   void UpdateMinValue(ContentType value) {
-    if (!this->min_value_.has_value())
+    if (!min_value_.has_value())
       min_value_ = value;
     else
       min_value_ = std::min(min_value_.value(), value);
@@ -447,34 +439,33 @@ class COBTree {
   COBTree() : capacity_(kInitialCapacity), elements_count_(0) {
     tree_.push_back(0);
     content_.resize(capacity_);
-    this->UpdateVariables(capacity_);
-    this->map_.resize(1);
+    UpdateVariables(capacity_);
+    map_.resize(1);
   }
 
   void Insert(ContentType value) {
     auto block_id = FindBlock(value);
 
     if (BlockHasSpace(block_id)) {
-      this->Insert(value, block_id);
-      this->UpdateMinValue(value);
+      Insert(value, block_id);
+      UpdateMinValue(value);
       return;
     }
 
     auto space_at_level = OtherBlocksHaveSpace(block_id);
     if (space_at_level) {
-      this->RebalanceInterval(block_id, space_at_level);
-      this->Insert(value, block_id);
-      this->UpdateMinValue(value);
+      RebalanceInterval(block_id, space_at_level);
+      Insert(value, block_id);
+      UpdateMinValue(value);
       return;
     }
 
-    this->IncreaseSize();
-    this->Insert(value);
+    IncreaseSize();
+    Insert(value);
   }
 
   std::string ToString() {
-    return "Data: [" + this->ToStringData() + "]\nTree: [" +
-           this->ToStringTree() + "]";
+    return "Data: [" + ToStringData() + "]\nTree: [" + ToStringTree() + "]";
   }
 };
 }  // namespace tree

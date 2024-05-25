@@ -31,25 +31,28 @@ class BinaryTree {
       return oss.str();
     }
 
-    bool HasNext() { return this->next_node != nullptr; }
-    bool HasPrevious() { return this->previous_node != nullptr; }
+    bool HasNext() { return next_node != nullptr; }
+
+    bool HasPrevious() { return previous_node != nullptr; }
 
     void SetNext(std::shared_ptr<Node> node) { next_node = node; }
+
     void SetPrevious(std::shared_ptr<Node> node) { previous_node = node; }
 
     std::shared_ptr<Node> GetNextNode() { return next_node; }
+
     std::shared_ptr<Node> GetPreviousNode() { return previous_node; }
 
-    T GetValue() { return this->value; }
+    T GetValue() { return value; }
   };
 
   std::shared_ptr<Node> head_ = nullptr;
 
  public:
-  bool IsEmpty() { return this->head_ == nullptr; }
+  bool IsEmpty() { return head_ == nullptr; }
 
   void Insert(T value) {
-    if (this->IsEmpty()) {
+    if (IsEmpty()) {
       head_ = std::make_shared<Node>(value);
     }
 
@@ -59,7 +62,7 @@ class BinaryTree {
   }
 
   bool Remove(T value) {
-    if (this->IsEmpty())
+    if (IsEmpty())
       return false;
 
     if (head_->GetValue() == value) {
@@ -71,11 +74,11 @@ class BinaryTree {
   }
 
   std::shared_ptr<Node> Search(T value) {
-    if (this->IsEmpty())
+    if (IsEmpty())
       return nullptr;
 
-    if (this->head_->GetValue() == value) {
-      return this->head_;
+    if (head_->GetValue() == value) {
+      return head_;
     }
 
     return nullptr;

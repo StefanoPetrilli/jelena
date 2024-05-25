@@ -76,9 +76,7 @@ class LinkedList {
     tail_->SetNext(nullptr);
   }
 
-  bool IsOutOfRange(size_t index) {
-    return this->IsEmpty() || this->Size() <= index;
-  }
+  bool IsOutOfRange(size_t index) { return IsEmpty() || Size() <= index; }
 
  public:
   ~LinkedList() {
@@ -90,12 +88,10 @@ class LinkedList {
 
   size_t Size() { return size_; }
 
-  std::string ToString() {
-    return this->IsEmpty() ? std::string() : NodesToString();
-  }
+  std::string ToString() { return IsEmpty() ? std::string() : NodesToString(); }
 
   void Insert(T value) {
-    this->IsEmpty() ? InsertFirstNode(value) : InsertNode(value);
+    IsEmpty() ? InsertFirstNode(value) : InsertNode(value);
     size_++;
   }
 
@@ -111,7 +107,7 @@ class LinkedList {
 
     if (index == 0)
       DeleteHead();
-    else if (index == this->Size() - 1)
+    else if (index == Size() - 1)
       DeleteTail();
     else {
       auto node = GetNode(index);
