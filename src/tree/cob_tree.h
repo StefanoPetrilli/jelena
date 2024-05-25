@@ -128,7 +128,7 @@ class COBTree {
         result.at(index) = block_min.at(counter);
         block_map.at(index) = counter;
         index++;
-        counter += 2;
+        counter += stride * 2;
       }
       stride /= 2;
     }
