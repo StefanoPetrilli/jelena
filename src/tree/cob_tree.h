@@ -103,18 +103,6 @@ class COBTree {
     }
   }
 
-  std::vector<uint> FromBlockIdToTreePositions(uint block_id) {
-    std::vector<uint> result;
-
-    for (size_t i = 0; i < this->map_.size(); i++) {
-      if (map_.at(i) == block_id) {
-        result.push_back(i);
-      }
-    }
-
-    return result;
-  }
-
   /*
   * Using the memory packed array, returns an array with the nodes
   * that compone the corresponding binary search tree in breadth first order.
@@ -285,6 +273,18 @@ class COBTree {
     BuildVEBTree(bf_tree);
   }
 
+  std::vector<uint> FromBlockIdToTreePositions(uint block_id) {
+    std::vector<uint> result;
+
+    for (size_t i = 0; i < this->map_.size(); i++) {
+      if (map_.at(i) == block_id) {
+        result.push_back(i);
+      }
+    }
+
+    return result;
+  }
+
   void UpdateSearchTree(ContentType value, uint block_id) {
     auto positions = FromBlockIdToTreePositions(block_id);
     for (auto position : positions) {
@@ -292,32 +292,33 @@ class COBTree {
     }
   }
 
+  bool IsSmallerThanMinimum(ContentType value) {
+    return min_value_.has_value() && this->min_value_.value() > value;
+  }
+
   uint FindBlock(ContentType value) {
-    if (min_value_.has_value() && this->min_value_.value() > value)
+    if (IsSmallerThanMinimum(value))
       return 0;
 
-    auto e = LowerBoundVEB(this->tree_, 0, this->tree_.size(), value, 0);
-    return map_[e];
+    auto block = LowerBoundVEB(this->tree_, 0, this->tree_.size(), value, 0);
+    return map_[block];
   }
 
   void Insert(ContentType value, uint block_id) {
     auto initial_position = block_id * this->block_size_;
 
-    std::vector<ContentType> auxiliary_vector;
-    auxiliary_vector.reserve(this->block_size_);
-    auxiliary_vector = GetValuesInInterval(initial_position, this->block_size_);
+    auto auxiliary_vector =
+        GetValuesInInterval(initial_position, this->block_size_);
+    auto insert_pos = std::ranges::lower_bound(auxiliary_vector, value);
 
-    if (auxiliary_vector.size() == 0) {
-      auxiliary_vector.push_back(value);
-    } else if (auxiliary_vector.at(0) > value) {
-      auxiliary_vector.insert(auxiliary_vector.begin(), value);
+    /*
+    * If the value is the new minimum of the block we have to replace the
+    * previous value in the tree
+    */
+    if (insert_pos == auxiliary_vector.begin())
       UpdateSearchTree(value, block_id);
-    } else if (auxiliary_vector.at(auxiliary_vector.size() - 1) < value) {
-      auxiliary_vector.push_back(value);
-    } else {
-      auto position = std::ranges::lower_bound(auxiliary_vector, value);
-      auxiliary_vector.insert(position, value);
-    }
+
+    auxiliary_vector.insert(insert_pos, value);
 
     InsertPadding(auxiliary_vector, this->block_size_);
 
@@ -333,9 +334,7 @@ class COBTree {
 
     auto initial_position = normalized_block_id * normalized_block_size;
 
-    std::vector<ContentType> auxiliary_vector;
-    auxiliary_vector.reserve(normalized_block_size);
-    auxiliary_vector =
+    auto auxiliary_vector =
         GetValuesInInterval(initial_position, normalized_block_size);
 
     InsertPadding(auxiliary_vector, normalized_block_size);
