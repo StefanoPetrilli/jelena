@@ -6,6 +6,8 @@ add_executable(
   disjoint_set/statistics.h
   tree/b_tree_benchmark.h
   tree/b_tree_benchmark.cc
+  tree/cob_tree_benchmark.h
+  tree/cob_tree_benchmark.cc
 )
 
 target_link_libraries(jelena_benchmark PUBLIC GTest::gtest_main disjoint_set

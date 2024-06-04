@@ -182,6 +182,9 @@ class COBTree {
       if (levels_in_input % 2 == 1) {
         upper_tree_height = 1;
         lower_tree_height = levels_in_input - upper_tree_height;
+      } else if (levels_in_input > 4) {
+        upper_tree_height = 2;
+        lower_tree_height = levels_in_input - upper_tree_height;
       } else {
         lower_tree_height = levels_in_input / 2;
         upper_tree_height = levels_in_input - lower_tree_height;

@@ -9,7 +9,8 @@ set(CMAKE_EXE_LINKER_FLAGS
 add_compile_options(-Wall -Wextra -Wpedantic)
 
 option(DISJOINT_SET_BENCHMARK "Execute the benchmarks for disjoint set" OFF)
-option(BTREE_BENCHMARK "Execute the benchmarks for B-Tree" ON)
+option(BTREE_BENCHMARK "Execute the benchmarks for B-Tree" OFF)
+option(COBTREE_BENCHMARK "Execute the benchmarks for COB-Tree" ON)
 
 if(DISJOINT_SET_BENCHMARK)
   message(STATUS "Compiling benchmarks for disjoint set")
@@ -19,6 +20,11 @@ endif()
 if(BTREE_BENCHMARK)
   message(STATUS "Compiling benchmarks for B-Tree")
   add_definitions(-DBTREE_BENCHMARK)
+endif()
+
+if(COBTREE_BENCHMARK)
+  message(STATUS "Compiling benchmarks for COB-Tree")
+  add_definitions(-DCOBTREE_BENCHMARK)
 endif()
 
 # Include google test
