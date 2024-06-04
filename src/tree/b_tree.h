@@ -21,46 +21,40 @@ class BTree {
     static uint32_t split_counter_;
 #endif
 
-    Node(OrderType order) : order_(order), parent_(this){};
-    Node(OrderType order, Node* parent) : order_(order), parent_(parent){};
+    Node(OrderType order) : order_(order), parent_(this) {};
+    Node(OrderType order, Node* parent) : order_(order), parent_(parent) {};
     Node(OrderType order, std::vector<ContentType> keys, Node* parent)
-        : order_(order), parent_{parent}, keys_(keys){};
+        : order_(order), parent_{parent}, keys_(keys) {};
 
-    bool IsLeaf() const {
-      return pointers_.empty();
-    }
+    bool IsLeaf() const { return pointers_.empty(); }
 
-    bool IsRoot() const {
-      return this == parent_;
-    }
+    bool IsRoot() const { return this == parent_; }
 
-    bool DoOverflow() const {
-      return keys_.size() >= order_;
-    }
+    bool DoOverflow() const { return keys_.size() >= order_; }
 
-    uint16_t Size() const {
-      return keys_.size();
-    }
+    uint16_t Size() const { return keys_.size(); }
 
-    std::vector<std::shared_ptr<Node>> GetPointers() const {
-      return pointers_;
-    }
+    std::vector<std::shared_ptr<Node>> GetPointers() const { return pointers_; }
 
-    bool IsEmpty() const {
-      return keys_.empty();
-    }
+    bool IsEmpty() const { return keys_.empty(); }
 
-    void UpdateParent(Node* new_parent) {
-      parent_ = new_parent;
-    }
+    void UpdateParent(Node* new_parent) { parent_ = new_parent; }
 
-    void InsertKey(ContentType key) {
-      keys_.push_back(key);
-    }
+    void InsertKey(ContentType key) { keys_.push_back(key); }
 
     void Clear() {
       keys_.clear();
       pointers_.clear();
+    }
+
+    bool Contains(ContentType key) {
+      if (IsLeaf())
+        return std::find(keys_.begin(), keys_.end(), key) != keys_.end();
+
+      auto it = std::lower_bound(keys_.begin(), keys_.end(), key);
+      if (*it == key) return true;
+      uint16_t i = std::distance(keys_.begin(), it);
+      return pointers_.at(i)->Contains(key);
     }
 
     uint16_t FindInsertionLocation(ContentType key) {
@@ -213,21 +207,13 @@ class BTree {
 #endif
   }
 
-  bool IsEmpty() const {
-    return root_->IsEmpty();
-  }
+  bool IsEmpty() const { return root_->IsEmpty(); }
 
-  OrderType GetOrder() const {
-    return order_;
-  }
+  OrderType GetOrder() const { return order_; }
 
-  std::string ToString() const {
-    return root_->ToString();
-  }
+  std::string ToString() const { return root_->ToString(); }
 
-  uint32_t Size() const {
-    return Size(root_);
-  }
+  uint32_t Size() const { return Size(root_); }
 
   void Insert(ContentType key) {
     if (root_->IsLeaf()) {
@@ -239,6 +225,8 @@ class BTree {
     leaf->Insert(key);
   }
 
+  bool Contains(ContentType key) { return root_->Contains(key); }
+
   template <typename smart_pointer>
   uint32_t Size(const smart_pointer& node) const {
     uint32_t count = node->Size();
@@ -248,14 +236,10 @@ class BTree {
     return count;
   }
 
-  uint16_t GetHeight() {
-    return root_->GetHeight(1);
-  }
+  uint16_t GetHeight() { return root_->GetHeight(1); }
 
 #ifdef BTREE_BENCHMARK
-  uint32_t GetSplitCount() {
-    return Node::split_counter_;
-  }
+  uint32_t GetSplitCount() { return Node::split_counter_; }
 #endif
 };
 
