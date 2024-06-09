@@ -476,6 +476,19 @@ class COBTree {
                               value);
   }
 
+  void Erase() {
+    capacity_ = kInitialCapacity;
+    elements_count_ = 0;
+    tree_.clear();
+    tree_.push_back(0);
+    content_.clear();
+    content_.resize(capacity_);
+    UpdateVariables(capacity_);
+    map_.clear();
+    map_.resize(1);
+    min_value_.reset();
+  }
+
   std::string ToString() {
     return "Data: [" + ToStringData() + "]\nTree: [" + ToStringTree() + "]";
   }

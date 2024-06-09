@@ -52,7 +52,8 @@ class BTree {
         return std::find(keys_.begin(), keys_.end(), key) != keys_.end();
 
       auto it = std::lower_bound(keys_.begin(), keys_.end(), key);
-      if (*it == key) return true;
+      if (*it == key)
+        return true;
       uint16_t i = std::distance(keys_.begin(), it);
       return pointers_.at(i)->Contains(key);
     }
@@ -238,8 +239,12 @@ class BTree {
 
   uint16_t GetHeight() { return root_->GetHeight(1); }
 
+  void Erase(){root_ = std::make_unique<Node>(order_);}
+
 #ifdef BTREE_BENCHMARK
-  uint32_t GetSplitCount() { return Node::split_counter_; }
+  uint32_t GetSplitCount() {
+    return Node::split_counter_;
+  }
 #endif
 };
 

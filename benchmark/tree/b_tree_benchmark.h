@@ -13,13 +13,12 @@
 namespace b_tree_benchmark {
 
 class BTreeBenchmark : public ::testing::Test {
+ protected:
   static std::ofstream table_5_replication_;
   static std::ofstream table_5_replication_unbalanced;
   static std::ofstream split_count_;
   static std::ofstream split_count_unbalanced_;
-
 #ifdef BTREE_BENCHMARK
- protected:
   const uint16_t kNumberExecition_ = 5;
 
   std::mt19937 rng_ = std::mt19937(SEED);

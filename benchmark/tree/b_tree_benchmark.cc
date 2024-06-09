@@ -5,7 +5,7 @@ namespace b_tree_benchmark {
 #ifdef BTREE_BENCHMARK
 
 TEST_F(BTreeBenchmark, ReplicateTable5) {
-  table_5_replication_ << "order | ";
+  this->table_5_replication_ << "order | ";
   std::array<uint32_t, 4> sizes = {1000, 10000, 100000, 1000000};
   for (auto size : sizes) {
     table_5_replication_ << size << " | ";
